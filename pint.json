@@ -1,0 +1,13 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "method_argument_space": true,
+        "multiline_whitespace_before_semicolons": {
+            "strategy": "new_line_for_chained_calls"
+        },
+        "types_spaces": {
+            "space": "single"
+        },
+        "concat_space": false
+    }
+}
