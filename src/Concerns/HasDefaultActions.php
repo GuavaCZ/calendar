@@ -3,8 +3,10 @@
 namespace Guava\Calendar\Concerns;
 
 use Filament\Actions\Action;
+use Guava\Calendar\Actions\EditAction;
+use Guava\Calendar\Actions\ViewAction;
 
-trait HasCustomActions
+trait HasDefaultActions
 {
     protected array $cachedCustomActions = [];
 
@@ -13,7 +15,7 @@ trait HasCustomActions
         $this->cacheCustomActions();
     }
 
-    protected function cacheCustomActions()
+    protected function cacheCustomActions(): void
     {
         /** @var Action $action */
         foreach ($this->getCustomActions() as $action) {
@@ -22,6 +24,7 @@ trait HasCustomActions
             $this->cacheAction($action);
             $this->cachedCustomActions[] = $action;
         }
+
     }
 
     public function getCachedCustomActions(): array
@@ -32,5 +35,15 @@ trait HasCustomActions
     public function getCustomActions(): array
     {
         return [];
+    }
+
+    public function editAction(): Action
+    {
+        return EditAction::make();
+    }
+
+    public function viewAction(): Action
+    {
+        return ViewAction::make();
     }
 }

@@ -19,14 +19,16 @@ trait HasEvents
         return $this;
     }
 
-    public function getEvents(): Collection | array
+    public function getEvents(array $fetchInfo = []): Collection | array
     {
-        return $this->evaluate($this->events);
+        return $this->evaluate($this->events, [
+            'fetchInfo' => $fetchInfo,
+        ]);
     }
 
-    public function getEventsJs(): array
+    public function getEventsJs(array $fetchInfo = []): array
     {
-        return collect($this->getEvents())
+        return collect($this->getEvents($fetchInfo))
             ->map(function (array | Eventable $event) {
                 return match (true) {
                     $event instanceof Eventable => $event->toEvent(),

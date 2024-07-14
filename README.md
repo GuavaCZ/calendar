@@ -56,16 +56,163 @@ php artisan vendor:publish --tag="calendar-views"
 
 ## Usage
 
+# Creating the calendar Widget
+First you need to create a custom widget and extend the `CalendarWidget` class. Make sure to remove the `view` property from the generated widget class!
+
+Either use the artisan command or simply create an empty class and extend `CalendarWidget`:
+```bash
+php artisan filament:make-widget
+```
+
+The widget class should look like this:
 ```php
-$calendar = new Guava\Calendar();
-echo $calendar->echoPhrase('Hello, Guava!');
+use \Guava\Calendar\Widgets\CalendarWidget;
+
+class MyCalendarWidget extends CalendarWidget
+{
+}
+```
+
+Add the widget like a regular widget to any filament page you like, such as your `Dashboard`.
+
+## Adding events
+By default, the calendar will be empty. To add events, simply override the `getEvents` method:
+
+```php
+public function getEvents(): Collection|array
+    {
+        return [
+            // Chainable object-oriented variant
+            Event::make()
+                ->title('My first event')
+                ->start(today())
+                ->end(today()),
+                
+            // Array variant
+            ['title' => 'My second event', 'start' => today()->addDays(3), 'end' => today()->addDays(3)],
+            
+            // Eloquent model implementing the `Eventable` interface
+            MyEvent::find(1),
+        ];
+    }
+```
+
+### Creating events
+As shown in the example, there are multiple ways to create events. At the very least, an array object with a `title`, `start` and `end` properties is required.
+
+To help you with creating events, we provide an `Event` ValueObject which contains methods with all available properties an event can have.
+
+This is possible because the `Event` clas implements the `Eventable` interface, which returns the array object. You can add this interface to any class you want which should be treated as an event, such as your eloquent models.
+
+Here is an example:
+```php
+class Foo extends Model implements Eventable
+{
+    // ...
+    
+    public function toEvent(): Event|array {
+        return Event::make($this)
+            ->title($this->name)
+            ->start($this->starts_at)
+            ->end($this->ends_at);
+    }
+}
+```
+
+Notice that the model is passed to the `Event` constructor in the `make` method. This sets the `key` and `model` properties to the event object, so it can be used to trigger actions.
+
+### Event object
+The event object takes all available options like the underlying calendar package, for more info [read here](https://github.com/vkurko/calendar?tab=readme-ov-file#event-object).
+
+Below is a list of available methods on the event object:
+
+#### Setting the tile
+Sets the title of the event that is rendered in the calendar.
+```php
+Event::make()->title('My event');
+```
+
+#### Customizing the start/end date
+Sets the start or end date (and time) of the event in the calendar.
+```php
+Event::make()
+    ->start(today())
+    ->end(today()->addDays(3));
+```
+
+#### Making the event all-day
+Sets whether the event is an all-day event or not.
+```php
+Event::make()->allDay();
+```
+
+#### Customizing the background / text color
+Sets the background color of the event (by default it is the primary color of the panel).
+```php
+Event::make()
+->backgroundColor('#ff0000')
+->textColor('#ffffff');
+```
+
+#### Setting the action on click
+This sets the action that should be mounted when the event is clicked. It can be any name of a filament action you defined in your widget, such as `edit` or `view`.
+```php
+Event::make()->action('edit');
+```
+
+#### Set the model and record key
+To mount the action with the correct record, we need to pass the model type and primary key of the record.
+
+The model is also required if you want to display multiple events and have each be rendered differently (see customizing event content).
+
+```php
+$record = MyModel::find(1);
+// 1. variant
+Event::make($record);
+
+// 2. variant
+Event::make()
+    ->model($record::class)
+    ->key($record->getKey());
+```
+
+#### Passing custom data
+You can pass any custom data to the event that you wish:
+```php
+Event::make()
+->extendedProp('foo', 'bar')
+// or
+->extendedProps(['baz' => 'qux', 'quux' => 'corge']);
 ```
 
 ## Custom Event Content
-By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getEventContent` method on the your calendar widget class.
+By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getEventContent` method on your calendar widget class.
 
 Due to the nature of the calendar package, it currently is not possible to pass blade parameters to the view. However, each view is wrapped in an alpine component, which has access to the event data. You can use any alpine functionality to display the data any way you seem fit.
 
+If you only have one type of events or events that render the same way, you can simply return a view or a HtmlString from the getEventContent method:
+
+```php
+public function getEventContent(): null|string|array
+{
+    // return a blade view
+    return view('calendar.event');
+    
+    // return a HtmlString
+    return new HtmlString('<div>My event</div>');
+}
+```
+
+If you want to render events differently based on their model type, you can return an array like so:
+```php
+public function getEventContent(): null|string|array
+{
+    return [
+        MyModel::class => view('calendar.my-model-event'),
+        AnotherModel::class => view('calendar.another-model-event'),
+    ];
+}
+```
 
 ## Testing
 

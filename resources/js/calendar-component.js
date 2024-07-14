@@ -1,32 +1,41 @@
 export default function calendarComponent({
+                                              view = 'dayGridMonth',
+                                              locale = 'en',
+                                              firstDay = 1,
                                               events = [],
                                               eventContent = null,
                                               selectable = false,
                                               onEventClick = false,
-                                              options = {},
+                                              dayMaxEvents = false,
                                               moreLinkContent = null,
+                                              resources = [],
+                                              options = {},
                                           }) {
     return {
 
         init: async function () {
             let self = this;
             let settings = {
-                view: 'dayGridMonth',
-                // events: events,
+                view: view,
+                resources: resources,
                 eventSources: [
                     {
-                        events: (fetchInfo, successCallback, failureCallback) => this.$wire.getEventsJs()
+                        events: (fetchInfo, successCallback, failureCallback) => {
+                            console.log('load');
+                            return this.$wire.getEventsJs(fetchInfo)
+                        }
                     }
                 ],
-                locale: 'en',
-                firstDay: 1,
-                dayMaxEvents: false,
+                locale: locale,
+                firstDay: firstDay,
+                dayMaxEvents: dayMaxEvents,
                 selectable: false,
                 editable: false,
                 eventStartEditable: false,
                 eventClick: (info) => {
                     if (info.event.extendedProps.url) {
-                        window.open(info.event.extendedProps.url, '_blank');
+                        const target = info.event.extendedProps.url_target ?? '_blank';
+                        window.open(info.event.extendedProps.url, target);
                     } else if (onEventClick) {
                         this.$wire.onEventClick(info);
                     }
@@ -47,10 +56,6 @@ export default function calendarComponent({
                         html: self.getMoreLinkContent(arg),
                     };
                 }
-            }
-
-            if (selectable) {
-                settings.selectable = true;
             }
 
             this.ec = new EventCalendar(this.$el.querySelector('div'), {
@@ -85,8 +90,8 @@ export default function calendarComponent({
         wrapContent: function (content, info) {
             let container = document.createElement('div');
             container.innerHTML = content;
-            // Perform the replacements
-            // this.replacePlaceholders(container, info);
+
+            // Add alpine data and classes
             container.setAttribute('x-data', JSON.stringify(info));
             container.classList.add('w-full');
 
@@ -94,21 +99,5 @@ export default function calendarComponent({
             return container.outerHTML;
         },
 
-        // Function to perform replacements
-        replacePlaceholders: function (element, replacements, parentKey = '') {
-            Object.keys(replacements).forEach(key => {
-                const nestedKey = parentKey ? `${parentKey}.${key}` : key;
-                const value = replacements[key];
-
-                if (typeof value === 'object') {
-                    // If value is an object, perform recursive replacements
-                    this.replacePlaceholders(element, value, nestedKey);
-                } else {
-                    // Perform the replacement
-                    const placeholder = `{${nestedKey}}`;
-                    element.innerHTML = element.innerHTML.replace(new RegExp(placeholder, 'g'), value);
-                }
-            });
-        }
     }
 }

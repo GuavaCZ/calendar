@@ -27,10 +27,10 @@
     {{--    @endpush--}}
     <x-filament::section
         :header-actions="$this->getCachedHeaderActions()"
-        :footer-actions="$this->getFooterActions()"
+        :footer-actions="$this->getCachedFooterActions()"
     >
         <x-slot name="heading">
-            {{ __('clock-widget::clock-widget.title') }}
+            {{ $this->getHeading() }}
         </x-slot>
 
         <div
@@ -39,13 +39,16 @@
             ax-load
             ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-component', 'guava/calendar') }}"
             x-data="calendarComponent({
-                events: @js($this->getEventsJs()),
+                view: @js($this->getCalendarView()),
+                locale: @js($this->getLocale()),
+                firstDay: @js($this->getFirstDay()),
                 eventContent: @js($this->getEventContentJs()),
                 onEventClick: @js($onEventClick),
-                options: @js($this->getOptions()),
+                dayMaxEvents: @js($this->dayMaxEvents()),
                 moreLinkContent: @js($this->getMoreLinkContentJs()),
+                resources: @js($this->getResourcesJs()),
+                options: @js($this->getOptions()),
             })"
-            class="text-center"
         >
             <div id="calendar"></div>
         </div>

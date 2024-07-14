@@ -4,6 +4,7 @@ namespace Guava\Calendar\ValueObjects;
 
 use Carbon\Carbon;
 use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\Contracts\Resourceable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,7 +34,10 @@ class Event implements Arrayable, Eventable
 
     private function __construct(?Model $model = null)
     {
-        $this->key($model?->getKey());
+        if ($model) {
+            $this->key($model->getKey());
+            $this->model($model::class);
+        }
     }
 
     public function start(string | Carbon $start): static
@@ -150,9 +154,19 @@ class Event implements Arrayable, Eventable
         return $this->durationEditable;
     }
 
+    public function resourceId(int|string|Resource $resource): static
+    {
+        $this->resourceIds([$resource]);
+
+        return $this;
+    }
+
     public function resourceIds(array $resourceIds): static
     {
-        $this->resourceIds = $resourceIds;
+        $this->resourceIds = [
+            ...$this->resourceIds,
+            ...$resourceIds,
+        ];
 
         return $this;
     }
@@ -162,9 +176,10 @@ class Event implements Arrayable, Eventable
         return $this->resourceIds;
     }
 
-    public function url(string $url): static
+    public function url(string $url, string $target = '_blank'): static
     {
         $this->extendedProp('url', $url);
+        $this->extendedProp('url_target', $target);
 
         return $this;
     }
@@ -179,6 +194,13 @@ class Event implements Arrayable, Eventable
     public function model(string $model): static
     {
         $this->extendedProp('model', $model);
+
+        return $this;
+    }
+
+    public function action(string $action): static
+    {
+        $this->extendedProp('action', $action);
 
         return $this;
     }

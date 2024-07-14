@@ -9,15 +9,13 @@ use Filament\Forms\ComponentContainer;
 use Filament\Forms\Form;
 use Guava\Calendar\Widgets\CalendarWidget;
 
-class EditAction extends \Filament\Actions\EditAction
+class CreateAction extends \Filament\Actions\CreateAction
 {
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->model(fn(CalendarWidget $livewire) => $livewire->getModel());
-        $this->record(fn(CalendarWidget $livewire) => $livewire->getRecord());
-        $this->form(fn(CalendarWidget $livewire) => $livewire->getSchemaForModel($livewire->getModel()));
+        $this->form(fn(CalendarWidget $livewire, CreateAction $action) => $livewire->getSchemaForModel($action->getModel()));
         $this->after(fn(CalendarWidget $livewire) => $livewire->refreshRecords());
     }
 }
