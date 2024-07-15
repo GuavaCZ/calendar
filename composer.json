@@ -74,10 +74,7 @@
         "laravel": {
             "providers": [
                 "Guava\\Calendar\\CalendarServiceProvider"
-            ],
-            "aliases": {
-                "Calendar": "Guava\\Calendar\\Facades\\Calendar"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
