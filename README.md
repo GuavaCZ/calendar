@@ -49,6 +49,15 @@ class MyCalendarWidget extends CalendarWidget
 
 Add the widget like a regular widget to any filament page you like, such as your `Dashboard`.
 
+## Customizing the calendar view
+By default, we show the `dayGridMonth` view. You can customize the view by overriding the `calendarView` property on the widget class:
+
+```php
+protected string $calendarView = 'resourceTimeGridWeek';
+```
+
+All available views are listed in the [calendar documentation](https://github.com/vkurko/calendar?tab=readme-ov-file#view).
+
 ## Adding events
 By default, the calendar will be empty. To add events, simply override the `getEvents` method:
 
@@ -201,6 +210,32 @@ public function getEventContent(): null|string|array
 }
 ```
 
+## Customize the form schema
+When an event triggers an action (such as view or edit actions), a modal with a form is opened.
+
+You can customize the form schema by overriding the `getSchema` method in your widget class:
+
+```php
+public function getSchema(?string $model = null): ?array
+{
+    // If you only work with one model type, you can ignore the $model parameter and simply return a schema
+    return [
+        TextInput::make('title')
+    ];
+    
+    // If you have multiple model types on your calendar, you can return different schemas based on the $model property
+    return match($model) {
+        Foo::class => [
+            TextInput::make('name'),
+        ],
+        Bar::class => [
+            TextInput::make('title'),
+            TextArea::make('description'),
+        ],
+    }
+}
+```
+
 ## Resources
 Resource views (their names start with `resource`) allow you to group events into resources (such as rooms, projects, etc.).
 
@@ -226,6 +261,26 @@ public function getResources(): Collection|array
         // Eloquent model implementing the `Resourceable` interface
         MyRoom::find(1),
     ];
+}
+```
+
+## Handling events
+### Click event
+by default, a click event fires the `view` action.
+
+You can set the default click action by overriding the `defaultEventClickAction` property of the widget:
+
+```php
+protected ?string $defaultEventClickAction = 'edit';
+```
+
+If you want to handle the event click logic completely by yourself, you may override the `onEventClick` method:
+
+```php
+public function onEventClick($info): void
+{
+    // do something on click
+    // $info contains the event data
 }
 ```
 

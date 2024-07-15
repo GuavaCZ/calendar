@@ -17,10 +17,10 @@ trait HasMoreLinkContent
     }
 
     /**
-     * vkurko/calendar doesn't support async method calls in eventContent,
+     * vkurko/calendar doesn't support async method calls in moreLinkContent,
      * that's why we need to pass all views to the client side.
      *
-     * @return string|null null to use default, string to use single view
+     * @return string|array|null null to use default, string to use single view
      */
     public function getMoreLinkContent(): null | string | array
     {

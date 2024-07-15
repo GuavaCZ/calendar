@@ -9,34 +9,6 @@ use Guava\Calendar\Actions\ViewAction;
 
 trait HasDefaultActions
 {
-//    protected array $cachedCustomActions = [];
-//
-//    public function bootedHasCustomActions(): void
-//    {
-//        $this->cacheCustomActions();
-//    }
-//
-//    protected function cacheCustomActions(): void
-//    {
-//        /** @var Action $action */
-//        foreach ($this->getCustomActions() as $action) {
-//            $action->livewire($this);
-//
-//            $this->cacheAction($action);
-//            $this->cachedCustomActions[] = $action;
-//        }
-//
-//    }
-//
-//    public function getCachedCustomActions(): array
-//    {
-//        return $this->cachedCustomActions;
-//    }
-//
-//    public function getCustomActions(): array
-//    {
-//        return [];
-//    }
 
     public function viewAction(): Action
     {

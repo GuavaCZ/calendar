@@ -4,9 +4,7 @@ namespace Guava\Calendar\Concerns;
 
 use Closure;
 use Guava\Calendar\Contracts\Eventable;
-use Guava\Calendar\ValueObjects\Event;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\On;
 
 trait HasEvents
 {

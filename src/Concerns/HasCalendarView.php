@@ -2,7 +2,6 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Carbon\WeekDay;
 
 trait HasCalendarView
 {

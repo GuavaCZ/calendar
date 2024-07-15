@@ -2,8 +2,6 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Carbon\WeekDay;
-
 trait HasDayMaxEvents
 {
     protected bool $dayMaxEvents = false;

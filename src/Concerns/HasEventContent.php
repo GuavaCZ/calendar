@@ -4,7 +4,6 @@ namespace Guava\Calendar\Concerns;
 
 use Closure;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\View\View;
 
 trait HasEventContent
 {

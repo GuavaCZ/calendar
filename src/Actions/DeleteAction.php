@@ -2,11 +2,6 @@
 
 namespace Guava\Calendar\Actions;
 
-use Closure;
-use Filament\Actions\Action;
-use Filament\Actions\StaticAction;
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Form;
 use Guava\Calendar\Widgets\CalendarWidget;
 
 class DeleteAction extends \Filament\Actions\DeleteAction

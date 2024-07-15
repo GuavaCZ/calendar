@@ -38,7 +38,7 @@ trait InteractsWithRecord
     protected function resolveRecordRouteBinding(string $model, mixed $key): ?Model
     {
         return app($model)
-            ->resolveRouteBindingQuery($this->getEloquentQuery($model), $key, data_get($this->getRecordRouteKeyName(), $model))
+            ->resolveRouteBindingQuery($this->getEloquentQuery($model), $key, $this->getRecordRouteKeyName($model))
             ->first()
         ;
     }
@@ -48,8 +48,8 @@ trait InteractsWithRecord
         return app($model)::query();
     }
 
-    protected function getRecordRouteKeyName(): array
+    protected function getRecordRouteKeyName(string $model = null): ?string
     {
-        return [];
+        return null;
     }
 }
