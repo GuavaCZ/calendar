@@ -15,6 +15,7 @@ class EditAction extends \Filament\Actions\EditAction
     {
         parent::setUp();
 
+        $this->authorize('update');
         $this->model(fn(CalendarWidget $livewire) => $livewire->getModel());
         $this->record(fn(CalendarWidget $livewire) => $livewire->getRecord());
         $this->form(fn(CalendarWidget $livewire) => $livewire->getSchemaForModel($livewire->getModel()));

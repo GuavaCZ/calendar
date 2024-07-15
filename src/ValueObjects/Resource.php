@@ -15,14 +15,9 @@ class Resource implements Arrayable, Resourceable
 
     protected ?string $eventTextColor = null;
 
-//    private function __construct(?Model $model = null)
     private function __construct(int|string $id)
     {
         $this->id = $id;
-//        if ($model) {
-//            $this->key($model->getKey());
-//            $this->model($model::class);
-//        }
     }
 
     public function getId(): int|string

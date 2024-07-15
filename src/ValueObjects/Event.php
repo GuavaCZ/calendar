@@ -4,7 +4,6 @@ namespace Guava\Calendar\ValueObjects;
 
 use Carbon\Carbon;
 use Guava\Calendar\Contracts\Eventable;
-use Guava\Calendar\Contracts\Resourceable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 

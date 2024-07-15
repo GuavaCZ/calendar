@@ -15,6 +15,7 @@ class CreateAction extends \Filament\Actions\CreateAction
     {
         parent::setUp();
 
+        $this->authorize('create');
         $this->form(fn(CalendarWidget $livewire, CreateAction $action) => $livewire->getSchemaForModel($action->getModel()));
         $this->after(fn(CalendarWidget $livewire) => $livewire->refreshRecords());
     }

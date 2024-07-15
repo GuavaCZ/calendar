@@ -15,6 +15,7 @@ class DeleteAction extends \Filament\Actions\DeleteAction
     {
         parent::setUp();
 
+        $this->authorize('delete');
         $this->model(fn(CalendarWidget $livewire) => $livewire->getModel());
         $this->record(fn(CalendarWidget $livewire) => $livewire->getRecord());
         $this->after(function(CalendarWidget $livewire) {

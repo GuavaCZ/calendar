@@ -8,7 +8,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/guava/calendar/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/guava/calendar/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/guava/calendar.svg?style=flat-square)](https://packagist.org/packages/guava/calendar)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+This package adds support for vkurko/calendar (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
 
 ## Showcase
 
@@ -26,32 +26,6 @@ You can install the package via composer:
 
 ```bash
 composer require guava/calendar
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="calendar-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="calendar-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="calendar-views"
 ```
 
 ## Usage
@@ -156,6 +130,9 @@ Event::make()
 
 #### Setting the action on click
 This sets the action that should be mounted when the event is clicked. It can be any name of a filament action you defined in your widget, such as `edit` or `view`.
+
+By default, all `CalendarWidget` classes already include a `view` and `edit` action.
+
 ```php
 Event::make()->action('edit');
 ```
@@ -163,7 +140,7 @@ Event::make()->action('edit');
 #### Set the model and record key
 To mount the action with the correct record, we need to pass the model type and primary key of the record.
 
-The model is also required if you want to display multiple events and have each be rendered differently (see customizing event content).
+The model is also required if you want to display multiple types of events and have each be rendered differently (see customizing event content).
 
 ```php
 $record = MyModel::find(1);
@@ -203,6 +180,16 @@ public function getEventContent(): null|string|array
 }
 ```
 
+Example of the `calendar.event` view blade file: 
+```bladehtml
+<div class="flex flex-col items-start">
+    <span x-text="event.title"></span>
+    <template x-for="user in event.extendedProps.users">
+        <span x-text="user.name"></span>
+    </template>
+</div>
+```
+
 If you want to render events differently based on their model type, you can return an array like so:
 ```php
 public function getEventContent(): null|string|array
@@ -213,6 +200,39 @@ public function getEventContent(): null|string|array
     ];
 }
 ```
+
+## Resources
+Resource views (their names start with `resource`) allow you to group events into resources (such as rooms, projects, etc.).
+
+To use resource views, you need to create resources and assign your events to these resources.
+
+![Resources Screenshot 01](docs/images/resources_screenshot_01.png)
+
+
+### Creating resources
+To create resources, you need to override the `getResources` method on your calendar widget class. Just like events, there are three options you can choose from to create resources:
+
+```php
+public function getResources(): Collection|array
+{
+    return [
+        // Chainable object-oriented variant
+        Resource::make('foo')
+            ->title('Room 1'),
+            
+        // Array variant
+        ['id' => 'bar', 'title' => 'Room 2'],
+        
+        // Eloquent model implementing the `Resourceable` interface
+        MyRoom::find(1),
+    ];
+}
+```
+
+## Authorization
+Due to security reasons, actions use Laravel's default authorization mechanism to check if user is allowed to perform actions.
+
+This means that most likely your actions might not work when you add them (such as view or edit actions on event click). If that's the case, please create a policy for your model and add the necessary checks to the policy.
 
 ## Testing
 
