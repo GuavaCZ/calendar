@@ -8,7 +8,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/guava/calendar/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/guava/calendar/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/guava/calendar.svg?style=flat-square)](https://packagist.org/packages/guava/calendar)
 
-This package adds support for vkurko/calendar (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
+This package adds support for [vkurko/calendar](https://github.com/vkurko/calendar) (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
 
 ## Showcase
 ![Showcase 01](docs/images/showcase_01.png)
