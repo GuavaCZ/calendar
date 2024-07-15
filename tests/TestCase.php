@@ -2,9 +2,9 @@
 
 namespace Guava\Calendar\Tests;
 
+use Guava\Calendar\CalendarServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Guava\Calendar\CalendarServiceProvider;
 
 class TestCase extends Orchestra
 {

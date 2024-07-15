@@ -153,7 +153,7 @@ class Event implements Arrayable, Eventable
         return $this->durationEditable;
     }
 
-    public function resourceId(int|string|Resource $resource): static
+    public function resourceId(int | string | Resource $resource): static
     {
         $this->resourceIds([$resource]);
 

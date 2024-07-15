@@ -2,8 +2,6 @@
 
 namespace Guava\Calendar\Concerns;
 
-
-
 trait HasFirstDay
 {
     protected int $firstDay = 1;

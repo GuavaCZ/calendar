@@ -13,7 +13,6 @@ use Livewire\Livewire;
 
 class CalendarPlugin implements Plugin
 {
-
     public function getId(): string
     {
         return 'guava-calendar';
@@ -45,5 +44,4 @@ class CalendarPlugin implements Plugin
     {
         return app(static::class);
     }
-
 }

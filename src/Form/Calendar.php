@@ -9,7 +9,8 @@ class Calendar extends Field
 {
     use HasEvents;
 
-    public function onSelect($info) {
+    public function onSelect($info)
+    {
         dd('ąsd');
         $this->dispatchEvent('ec-add-event', $info);
     }

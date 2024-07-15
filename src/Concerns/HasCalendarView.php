@@ -2,7 +2,6 @@
 
 namespace Guava\Calendar\Concerns;
 
-
 trait HasCalendarView
 {
     protected string $calendarView = 'dayGridMonth';

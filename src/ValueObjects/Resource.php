@@ -7,7 +7,7 @@ use Illuminate\Contracts\Support\Arrayable;
 
 class Resource implements Arrayable, Resourceable
 {
-    protected int|string $id;
+    protected int | string $id;
 
     protected string $title;
 
@@ -15,12 +15,12 @@ class Resource implements Arrayable, Resourceable
 
     protected ?string $eventTextColor = null;
 
-    private function __construct(int|string $id)
+    private function __construct(int | string $id)
     {
         $this->id = $id;
     }
 
-    public function getId(): int|string
+    public function getId(): int | string
     {
         return $this->id;
     }
@@ -63,7 +63,7 @@ class Resource implements Arrayable, Resourceable
         return $this->eventTextColor;
     }
 
-    public static function make(int|string $id): static
+    public static function make(int | string $id): static
     {
         return new static($id);
     }

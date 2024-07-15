@@ -16,7 +16,7 @@ trait HasHeading
         return $this;
     }
 
-    public function getHeading(): string|HtmlString
+    public function getHeading(): string | HtmlString
     {
         return $this->evaluate($this->heading) ?? __('guava-calendar::translations.heading');
     }

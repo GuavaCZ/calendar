@@ -48,7 +48,7 @@ trait InteractsWithRecord
         return app($model)::query();
     }
 
-    protected function getRecordRouteKeyName(string $model = null): ?string
+    protected function getRecordRouteKeyName(?string $model = null): ?string
     {
         return null;
     }
