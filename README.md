@@ -18,6 +18,12 @@ This package adds support for [vkurko/calendar](https://github.com/vkurko/calend
   <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/demo_preview.mp4" type="video/mp4">
 </video>
 
+
+https://github.com/user-attachments/assets/a4460084-e8a8-4b1b-9ccd-4d887895155b
+
+
+
+
 ## Support us
 
 Your support is key to the continual advancement of our plugin. We appreciate every user who has contributed to our journey so far.
