@@ -31,12 +31,8 @@ class CalendarPlugin implements Plugin
         FilamentAsset::register(
             assets: [
                 AlpineComponent::make(
-                    'calendar-component',
-                    __DIR__ . '/../dist/js/calendar-component.js',
-                ),
-                AlpineComponent::make(
-                    'calendar-field',
-                    __DIR__ . '/../dist/js/calendar-field.js',
+                    'calendar-widget',
+                    __DIR__ . '/../dist/js/calendar-widget.js',
                 ),
                 Css::make('calendar-styles', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@3.1.0/event-calendar.min.css'),
                 Js::make('calendar-script', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@3.1.0/event-calendar.min.js'),

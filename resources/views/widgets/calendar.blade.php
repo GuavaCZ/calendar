@@ -37,8 +37,8 @@
             wire:ignore
             x-ignore
             ax-load
-            ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-component', 'guava/calendar') }}"
-            x-data="calendarComponent({
+            ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-widget', 'guava/calendar') }}"
+            x-data="calendarWidget({
                 view: @js($this->getCalendarView()),
                 locale: @js($this->getLocale()),
                 firstDay: @js($this->getFirstDay()),

@@ -45,12 +45,6 @@ const defaultOptions = {
 
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/calendar-component.js'],
-    outfile: './dist/js/calendar-component.js',
-})
-
-compile({
-    ...defaultOptions,
-    entryPoints: ['./resources/js/calendar-field.js'],
-    outfile: './dist/js/calendar-field.js',
+    entryPoints: ['./resources/js/calendar-widget.js'],
+    outfile: './dist/js/calendar-widget.js',
 })

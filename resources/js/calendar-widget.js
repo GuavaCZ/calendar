@@ -1,4 +1,4 @@
-export default function calendarComponent({
+export default function calendarWidget({
                                               view = 'dayGridMonth',
                                               locale = 'en',
                                               firstDay = 1,
