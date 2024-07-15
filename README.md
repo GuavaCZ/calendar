@@ -11,8 +11,12 @@
 This package adds support for vkurko/calendar (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
 
 ## Showcase
+![Showcase 01](docs/images/showcase_01.png)
+![Showcase 02](docs/images/showcase_02.png)
 
-This is where your screenshots and videos should go. Remember to add them, so people see what your plugin does.
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/demo_preview.mp4" type="video/mp4">
+</video>
 
 ## Support us
 
@@ -308,10 +312,11 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
 ## Credits
-
 - [Lukas Frey](https://github.com/GuavaCZ)
 - [All Contributors](../../contributors)
 - Spatie - Our package calendar is a modified version of [Spatie's Package Calendar](https://github.com/spatie/package-calendar-laravel)
+- [vkurko/calendar](https://github.com/vkurko/calendar) - free, open-source alternative to FullCalendar
+- [saade/filament-fullcalendar](https://github.com/saade/filament-fullcalendar) - heavy inspiration for this package
 
 ## License
 

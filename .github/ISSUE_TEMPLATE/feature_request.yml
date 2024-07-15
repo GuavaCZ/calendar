@@ -1,0 +1,19 @@
+name: Feature Request
+description: Create a feature request
+title: "[Request]: "
+body:
+    - type: textarea
+      id: feature-request
+      attributes:
+          label: What feature would you like to add?
+          description: Please describe the new feature as thoroughly as possible.
+      validations:
+          required: true
+
+    - type: textarea
+      id: notes
+      attributes:
+          label: Notes
+          description: Use this field to provide any other notes that you feel might be relevant to the issue.
+      validations:
+          required: false
