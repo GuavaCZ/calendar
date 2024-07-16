@@ -32,6 +32,7 @@ export default function calendarWidget({
                 selectable: false,
                 editable: false,
                 eventStartEditable: false,
+                eventDurationEditable: false,
                 eventClick: (info) => {
                     if (info.event.extendedProps.url) {
                         const target = info.event.extendedProps.url_target ?? '_blank';
