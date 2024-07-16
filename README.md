@@ -316,6 +316,14 @@ The mount using function is used to fill the form with the arguments from the ca
 - `startStr` and `endStr` for range selection
 - `dateStr` for date clicks
 
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview.mp4" type="video/mp4">
+</video>
+
+https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
+
+
+
 ## Troubleshooting
 ### Context menu actions don't work
 If you encounter issues with the context menu, either that the actions don't mount correctly or that the arguments array is empty, make sure that the name of the action is unique across the whole widget. If there is another action with the same name, it might be mounted instead of the one you want.
