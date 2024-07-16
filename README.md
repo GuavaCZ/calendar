@@ -294,6 +294,32 @@ public function onEventClick($info): void
 }
 ```
 
+## Context menu
+Optionally you can add a context menu to your calendar, which allows you to create events by clicking on a date cell or by selecting a date/time range by dragging.
+
+To enable the context menu, all you need to do is implement the `getContextMenuActions` method:
+
+For example:
+```php
+public function getContextMenuActions(): array
+{
+    CreateAction::make('foo')
+        ->model(Foo::class)
+        ->mountUsing(fn ($arguments, $form) => $form->fill([
+            'starts_at' => data_get($arguments, 'start') ?? data_get($arguments, 'date'),
+            'ends_at' => data_get($arguments, 'end') ?? data_get($arguments, 'date'),
+        ])),
+}
+```
+
+The mount using function is used to fill the form with the arguments from the calendar. It contains all information that vkurko/calendar provides in the `select` and `dateClick` events, but most importantly:
+- `start` and `end` for range selection
+- `date` for date clicks
+
+## Troubleshooting
+### Context menu actions don't work
+If you encounter issues with the context menu, either that the actions don't mount correctly or that the arguments array is empty, make sure that the name of the action is unique across the whole widget. If there is another action with the same name, it might be mounted instead of the one you want.
+
 ## Authorization
 Due to security reasons, actions use Laravel's default authorization mechanism to check if user is allowed to perform actions.
 

@@ -4,7 +4,7 @@ export default function calendarContextMenu({
     return {
 
         open: false,
-        // contextMenu: null,
+
         size: {
             width: 0,
             height: 0,
@@ -13,10 +13,7 @@ export default function calendarContextMenu({
             x: 0,
             y: 0,
         },
-        mountData: {
-            start: null,
-            end: null,
-        },
+        mountData: {},
 
         menu: {
             ['x-show']() {
@@ -36,8 +33,6 @@ export default function calendarContextMenu({
         },
 
         init: async function () {
-            console.log('init context menu');
-
             const menu = this.$el.querySelector('[x-bind="menu"]');
             this.size = {
                 width: menu.offsetWidth,
@@ -48,10 +43,8 @@ export default function calendarContextMenu({
         },
 
         openMenu: function (event) {
-            this.mountData = {
-                start: event.detail.start,
-                end: event.detail.end,
-            };
+            this.mountData = event.detail;
+
             this.$nextTick(() => {
                 const clientX = event.detail.jsEvent.clientX;
                 const clientY = event.detail.jsEvent.clientY;

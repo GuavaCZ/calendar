@@ -14,11 +14,19 @@ trait HasContextMenuActions
         $this->cacheContextMenuActions();
     }
 
+    public function hasContextMenu(): bool
+    {
+        return ! empty($this->getCachedContextMenuActions());
+    }
+
     protected function cacheContextMenuActions(): void
     {
         /** @var Action $action */
         foreach ($this->getContextMenuActions() as $action) {
-            $action = $action->view(Action::GROUPED_VIEW);
+            $action = $action
+                ->grouped()
+                ->alpineClickHandler(fn ($action) => "\$wire.mountAction('{$action->getName()}', mountData)")
+            ;
 
             if (! $action instanceof Action) {
                 throw new InvalidArgumentException('Context menu actions must be an instance of ' . Action::class . '.');

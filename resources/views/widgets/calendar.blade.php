@@ -47,6 +47,7 @@
                 dayMaxEvents: @js($this->dayMaxEvents()),
                 moreLinkContent: @js($this->getMoreLinkContentJs()),
                 resources: @js($this->getResourcesJs()),
+                hasContextMenu: @js($this->hasContextMenu()),
                 options: @js($this->getOptions()),
             })"
         >

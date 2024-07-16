@@ -9,6 +9,7 @@ export default function calendarWidget({
                                            dayMaxEvents = false,
                                            moreLinkContent = null,
                                            resources = [],
+                                           hasContextMenu = false,
                                            options = {},
                                        }) {
     return {
@@ -31,14 +32,10 @@ export default function calendarWidget({
                 locale: locale,
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
-                selectable: true,
+                selectable: hasContextMenu,
                 editable: false,
                 eventStartEditable: false,
-                select: (info) => {
-                    console.log('SELECT', info, info.jsEvent, info.jsEvent.target);
-                    const target = info.jsEvent.target;
-                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {detail: info}));
-                },
+                eventDurationEditable: false,
                 eventClick: (info) => {
                     if (info.event.extendedProps.url) {
                         const target = info.event.extendedProps.url_target ?? '_blank';
@@ -48,6 +45,20 @@ export default function calendarWidget({
                     }
                 }
             };
+
+            if (hasContextMenu) {
+                settings.dateClick =(info) => {
+                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                        detail: info,
+                    }));
+                };
+                settings.select = (info) => {
+                    const target = info.jsEvent.target;
+                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                        detail: info,
+                    }));
+                };
+            }
 
             if (eventContent !== null) {
                 settings.eventContent = (info) => {
