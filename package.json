@@ -6,6 +6,7 @@
     },
     "type": "module",
     "dependencies": {
+        "@awcodes/alpine-floating-ui": "^3.6.3",
         "@event-calendar/core": "^3.0.0",
         "@event-calendar/day-grid": "^3.0.0",
         "@event-calendar/time-grid": "^3.0.0"

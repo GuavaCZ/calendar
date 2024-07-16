@@ -47,10 +47,12 @@
                 dayMaxEvents: @js($this->dayMaxEvents()),
                 moreLinkContent: @js($this->getMoreLinkContentJs()),
                 resources: @js($this->getResourcesJs()),
+                hasContextMenu: @js($this->hasContextMenu()),
                 options: @js($this->getOptions()),
             })"
         >
             <div id="calendar"></div>
+            <x-guava-calendar::context-menu />
         </div>
     </x-filament::section>
     <x-filament-actions::modals/>

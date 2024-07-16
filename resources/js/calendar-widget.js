@@ -1,19 +1,23 @@
 export default function calendarWidget({
-                                              view = 'dayGridMonth',
-                                              locale = 'en',
-                                              firstDay = 1,
-                                              events = [],
-                                              eventContent = null,
-                                              selectable = false,
-                                              onEventClick = false,
-                                              dayMaxEvents = false,
-                                              moreLinkContent = null,
-                                              resources = [],
-                                              options = {},
-                                          }) {
+                                           view = 'dayGridMonth',
+                                           locale = 'en',
+                                           firstDay = 1,
+                                           events = [],
+                                           eventContent = null,
+                                           selectable = false,
+                                           onEventClick = false,
+                                           dayMaxEvents = false,
+                                           moreLinkContent = null,
+                                           resources = [],
+                                           hasContextMenu = false,
+                                           options = {},
+                                       }) {
     return {
 
+        calendarEl: null,
+
         init: async function () {
+            this.calendarEl = this.$el;
             let self = this;
             let settings = {
                 view: view,
@@ -21,7 +25,6 @@ export default function calendarWidget({
                 eventSources: [
                     {
                         events: (fetchInfo, successCallback, failureCallback) => {
-                            console.log('load');
                             return this.$wire.getEventsJs(fetchInfo)
                         }
                     }
@@ -29,7 +32,7 @@ export default function calendarWidget({
                 locale: locale,
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
-                selectable: false,
+                selectable: hasContextMenu,
                 editable: false,
                 eventStartEditable: false,
                 eventDurationEditable: false,
@@ -42,6 +45,19 @@ export default function calendarWidget({
                     }
                 }
             };
+
+            if (hasContextMenu) {
+                settings.dateClick =(info) => {
+                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                        detail: info,
+                    }));
+                };
+                settings.select = (info) => {
+                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                        detail: info,
+                    }));
+                };
+            }
 
             if (eventContent !== null) {
                 settings.eventContent = (info) => {
@@ -73,7 +89,6 @@ export default function calendarWidget({
 
         getEventContent: function (info) {
             if (typeof eventContent === 'string') {
-                console.log('eventContent', eventContent);
                 return this.wrapContent(eventContent, info);
             }
 
@@ -99,6 +114,5 @@ export default function calendarWidget({
             // Get the modified HTML
             return container.outerHTML;
         },
-
     }
 }

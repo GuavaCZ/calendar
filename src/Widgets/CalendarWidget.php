@@ -10,6 +10,7 @@ use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Widgets\Widget;
 use Guava\Calendar\Concerns\HandlesEventClick;
 use Guava\Calendar\Concerns\HasCalendarView;
+use Guava\Calendar\Concerns\HasContextMenuActions;
 use Guava\Calendar\Concerns\HasDayMaxEvents;
 use Guava\Calendar\Concerns\HasDefaultActions;
 use Guava\Calendar\Concerns\HasEventContent;
@@ -30,6 +31,7 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use EvaluatesClosures;
     use HandlesEventClick;
     use HasCalendarView;
+    use HasContextMenuActions;
     use HasDayMaxEvents;
     use HasDefaultActions;
     use HasEventContent;
