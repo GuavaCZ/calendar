@@ -1,19 +1,22 @@
 export default function calendarWidget({
-                                              view = 'dayGridMonth',
-                                              locale = 'en',
-                                              firstDay = 1,
-                                              events = [],
-                                              eventContent = null,
-                                              selectable = false,
-                                              onEventClick = false,
-                                              dayMaxEvents = false,
-                                              moreLinkContent = null,
-                                              resources = [],
-                                              options = {},
-                                          }) {
+                                           view = 'dayGridMonth',
+                                           locale = 'en',
+                                           firstDay = 1,
+                                           events = [],
+                                           eventContent = null,
+                                           selectable = false,
+                                           onEventClick = false,
+                                           dayMaxEvents = false,
+                                           moreLinkContent = null,
+                                           resources = [],
+                                           options = {},
+                                       }) {
     return {
 
+        calendarEl: null,
+
         init: async function () {
+            this.calendarEl = this.$el;
             let self = this;
             let settings = {
                 view: view,
@@ -29,9 +32,14 @@ export default function calendarWidget({
                 locale: locale,
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
-                selectable: false,
+                selectable: true,
                 editable: false,
                 eventStartEditable: false,
+                select: (info) => {
+                    console.log('SELECT', info, info.jsEvent, info.jsEvent.target);
+                    const target = info.jsEvent.target;
+                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {detail: info}));
+                },
                 eventClick: (info) => {
                     if (info.event.extendedProps.url) {
                         const target = info.event.extendedProps.url_target ?? '_blank';
@@ -98,6 +106,5 @@ export default function calendarWidget({
             // Get the modified HTML
             return container.outerHTML;
         },
-
     }
 }

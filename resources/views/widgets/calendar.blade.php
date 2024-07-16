@@ -51,6 +51,7 @@
             })"
         >
             <div id="calendar"></div>
+            <x-guava-calendar::context-menu />
         </div>
     </x-filament::section>
     <x-filament-actions::modals/>
