@@ -21,7 +21,6 @@ export default function calendarWidget({
                 eventSources: [
                     {
                         events: (fetchInfo, successCallback, failureCallback) => {
-                            console.log('load');
                             return this.$wire.getEventsJs(fetchInfo)
                         }
                     }
@@ -73,7 +72,6 @@ export default function calendarWidget({
 
         getEventContent: function (info) {
             if (typeof eventContent === 'string') {
-                console.log('eventContent', eventContent);
                 return this.wrapContent(eventContent, info);
             }
 
