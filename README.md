@@ -306,15 +306,15 @@ public function getContextMenuActions(): array
     CreateAction::make('foo')
         ->model(Foo::class)
         ->mountUsing(fn ($arguments, $form) => $form->fill([
-            'starts_at' => data_get($arguments, 'start') ?? data_get($arguments, 'date'),
-            'ends_at' => data_get($arguments, 'end') ?? data_get($arguments, 'date'),
+            'starts_at' => data_get($arguments, 'startStr') ?? data_get($arguments, 'dateStr'),
+            'ends_at' => data_get($arguments, 'endStr') ?? data_get($arguments, 'dateStr'),
         ])),
 }
 ```
 
 The mount using function is used to fill the form with the arguments from the calendar. It contains all information that vkurko/calendar provides in the `select` and `dateClick` events, but most importantly:
-- `start` and `end` for range selection
-- `date` for date clicks
+- `startStr` and `endStr` for range selection
+- `dateStr` for date clicks
 
 ## Troubleshooting
 ### Context menu actions don't work

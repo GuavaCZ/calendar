@@ -53,7 +53,6 @@ export default function calendarWidget({
                     }));
                 };
                 settings.select = (info) => {
-                    const target = info.jsEvent.target;
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: info,
                     }));
