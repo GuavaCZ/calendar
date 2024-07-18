@@ -42,9 +42,8 @@ export default function calendarContextMenu() {
         },
 
         openMenu: function (event) {
-            console.log(event.detail.context);
             this.context = event.detail.context;
-            this.mountData = event.detail;
+            this.mountData = event.detail.mountData;
 
             this.$nextTick(() => {
                 const clientX = event.detail.jsEvent.clientX;

@@ -4,6 +4,8 @@ namespace Guava\Calendar\Enums;
 
 enum Context: string
 {
-    case Click = 'click';
-    case Select = 'select';
+    case DateClick = 'dateClick';
+    case DateSelect = 'dateSelect';
+    case EventClick = 'eventClick';
+    case NoEventsClick = 'noEventsClick';
 }

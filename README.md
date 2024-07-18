@@ -10,6 +10,8 @@
 
 This package adds support for [vkurko/calendar](https://github.com/vkurko/calendar) (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
 
+**Although the package is ready for production-use, it is still in active development. Please be cautious and double-check the documentation before updating the package, as new releases might introduce breaking changes due to refactoring and improvements to the DX. We do our best to keep these changes to a minimum.**
+
 ## Showcase
 ![Showcase 01](docs/images/showcase_01.png)
 ![Showcase 02](docs/images/showcase_02.png)
@@ -18,11 +20,7 @@ This package adds support for [vkurko/calendar](https://github.com/vkurko/calend
   <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/demo_preview.mp4" type="video/mp4">
 </video>
 
-
 https://github.com/user-attachments/assets/a4460084-e8a8-4b1b-9ccd-4d887895155b
-
-
-
 
 ## Support us
 
@@ -45,7 +43,7 @@ First you need to create a custom widget and extend the `CalendarWidget` class. 
 
 Either use the artisan command or simply create an empty class and extend `CalendarWidget`:
 ```bash
-php artisan filament:make-widget
+php artisan make:filament-widget
 ```
 
 The widget class should look like this:
@@ -72,7 +70,7 @@ All available views are listed in the [calendar documentation](https://github.co
 By default, the calendar will be empty. To add events, simply override the `getEvents` method:
 
 ```php
-public function getEvents(): Collection|array
+public function getEvents(array $fetchInfo = []): Collection | array
     {
         return [
             // Chainable object-oriented variant
@@ -98,6 +96,8 @@ To help you with creating events, we provide an `Event` ValueObject which contai
 This is possible because the `Event` clas implements the `Eventable` interface, which returns the array object. You can add this interface to any class you want which should be treated as an event, such as your eloquent models.
 
 Here is an example:
+
+#### using an Eloquent model as Events
 ```php
 class Foo extends Model implements Eventable
 {
@@ -184,7 +184,9 @@ Event::make()
 ## Custom Event Content
 By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getEventContent` method on your calendar widget class.
 
-Due to the nature of the calendar package, it currently is not possible to pass blade parameters to the view. However, each view is wrapped in an alpine component, which has access to the event data. You can use any alpine functionality to display the data any way you seem fit.
+In order to keep things performant, the blade view is rendered **once** on the server and then re-used for every event. Thus, you **cannot** access the event data from the server side via Blade or Laravel, or do any server-side operations.
+
+However, each event is wrapped in an alpine component, which exposes the event data that you can freely use using [AlpineJS](https://alpinejs.dev/).
 
 If you only have one type of events or events that render the same way, you can simply return a view or a HtmlString from the getEventContent method:
 
@@ -221,7 +223,7 @@ public function getEventContent(): null|string|array
 ```
 
 ## Customize the form schema
-When an event triggers an action (such as view or edit actions), a modal with a form is opened.
+When an event triggers an action (such as view or edit actions), a modal with a form is mounted.
 
 You can customize the form schema by overriding the `getSchema` method in your widget class:
 
@@ -275,39 +277,133 @@ public function getResources(): Collection|array
 ```
 
 ## Handling events
-### Click event
-by default, a click event fires the `view` action.
 
-You can set the default click action by overriding the `defaultEventClickAction` property of the widget:
+By default, the calendar is a view-only collection of events. You can enable more functionalities by configuring various events as described below.
+
+### Event-click event
+An event click event is triggered when an event in the calendar is clicked. By default, a click event mounts the `view` action.
+
+To listen to click events, simply override the `eventClickEnabled` property:
+
+```php
+protected bool $eventClickEnabled = true;
+```
+
+You can set the default click action by overriding the `defaultEventClickAction` property of the widget. This simply needs to be the name of an action that you can freely define in your widget, like regular Filament actions:
 
 ```php
 protected ?string $defaultEventClickAction = 'edit';
 ```
 
+And that's it! As long as pass your model policy checks, an edit modal will be mounted when you click on an event.
+
 If you want to handle the event click logic completely by yourself, you may override the `onEventClick` method:
 
 ```php
-public function onEventClick($info): void
+    public function onEventClick(array $info = []): void
 {
     // do something on click
-    // $info contains the event data
+    // $info contains the event data:
+    // $info['event'] - the event object
+    // $info['view'] - the view object
+}
+```
+
+### Resize event
+A resize event is triggered when an event is resized at the ending edge of the event. This allows you to quickly modify the duration of an event.
+
+To listen to resize events, simply override the `eventResizeEnabled` property:
+
+```php
+protected bool $eventResizeEnabled = true;
+```
+
+Except for resolving the record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventResize` method:
+
+```php
+public function onEventResize(array $info = []): bool
+{
+    // Validate the data
+    // Update the record ($this->getRecord())
+    // $info contains the event data:
+    // $info['event'] - the event object
+    // $info['oldEvent'] - the event object before resizing
+    // $info['endDelta'] - the difference in time between the old and new event
+    
+    // Return true if the event was resized successfully
+    // Return false if the event was not resized and should be reverted on the client-side   
+}
+```
+
+### Drag & Drop event
+A drop event is triggered when an event is dragged and dropped to a different slot in the calendar. This allows you to quicky move the start (and end) date of an event.
+
+To listen to drag and drop events, simply override the `eventDragEnabled` property:
+
+```php
+protected bool $eventResizeEnabled = true;
+```
+
+Except for resolving the record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventDrop` method:
+
+```php
+public function onEventDrop(array $info = []): bool
+{
+    // Validate the data
+    // Update the record ($this->getRecord())
+    // $info contains the event data:
+    // $info['event'] - the event object
+    // $info['oldEvent'] - the event object before resizing
+    // $info['oldResource'] - the old resource object
+    // $info['newResource'] - the new resource object
+    // $info['delta'] - the duration object representing the amount of time the event was moved by
+    // $info['view'] - the view object
+    
+    // Return true if the event was moved successfully
+    // Return false if the event was not moved and should be reverted on the client-side
+}
+```
+
+### No-events-click event
+
+A no-events-click event is applicable only on `list` views and is triggered when a user clicks on the `no events` cell. By default, this event does nothing and it's up to you to implement the logic.
+
+To listen to no-events-click events, simply override the `noEventsClickEnabled` property:
+
+```php
+protected bool $noEventsClickEnabled = true;
+```
+
+To handle the no-events-click logic, override the `onNoEventsClick` method:
+
+```php
+public function onNoEventsClick(array $info = []): void
+{
+    // do something on click
+    // $info contains the event data:
+    // $info['view'] - the view object
 }
 ```
 
 ## Context menu
 Optionally you can add a context menu to your calendar, which allows you to create events by clicking on a date cell or by selecting a date/time range by dragging.
 
-To enable the context menu, all you need to do is implement the `getContextMenuActions` method:
+There are multiple places where you can use context menus at.
+
+### Date click context menu
+This context menu is triggered when a user clicks on a date cell in the calendar.
+
+To enable the context menu, all you need to do is implement the `getDateClickContextMenuActions` method:
 
 For example:
 ```php
-public function getContextMenuActions(): array
+public function getDateClickContextMenuActions(): array
 {
     CreateAction::make('foo')
         ->model(Foo::class)
         ->mountUsing(fn ($arguments, $form) => $form->fill([
-            'starts_at' => data_get($arguments, 'startStr') ?? data_get($arguments, 'dateStr'),
-            'ends_at' => data_get($arguments, 'endStr') ?? data_get($arguments, 'dateStr'),
+            'starts_at' => data_get($arguments, 'dateStr'),
+            'ends_at' => data_get($arguments, 'dateStr'),
         ])),
 }
 ```
@@ -322,21 +418,56 @@ The mount using function is used to fill the form with the arguments from the ca
 
 https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
 
-### Customizing context menu actions
-Sometimes you may want to have different actions for the `click` and `select` contexts.
+### Date select context menu
+This context menu is triggered when a user selects on a date range in the calendar.
 
-To achieve this, you can add the `context` method to the action:
+To enable the context menu, all you need to do is implement the `getDateSelectContextMenuActions` method:
+
+For example:
 ```php
-public function getContextMenuActions(): array
+public function getDateSelectContextMenuActions(): array
+{
+    CreateAction::make('foo')
+        ->model(Foo::class)
+        ->mountUsing(fn ($arguments, $form) => $form->fill([
+            'starts_at' => data_get($arguments, 'startStr'),
+            'ends_at' => data_get($arguments, 'endStr'),
+        ])),
+}
+```
+
+### Event click context menu
+This context menu is triggered when a user clicks on an event in the calendar.
+
+To enable the context menu, all you need to do is implement the `getEventClickContextMenuActions` method:
+
+For example:
+```php
+public function getEventClickContextMenuActions(): array
 {
     return [
-        \Guava\Calendar\Actions\CreateAction::make('createFoo')->context('click'),
-        \Guava\Calendar\Actions\CreateAction::make('createBar')->context('select'),
+        $this->viewAction(),
+        $this->editAction(),
+        $this->deleteAction(),
     ];
 }
 ```
 
-The `context` method is only available on the `CreateAction` class from our package or in the `ContextMenuAction`, which is nothing else than a regular Filament `Action` with the `HasContext` trait.
+### No events click context menu
+This context menu is only rendered on `list` views and is triggered when a user clicks on the `no events` cell when there are no events.
+
+To enable the context menu, all you need to do is implement the `getNoEventsClickContextMenuActions` method:
+
+```php
+public function getNoEventsClickContextMenuActions(): array
+{
+    return [
+        CreateAction::make('foo')
+            ->model(Foo::class)
+    ];
+}
+
+```
 
 ## Troubleshooting
 ### Context menu actions don't work
@@ -346,6 +477,16 @@ If you encounter issues with the context menu, either that the actions don't mou
 Due to security reasons, actions use Laravel's default authorization mechanism to check if user is allowed to perform actions.
 
 This means that most likely your actions might not work when you add them (such as view or edit actions on event click). If that's the case, please create a policy for your model and add the necessary checks to the policy.
+
+You can also overide the `authorize` method on your widget class and handle all authorization logic on your own.
+
+```php
+// $ability will contain the name of the action
+public function authorize($ability, $arguments = []);
+```
+
+## Security measures
+Keep in mind that a lot of the data in this package comes from the client side JavaScript and could be tampered with. Always validate the data on the server side and never trust the data from the client side.
 
 ## Testing
 
@@ -368,7 +509,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## Credits
 - [Lukas Frey](https://github.com/GuavaCZ)
 - [All Contributors](../../contributors)
-- Spatie - Our package calendar is a modified version of [Spatie's Package Calendar](https://github.com/spatie/package-calendar-laravel)
+- Spatie - Our package skeleton is a modified version of [Spatie's Package Skeleton](https://github.com/spatie/package-skeleton-laravel)
 - [vkurko/calendar](https://github.com/vkurko/calendar) - free, open-source alternative to FullCalendar
 - [saade/filament-fullcalendar](https://github.com/saade/filament-fullcalendar) - heavy inspiration for this package
 

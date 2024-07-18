@@ -244,15 +244,15 @@ class Event implements Arrayable, Eventable
             'extendedProps' => $this->getExtendedProps(),
         ];
 
-        if ($editable = $this->getEditable()) {
+        if (($editable = $this->getEditable()) !== null) {
             $array['editable'] = $editable;
         }
 
-        if ($startEditable = $this->getStartEditable()) {
+        if (($startEditable = $this->getStartEditable()) !== null) {
             $array['startEditable'] = $startEditable;
         }
 
-        if ($durationEditable = $this->getDurationEditable()) {
+        if (($durationEditable = $this->getDurationEditable()) !== null) {
             $array['durationEditable'] = $durationEditable;
         }
 

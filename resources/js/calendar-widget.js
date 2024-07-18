@@ -5,11 +5,15 @@ export default function calendarWidget({
                                            events = [],
                                            eventContent = null,
                                            selectable = false,
-                                           onEventClick = false,
+                                           eventClickEnabled = false,
+                                           eventDragEnabled = false,
+                                           eventResizeEnabled = false,
+                                           noEventsClickEnabled = false,
                                            dayMaxEvents = false,
                                            moreLinkContent = null,
                                            resources = [],
                                            hasContextMenu = false,
+                                           hasEventClickContextMenu = false,
                                            options = {},
                                        }) {
     return {
@@ -33,33 +37,41 @@ export default function calendarWidget({
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
                 selectable: hasContextMenu,
-                editable: false,
-                eventStartEditable: false,
-                eventDurationEditable: false,
-                eventClick: (info) => {
-                    if (info.event.extendedProps.url) {
-                        const target = info.event.extendedProps.url_target ?? '_blank';
-                        window.open(info.event.extendedProps.url, target);
-                    } else if (onEventClick) {
-                        this.$wire.onEventClick(info);
-                    }
-                }
+                eventStartEditable: eventDragEnabled,
+                eventDurationEditable: eventResizeEnabled,
             };
 
             if (hasContextMenu) {
                 settings.dateClick = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
-                            ...info,
-                            context: 'click',
+                            mountData: {
+                                date: info.date,
+                                dateStr: info.dateStr,
+                                allDay: info.allDay,
+                                view: info.view,
+                                resource: info.resource,
+                            },
+                            jsEvent: info.jsEvent,
+                            dayEl: info.dayEl,
+                            context: 'dateClick',
                         },
                     }));
                 };
                 settings.select = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
-                            ...info,
-                            context: 'select',
+                            mountData: {
+                                start: info.start,
+                                startStr: info.startStr,
+                                end: info.end,
+                                endStr: info.endStr,
+                                allDay: info.allDay,
+                                view: info.view,
+                                resource: info.resource,
+                            },
+                            jsEvent: info.jsEvent,
+                            context: 'dateSelect',
                         },
                     }));
                 };
@@ -80,6 +92,86 @@ export default function calendarWidget({
                     };
                 }
             }
+
+            if (eventClickEnabled) {
+                settings.eventClick = (info) => {
+                    if (info.event.extendedProps.url) {
+                        const target = info.event.extendedProps.url_target ?? '_blank';
+                        window.open(info.event.extendedProps.url, target);
+                    } else if (hasEventClickContextMenu) {
+                        self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                            detail: {
+                                mountData: {
+                                    event: info.event,
+                                    view: info.view,
+                                },
+                                jsEvent: info.jsEvent,
+                                context: 'eventClick',
+                            },
+                        }));
+                    } else {
+                        this.$wire.onEventClick({
+                            event: info.event,
+                            view: info.view,
+                        });
+                    }
+                };
+            }
+
+
+            if (noEventsClickEnabled) {
+                settings.noEventsClick = (info) => {
+                    this.$wire.onNoEventsClick({
+                        view: info.view,
+                    });
+                }
+            }
+
+            settings.eventResize = async (info) => {
+                const durationEditable = info.event.durationEditable;
+                let enabled = eventResizeEnabled;
+
+                if (durationEditable !== undefined) {
+                    enabled = durationEditable;
+                }
+
+                if (enabled) {
+                    await this.$wire.onEventResize({
+                        event: info.event,
+                        oldEvent: info.oldEvent,
+                        endDelta: info.endDelta,
+                        view: info.view,
+                    }).then((result) => {
+                        if (result === false) {
+                            info.revert();
+                        }
+                    });
+                }
+            };
+
+            settings.eventDrop = async (info) => {
+                const startEditable = info.event.startEditable;
+                let enabled = eventDragEnabled;
+
+                if (startEditable !== undefined) {
+                    enabled = startEditable;
+                }
+
+                if (enabled) {
+                    await this.$wire.onEventDrop({
+                        event: info.event,
+                        oldEvent: info.oldEvent,
+                        oldResource: info.oldResource,
+                        newResource: info.newResource,
+                        delta: info.delta,
+                        view: info.view,
+                    }).then((result) => {
+                        if (result === false) {
+                            info.revert();
+                        }
+                    });
+                }
+            };
 
             this.ec = new EventCalendar(this.$el.querySelector('div'), {
                 ...settings,

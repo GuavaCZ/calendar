@@ -2,8 +2,12 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Illuminate\Auth\Access\AuthorizationException;
+
 trait HandlesEventClick
 {
+    protected bool $eventClickEnabled = false;
+
     protected ?string $defaultEventClickAction = 'view';
 
     public function defaultEventClickAction(string $action): static
@@ -18,22 +22,44 @@ trait HandlesEventClick
         return $this->evaluate($this->defaultEventClickAction);
     }
 
-    public function onEventClick($info): void
+    public function onEventClick(array $info = [], ?string $action = null): void
     {
-        $model = data_get($info, 'event.extendedProps.model');
-        $key = data_get($info, 'event.extendedProps.key');
+        try {
+            $model = data_get($info, 'event.extendedProps.model');
+            $key = data_get($info, 'event.extendedProps.key');
 
-        if ($model && $key) {
-            $this->resolveRecord(
-                data_get($info, 'event.extendedProps.model'),
-                data_get($info, 'event.extendedProps.key'),
-            );
+            if ($model && $key) {
+                $this->resolveRecord(
+                    data_get($info, 'event.extendedProps.model'),
+                    data_get($info, 'event.extendedProps.key'),
+                );
 
-            if ($action = data_get($info, 'event.extendedProps.action', $this->getDefaultEventClickAction())) {
-                $this->mountAction($action, [
-                    'event' => data_get($info, 'event', []),
-                ]);
+                $this->authorize(match ($action) {
+                    'edit' => 'update',
+                    default => $action,
+                }, [$this->record]);
+
+                $action ??= data_get($info, 'event.extendedProps.action', $this->getDefaultEventClickAction());
+                if ($action) {
+                    $this->mountAction($action, [
+                        'event' => data_get($info, 'event', []),
+                    ]);
+                }
             }
+        } catch (AuthorizationException $e) {
+            return;
         }
+    }
+
+    public function eventClickEnabled(bool $enabled = true): static
+    {
+        $this->eventClickEnabled = $enabled;
+
+        return $this;
+    }
+
+    public function isEventClickEnabled(): bool
+    {
+        return $this->eventClickEnabled;
     }
 }

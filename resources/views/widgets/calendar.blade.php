@@ -1,5 +1,11 @@
 @php
-    $onEventClick = method_exists($this, 'onEventClick');
+    $eventClickEnabled = $this->isEventClickEnabled();
+    $eventDragEnabled = $this->isEventDragEnabled();
+    $eventResizeEnabled = $this->isEventResizeEnabled();
+    $noEventsClickEnabled = $this->isNoEventsClickEnabled();
+    $onEventResizeStart = method_exists($this, 'onEventResizeStart');
+    $onEventResizeStop = method_exists($this, 'onEventResizeStop');
+    $hasEventClickContextMenu = !empty($this->getCachedEventClickContextMenuActions());
 @endphp
 
 <x-filament-widgets::widget>
@@ -13,6 +19,10 @@
             --ec-button-bg-color: rgba(255, 255, 255, 1.0);
             --ec-button-active-bg-color: rgba(var(--gray-50), 1.0);
             --ec-button-active-border-color: var(--ec-button-border-color);
+
+            & .ec-event.ec-preview {
+                --ec-event-bg-color: rgb(var(--primary-400));
+            }
         }
 
         .dark .ec {
@@ -22,6 +32,10 @@
             --ec-button-bg-color: rgba(255, 255, 255, 0.05);
             --ec-button-active-bg-color: rgba(255, 255, 255, 0.1);
             --ec-button-active-border-color: var(--ec-button-border-color);
+
+            & .ec-event.ec-preview {
+                --ec-event-bg-color: rgb(var(--primary-300));
+            }
         }
     </style>
     {{--    @endpush--}}
@@ -43,11 +57,17 @@
                 locale: @js($this->getLocale()),
                 firstDay: @js($this->getFirstDay()),
                 eventContent: @js($this->getEventContentJs()),
-                onEventClick: @js($onEventClick),
+                eventClickEnabled: @js($eventClickEnabled),
+                eventDragEnabled: @js($eventDragEnabled),
+                eventResizeEnabled: @js($eventResizeEnabled),
+                noEventsClickEnabled: @js($noEventsClickEnabled),
+                onEventResizeStart: @js($onEventResizeStart),
+                onEventResizeStop: @js($onEventResizeStop),
                 dayMaxEvents: @js($this->dayMaxEvents()),
                 moreLinkContent: @js($this->getMoreLinkContentJs()),
                 resources: @js($this->getResourcesJs()),
                 hasContextMenu: @js($this->hasContextMenu()),
+                hasEventClickContextMenu: @js($hasEventClickContextMenu),
                 options: @js($this->getOptions()),
             })"
         >
