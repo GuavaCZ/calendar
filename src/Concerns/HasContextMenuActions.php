@@ -3,6 +3,8 @@
 namespace Guava\Calendar\Concerns;
 
 use Filament\Actions\Action;
+use Guava\Calendar\Actions\ContextMenuAction;
+use Guava\Calendar\Enums\Context;
 use InvalidArgumentException;
 
 trait HasContextMenuActions
@@ -45,5 +47,25 @@ trait HasContextMenuActions
     public function getContextMenuActions(): array
     {
         return [];
+    }
+
+    public function getCachedClickContextMenuActions(): array
+    {
+        return collect($this->getCachedContextMenuActions())
+            ->filter(fn ($action) => ! method_exists($action, 'getContext')
+                || $action->getContext() === null
+                || $action->getContext() === Context::Click)
+            ->all()
+        ;
+    }
+
+    public function getCachedSelectContextMenuActions(): array
+    {
+        return collect($this->getCachedContextMenuActions())
+            ->filter(fn ($action) => ! method_exists($action, 'getContext')
+                || $action->getContext() === null
+                || $action->getContext() === Context::Select)
+            ->all()
+        ;
     }
 }

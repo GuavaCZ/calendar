@@ -1,6 +1,4 @@
-export default function calendarContextMenu({
-                                                calendar = null,
-                                            }) {
+export default function calendarContextMenu() {
     return {
 
         open: false,
@@ -14,6 +12,7 @@ export default function calendarContextMenu({
             y: 0,
         },
         mountData: {},
+        context: null,
 
         menu: {
             ['x-show']() {
@@ -43,6 +42,8 @@ export default function calendarContextMenu({
         },
 
         openMenu: function (event) {
+            console.log(event.detail.context);
+            this.context = event.detail.context;
             this.mountData = event.detail;
 
             this.$nextTick(() => {

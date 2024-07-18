@@ -2,10 +2,13 @@
 
 namespace Guava\Calendar\Actions;
 
+use Guava\Calendar\Concerns\HasContext;
 use Guava\Calendar\Widgets\CalendarWidget;
 
 class CreateAction extends \Filament\Actions\CreateAction
 {
+    use HasContext;
+
     protected function setUp(): void
     {
         parent::setUp();

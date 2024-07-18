@@ -47,14 +47,20 @@ export default function calendarWidget({
             };
 
             if (hasContextMenu) {
-                settings.dateClick =(info) => {
+                settings.dateClick = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
-                        detail: info,
+                        detail: {
+                            ...info,
+                            context: 'click',
+                        },
                     }));
                 };
                 settings.select = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
-                        detail: info,
+                        detail: {
+                            ...info,
+                            context: 'select',
+                        },
                     }));
                 };
             }

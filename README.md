@@ -322,7 +322,21 @@ The mount using function is used to fill the form with the arguments from the ca
 
 https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
 
+### Customizing context menu actions
+Sometimes you may want to have different actions for the `click` and `select` contexts.
 
+To achieve this, you can add the `context` method to the action:
+```php
+public function getContextMenuActions(): array
+{
+    return [
+        \Guava\Calendar\Actions\CreateAction::make('createFoo')->context('click'),
+        \Guava\Calendar\Actions\CreateAction::make('createBar')->context('select'),
+    ];
+}
+```
+
+The `context` method is only available on the `CreateAction` class from our package or in the `ContextMenuAction`, which is nothing else than a regular Filament `Action` with the `HasContext` trait.
 
 ## Troubleshooting
 ### Context menu actions don't work
