@@ -396,6 +396,19 @@ Optionally you can add a context menu to your calendar, which allows you to crea
 
 There are multiple places where you can use context menus at.
 
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview.mp4" type="video/mp4">
+</video>
+
+https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
+
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview_2.mp4" type="video/mp4">
+</video>
+
+
+https://github.com/user-attachments/assets/4996cc6a-7cee-4c7d-976a-60d3a4368f76
+
 ### Date click context menu
 This context menu is triggered when a user clicks on a date cell in the calendar.
 
@@ -418,15 +431,6 @@ The mount using function is used to fill the form with the arguments from the ca
 - `startStr` and `endStr` for range selection
 - `dateStr` for date clicks
 
-<video width="320" height="240" controls>
-  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview.mp4" type="video/mp4">
-</video>
-
-https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
-
-<video width="320" height="240" controls>
-  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview_2.mp4" type="video/mp4">
-</video>
 
 ### Date select context menu
 This context menu is triggered when a user selects on a date range in the calendar.
@@ -482,6 +486,12 @@ public function getNoEventsClickContextMenuActions(): array
 <video width="320" height="240" controls>
   <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/no_events_context_menu.mp4" type="video/mp4">
 </video>
+
+
+
+https://github.com/user-attachments/assets/7c2537d5-8acf-459f-a9a8-be02d4018448
+
+
 
 ## Troubleshooting
 ### Context menu actions don't work
