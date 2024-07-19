@@ -12,8 +12,10 @@ export default function calendarWidget({
                                            dayMaxEvents = false,
                                            moreLinkContent = null,
                                            resources = [],
-                                           hasContextMenu = false,
+                                           hasDateClickContextMenu = false,
+                                           hasDateSelectContextMenu = false,
                                            hasEventClickContextMenu = false,
+                                           hasNoEventsClickContextMenu = false,
                                            options = {},
                                        }) {
     return {
@@ -36,12 +38,12 @@ export default function calendarWidget({
                 locale: locale,
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
-                selectable: hasContextMenu,
+                selectable: hasDateSelectContextMenu,
                 eventStartEditable: eventDragEnabled,
                 eventDurationEditable: eventResizeEnabled,
             };
 
-            if (hasContextMenu) {
+            if (hasDateClickContextMenu) {
                 settings.dateClick = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
@@ -58,6 +60,9 @@ export default function calendarWidget({
                         },
                     }));
                 };
+            }
+
+            if(hasDateSelectContextMenu) {
                 settings.select = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
@@ -121,9 +126,21 @@ export default function calendarWidget({
 
             if (noEventsClickEnabled) {
                 settings.noEventsClick = (info) => {
-                    this.$wire.onNoEventsClick({
-                        view: info.view,
-                    });
+                    if (hasNoEventsClickContextMenu) {
+                        self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                            detail: {
+                                mountData: {
+                                    view: info.view,
+                                },
+                                jsEvent: info.jsEvent,
+                                context: 'noEventsClick',
+                            },
+                        }));
+                    } else {
+                        this.$wire.onNoEventsClick({
+                            view: info.view,
+                        });
+                    }
                 }
             }
 

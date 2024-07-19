@@ -5,7 +5,10 @@
     $noEventsClickEnabled = $this->isNoEventsClickEnabled();
     $onEventResizeStart = method_exists($this, 'onEventResizeStart');
     $onEventResizeStop = method_exists($this, 'onEventResizeStop');
+    $hasDateClickContextMenu = !empty($this->getCachedDateClickContextMenuActions());
+    $hasDateSelectContextMenu = !empty($this->getCachedDateSelectContextMenuActions());
     $hasEventClickContextMenu = !empty($this->getCachedEventClickContextMenuActions());
+    $hasNoEventsClickContextMenu = !empty($this->getCachedNoEventsClickContextMenuActions());
 @endphp
 
 <x-filament-widgets::widget>
@@ -66,13 +69,15 @@
                 dayMaxEvents: @js($this->dayMaxEvents()),
                 moreLinkContent: @js($this->getMoreLinkContentJs()),
                 resources: @js($this->getResourcesJs()),
-                hasContextMenu: @js($this->hasContextMenu()),
+                hasDateClickContextMenu: @js($hasDateClickContextMenu),
+                hasDateSelectContextMenu: @js($hasDateSelectContextMenu),
                 hasEventClickContextMenu: @js($hasEventClickContextMenu),
+                hasNoEventsClickContextMenu: @js($hasNoEventsClickContextMenu),
                 options: @js($this->getOptions()),
             })"
         >
             <div id="calendar"></div>
-            <x-guava-calendar::context-menu />
+            <x-guava-calendar::context-menu/>
         </div>
     </x-filament::section>
     <x-filament-actions::modals/>

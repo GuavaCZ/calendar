@@ -323,6 +323,9 @@ Except for resolving the record the event is related to, there is no default act
 ```php
 public function onEventResize(array $info = []): bool
 {
+    // Don't forget to call the parent method to resolve the record
+    parent::onEventResize($info);
+     
     // Validate the data
     // Update the record ($this->getRecord())
     // $info contains the event data:
@@ -349,6 +352,9 @@ Except for resolving the record the event is related to, there is no default act
 ```php
 public function onEventDrop(array $info = []): bool
 {
+    // Don't forget to call the parent method to resolve the record
+    parent::onEventDrop($info); 
+    
     // Validate the data
     // Update the record ($this->getRecord())
     // $info contains the event data:
@@ -418,6 +424,10 @@ The mount using function is used to fill the form with the arguments from the ca
 
 https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
 
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview_2.mp4" type="video/mp4">
+</video>
+
 ### Date select context menu
 This context menu is triggered when a user selects on a date range in the calendar.
 
@@ -456,7 +466,7 @@ public function getEventClickContextMenuActions(): array
 ### No events click context menu
 This context menu is only rendered on `list` views and is triggered when a user clicks on the `no events` cell when there are no events.
 
-To enable the context menu, all you need to do is implement the `getNoEventsClickContextMenuActions` method:
+To enable the context menu, all you need to do is implement the `getNoEventsClickContextMenuActions` method. Also, make sure that the `noEventsClickEnabled` property is set to `true`.
 
 ```php
 public function getNoEventsClickContextMenuActions(): array
@@ -468,6 +478,10 @@ public function getNoEventsClickContextMenuActions(): array
 }
 
 ```
+
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/no_events_context_menu.mp4" type="video/mp4">
+</video>
 
 ## Troubleshooting
 ### Context menu actions don't work
