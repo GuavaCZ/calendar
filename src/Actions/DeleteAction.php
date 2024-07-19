@@ -18,7 +18,7 @@ class DeleteAction extends \Filament\Actions\DeleteAction
             $livewire->refreshRecords();
         });
         $this->hidden(static function (?Model $record): bool {
-            if (!$record) {
+            if (! $record) {
                 return false;
             }
 

@@ -99,7 +99,7 @@ trait HasContextMenuActions
             ->grouped()
             ->when(
                 $context === Context::EventClick,
-                fn ($action) => $action->alpineClickHandler(fn($action) => "\$wire.onEventClick(mountData, '{$action->getName()}')"),
+                fn ($action) => $action->alpineClickHandler(fn ($action) => "\$wire.onEventClick(mountData, '{$action->getName()}')"),
                 fn ($action) => $action->alpineClickHandler(fn ($action) => "\$wire.mountAction('{$action->getName()}', mountData)")
             )
         ;
