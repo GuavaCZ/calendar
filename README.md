@@ -13,8 +13,8 @@ This package adds support for [vkurko/calendar](https://github.com/vkurko/calend
 **Although the package is ready for production-use, it is still in active development. Please be cautious and double-check the documentation before updating the package, as new releases might introduce breaking changes due to refactoring and improvements to the DX. We do our best to keep these changes to a minimum.**
 
 ## Showcase
-![Showcase 01](docs/images/showcase_01.png)
-![Showcase 02](docs/images/showcase_02.png)
+![Showcase 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_01.png)
+![Showcase 02](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_02.png)
 
 <video width="320" height="240" controls>
   <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/demo_preview.mp4" type="video/mp4">
@@ -253,7 +253,7 @@ Resource views (their names start with `resource`) allow you to group events int
 
 To use resource views, you need to create resources and assign your events to these resources.
 
-![Resources Screenshot 01](docs/images/resources_screenshot_01.png)
+![Resources Screenshot 01](https://github.com/GuavaCZ/calendar/blob/main/docs/images/resources_screenshot_01.png)
 
 
 ### Creating resources
@@ -486,8 +486,6 @@ public function getNoEventsClickContextMenuActions(): array
 <video width="320" height="240" controls>
   <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/no_events_context_menu.mp4" type="video/mp4">
 </video>
-
-
 
 https://github.com/user-attachments/assets/7c2537d5-8acf-459f-a9a8-be02d4018448
 
