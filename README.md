@@ -1,4 +1,4 @@
-![calendar Banner](docs/images/banner.jpg)
+![calendar Banner](https://github.com/GuavaCZ/calendar/raw/main/docs/images/banner.jpg)
 
 
 # Adds support for vkurko/calendar to Filament PHP.
@@ -253,7 +253,7 @@ Resource views (their names start with `resource`) allow you to group events int
 
 To use resource views, you need to create resources and assign your events to these resources.
 
-![Resources Screenshot 01](https://github.com/GuavaCZ/calendar/blob/main/docs/images/resources_screenshot_01.png)
+![Resources Screenshot 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/resources_screenshot_01.png)
 
 
 ### Creating resources
