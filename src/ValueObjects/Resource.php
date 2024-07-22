@@ -4,6 +4,7 @@ namespace Guava\Calendar\ValueObjects;
 
 use Guava\Calendar\Contracts\Resourceable;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 
 class Resource implements Arrayable, Resourceable
 {
@@ -15,9 +16,13 @@ class Resource implements Arrayable, Resourceable
 
     protected ?string $eventTextColor = null;
 
-    private function __construct(int | string $id)
+    private function __construct(Model | int | string $id)
     {
-        $this->id = $id;
+        if ($id instanceof Model) {
+            $this->id = $id->getKey();
+        } else {
+            $this->id = $id;
+        }
     }
 
     public function getId(): int | string
@@ -63,7 +68,7 @@ class Resource implements Arrayable, Resourceable
         return $this->eventTextColor;
     }
 
-    public static function make(int | string $id): static
+    public static function make(Model | int | string $id): static
     {
         return new static($id);
     }
