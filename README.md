@@ -36,6 +36,26 @@ You can install the package via composer:
 composer require guava/calendar
 ```
 
+Make sure to publish the package assets using:
+
+```bash
+php artisan filament:assets
+```
+
+Make sure you have a custom filament theme (read [here](https://filamentphp.com/docs/3.x/panels/themes#creating-a-custom-theme) how to create one) and add the following to the `content` property of your theme's tailwind.config.js:
+
+```js
+{
+    content: [
+        //...
+
+        './vendor/guava/calendar/resources/**/*.blade.php',
+    ]
+}
+```
+This ensures that the CSS is properly built.
+
+
 ## Usage
 
 # Creating the calendar Widget
