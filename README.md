@@ -509,7 +509,17 @@ public function getNoEventsClickContextMenuActions(): array
 
 https://github.com/user-attachments/assets/7c2537d5-8acf-459f-a9a8-be02d4018448
 
+## Customization
+### Locale
+By default, the calendar will use the app's locale.
 
+The underlying calendar package doesn't support locales as a combination of language and region/country code, so locales such as `fr_CA` or `en_US` become invalid.
+
+We attempt to resolve this by only using the first language part of the locale. If you still run into any issues with the localization, you can override the calendar's locale manually using the `locale` property:
+
+```php
+protected ?string $locale = 'en';
+```
 
 ## Troubleshooting
 ### Context menu actions don't work

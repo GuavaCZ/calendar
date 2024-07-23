@@ -15,6 +15,14 @@ trait HasLocale
 
     public function getLocale(): string
     {
-        return $this->evaluate($this->locale) ?? app()->getLocale();
+        return $this->evaluate($this->locale) ?? $this->getDefaultLocale();
+    }
+
+    private function getDefaultLocale(): string
+    {
+        return str(app()->getLocale())
+            ->before('_')
+            ->toString()
+        ;
     }
 }
