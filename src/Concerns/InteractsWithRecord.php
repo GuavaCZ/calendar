@@ -32,7 +32,7 @@ trait InteractsWithRecord
             return $this->record = $record;
         }
 
-        throw (new ModelNotFoundException())->setModel($model, [$key]);
+        throw (new ModelNotFoundException)->setModel($model, [$key]);
     }
 
     protected function resolveRecordRouteBinding(string $model, mixed $key): ?Model
