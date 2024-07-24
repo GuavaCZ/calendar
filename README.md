@@ -364,7 +364,7 @@ A drop event is triggered when an event is dragged and dropped to a different sl
 To listen to drag and drop events, simply override the `eventDragEnabled` property:
 
 ```php
-protected bool $eventResizeEnabled = true;
+protected bool $eventDragEnabled = true;
 ```
 
 Except for resolving the record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventDrop` method:
