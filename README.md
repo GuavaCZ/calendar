@@ -167,6 +167,18 @@ Event::make()
 ->textColor('#ffffff');
 ```
 
+#### Customizing the display
+By default, events are rendered as `blocks`. This is when the display is set to `auto`, which it is by default. You can also change the event to be rendered as a background event, which then fills the whole date cell. To do so, you can set `display` to `background` on the event:
+
+This doesn't work always though, it only works on all day events and in specific views. If the `background` event is unsupported, the event will not be rendered at all.
+
+```php
+Event::make()
+->display('background') // or 'auto'
+->displayAuto() // short-hand for ->display('auto')
+->displayBackground(); // short-hand for ->display('background')
+```
+
 #### Setting the action on click
 This sets the action that should be mounted when the event is clicked. It can be any name of a filament action you defined in your widget, such as `edit` or `view`.
 
