@@ -266,7 +266,7 @@ class Event implements Arrayable, Eventable
             'textColor' => $this->getTextColor(),
             'resourceIds' => $this->getResourceIds(),
             'extendedProps' => $this->getExtendedProps(),
-//            'display' => 'background',
+            //            'display' => 'background',
         ];
 
         if (($editable = $this->getEditable()) !== null) {
