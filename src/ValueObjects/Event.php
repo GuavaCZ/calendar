@@ -21,6 +21,8 @@ class Event implements Arrayable, Eventable
 
     protected ?string $textColor = null;
 
+    protected ?string $display = null;
+
     protected ?bool $editable = null;
 
     protected ?bool $startEditable = null;
@@ -115,6 +117,28 @@ class Event implements Arrayable, Eventable
     public function getTextColor(): ?string
     {
         return $this->textColor;
+    }
+
+    public function display(string $display): static
+    {
+        $this->display = $display;
+
+        return $this;
+    }
+
+    public function getDisplay(): ?string
+    {
+        return $this->display;
+    }
+
+    public function displayAuto(): static
+    {
+        return $this->display('auto');
+    }
+
+    public function displayBackground(): static
+    {
+        return $this->display('background');
     }
 
     public function editable(bool $editable = true): static
@@ -242,6 +266,7 @@ class Event implements Arrayable, Eventable
             'textColor' => $this->getTextColor(),
             'resourceIds' => $this->getResourceIds(),
             'extendedProps' => $this->getExtendedProps(),
+//            'display' => 'background',
         ];
 
         if (($editable = $this->getEditable()) !== null) {
@@ -254,6 +279,10 @@ class Event implements Arrayable, Eventable
 
         if (($durationEditable = $this->getDurationEditable()) !== null) {
             $array['durationEditable'] = $durationEditable;
+        }
+
+        if (($display = $this->getDisplay()) !== null) {
+            $array['display'] = $display;
         }
 
         return $array;
