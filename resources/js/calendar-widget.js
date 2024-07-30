@@ -62,7 +62,7 @@ export default function calendarWidget({
                 };
             }
 
-            if(hasDateSelectContextMenu) {
+            if (hasDateSelectContextMenu) {
                 settings.select = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
@@ -84,8 +84,14 @@ export default function calendarWidget({
 
             if (eventContent !== null) {
                 settings.eventContent = (info) => {
+                    const content = self.getEventContent(info);
+
+                    if (content === undefined) {
+                        return undefined;
+                    }
+
                     return {
-                        html: self.getEventContent(info),
+                        html: content,
                     };
                 }
             }
@@ -210,8 +216,15 @@ export default function calendarWidget({
             if (typeof eventContent === 'object') {
                 const model = info.event.extendedProps.model;
                 const content = eventContent[model];
+
+                if (content === undefined) {
+                    return undefined;
+                }
+
                 return this.wrapContent(content, info);
             }
+
+            return undefined;
         },
 
         getMoreLinkContent: function (info) {
