@@ -224,6 +224,10 @@ export default function calendarWidget({
                 }
             };
 
+            settings.eventAllUpdated = (info) => {
+                this.$wire.currentView = info.view;
+            };
+
             this.ec = new EventCalendar(this.$el.querySelector('div'), {
                 ...settings,
                 ...options
