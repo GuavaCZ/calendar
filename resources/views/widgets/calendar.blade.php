@@ -3,6 +3,8 @@
     $eventDragEnabled = $this->isEventDragEnabled();
     $eventResizeEnabled = $this->isEventResizeEnabled();
     $noEventsClickEnabled = $this->isNoEventsClickEnabled();
+    $dateClickEnabled = $this->isDateClickEnabled();
+    $dateSelectEnabled = $this->isDateSelectEnabled();
     $onEventResizeStart = method_exists($this, 'onEventResizeStart');
     $onEventResizeStop = method_exists($this, 'onEventResizeStop');
     $hasDateClickContextMenu = !empty($this->getCachedDateClickContextMenuActions());
@@ -73,6 +75,8 @@
                 hasDateSelectContextMenu: @js($hasDateSelectContextMenu),
                 hasEventClickContextMenu: @js($hasEventClickContextMenu),
                 hasNoEventsClickContextMenu: @js($hasNoEventsClickContextMenu),
+                dateClickEnabled: @js($dateClickEnabled),
+                dateSelectEnabled: @js($dateSelectEnabled),
                 options: @js($this->getOptions()),
             })"
         >

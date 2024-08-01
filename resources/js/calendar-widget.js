@@ -1,23 +1,25 @@
 export default function calendarWidget({
-                                           view = 'dayGridMonth',
-                                           locale = 'en',
-                                           firstDay = 1,
-                                           events = [],
-                                           eventContent = null,
-                                           selectable = false,
-                                           eventClickEnabled = false,
-                                           eventDragEnabled = false,
-                                           eventResizeEnabled = false,
-                                           noEventsClickEnabled = false,
-                                           dayMaxEvents = false,
-                                           moreLinkContent = null,
-                                           resources = [],
-                                           hasDateClickContextMenu = false,
-                                           hasDateSelectContextMenu = false,
-                                           hasEventClickContextMenu = false,
-                                           hasNoEventsClickContextMenu = false,
-                                           options = {},
-                                       }) {
+    view = 'dayGridMonth',
+    locale = 'en',
+    firstDay = 1,
+    events = [],
+    eventContent = null,
+    selectable = false,
+    eventClickEnabled = false,
+    eventDragEnabled = false,
+    eventResizeEnabled = false,
+    noEventsClickEnabled = false,
+    dateSelectEnabled = false,
+    dateClickEnabled = false,
+    dayMaxEvents = false,
+    moreLinkContent = null,
+    resources = [],
+    hasDateClickContextMenu = false,
+    hasDateSelectContextMenu = false,
+    hasEventClickContextMenu = false,
+    hasNoEventsClickContextMenu = false,
+    options = {},
+}) {
     return {
 
         calendarEl: null,
@@ -43,7 +45,7 @@ export default function calendarWidget({
                 eventDurationEditable: eventResizeEnabled,
             };
 
-            if (hasDateClickContextMenu) {
+            if (hasDateClickContextMenu && !dateClickEnabled) {
                 settings.dateClick = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
@@ -62,7 +64,7 @@ export default function calendarWidget({
                 };
             }
 
-            if (hasDateSelectContextMenu) {
+            if (hasDateSelectContextMenu && !dateSelectEnabled) {
                 settings.select = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
@@ -79,6 +81,34 @@ export default function calendarWidget({
                             context: 'dateSelect',
                         },
                     }));
+                };
+            }
+
+            if (dateClickEnabled && !hasEventClickContextMenu) {
+                settings.dateClick = (info) => {
+                    console.log('dateClickEnabled')
+                    console.log(info);
+                    this.$wire.onDateClick({
+                        date: info.date,
+                        dateStr: info.dateStr,
+                        allDay: info.allDay,
+                        view: info.view,
+                        resource: info.resource,
+                    });
+                };
+            }
+
+            if (dateSelectEnabled && !hasDateSelectContextMenu) {
+                settings.select = (info) => {
+                    this.$wire.onDateSelectClick({
+                        start: info.start,
+                        startStr: info.startStr,
+                        end: info.end,
+                        endStr: info.endStr,
+                        allDay: info.allDay,
+                        view: info.view,
+                        resource: info.resource,
+                    });
                 };
             }
 
