@@ -40,7 +40,7 @@ export default function calendarWidget({
                 locale: locale,
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
-                selectable: hasDateSelectContextMenu,
+                selectable: hasDateSelectContextMenu || dateSelectEnabled,
                 eventStartEditable: eventDragEnabled,
                 eventDurationEditable: eventResizeEnabled,
             };
