@@ -86,8 +86,6 @@ export default function calendarWidget({
 
             if (dateClickEnabled && !hasEventClickContextMenu) {
                 settings.dateClick = (info) => {
-                    console.log('dateClickEnabled')
-                    console.log(info);
                     this.$wire.onDateClick({
                         date: info.date,
                         dateStr: info.dateStr,
@@ -100,7 +98,7 @@ export default function calendarWidget({
 
             if (dateSelectEnabled && !hasDateSelectContextMenu) {
                 settings.select = (info) => {
-                    this.$wire.onDateSelectClick({
+                    this.$wire.onDateSelect({
                         start: info.start,
                         startStr: info.startStr,
                         end: info.end,
