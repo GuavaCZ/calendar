@@ -221,7 +221,7 @@ export default function calendarWidget({
             };
 
             settings.viewDidMount = (info) => {
-                this.$wire.currentView = info.view;
+                this.$wire.currentView = info;
             };
 
             this.ec = new EventCalendar(this.$el.querySelector('div'), {
