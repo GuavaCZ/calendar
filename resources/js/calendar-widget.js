@@ -45,7 +45,7 @@ export default function calendarWidget({
                 eventDurationEditable: eventResizeEnabled,
             };
 
-            if (hasDateClickContextMenu && !dateClickEnabled) {
+            if (hasDateClickContextMenu) {
                 settings.dateClick = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
@@ -62,9 +62,19 @@ export default function calendarWidget({
                         },
                     }));
                 };
+            } else if (dateClickEnabled) {
+                settings.dateClick = (info) => {
+                    this.$wire.onDateClick({
+                        date: info.date,
+                        dateStr: info.dateStr,
+                        allDay: info.allDay,
+                        view: info.view,
+                        resource: info.resource,
+                    });
+                };
             }
 
-            if (hasDateSelectContextMenu && !dateSelectEnabled) {
+            if (hasDateSelectContextMenu) {
                 settings.select = (info) => {
                     self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                         detail: {
@@ -82,21 +92,7 @@ export default function calendarWidget({
                         },
                     }));
                 };
-            }
-
-            if (dateClickEnabled && !hasEventClickContextMenu) {
-                settings.dateClick = (info) => {
-                    this.$wire.onDateClick({
-                        date: info.date,
-                        dateStr: info.dateStr,
-                        allDay: info.allDay,
-                        view: info.view,
-                        resource: info.resource,
-                    });
-                };
-            }
-
-            if (dateSelectEnabled && !hasDateSelectContextMenu) {
+            } else if (dateSelectEnabled) {
                 settings.select = (info) => {
                     this.$wire.onDateSelect({
                         start: info.start,
@@ -224,7 +220,7 @@ export default function calendarWidget({
                 }
             };
 
-            settings.eventAllUpdated = (info) => {
+            settings.viewDidMount = (info) => {
                 this.$wire.currentView = info.view;
             };
 
