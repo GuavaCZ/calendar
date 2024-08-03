@@ -341,7 +341,7 @@ If you want to handle the event click logic completely by yourself, you may over
 }
 ```
 
-### Resize event
+### Event Resize event
 A resize event is triggered when an event is resized at the ending edge of the event. This allows you to quickly modify the duration of an event.
 
 To listen to resize events, simply override the `eventResizeEnabled` property:
@@ -370,7 +370,7 @@ public function onEventResize(array $info = []): bool
 }
 ```
 
-### Drag & Drop event
+### Event Drag & Drop event
 A drop event is triggered when an event is dragged and dropped to a different slot in the calendar. This allows you to quicky move the start (and end) date of an event.
 
 To listen to drag and drop events, simply override the `eventDragEnabled` property:
@@ -399,6 +399,56 @@ public function onEventDrop(array $info = []): bool
     
     // Return true if the event was moved successfully
     // Return false if the event was not moved and should be reverted on the client-side
+}
+```
+
+### Date Click event
+A date click event is triggered when an date cell is clicked in the calendar.
+
+To listen to date click events, simply override the `dateClickEnabled` property:
+
+```php
+protected bool $dateClickEnabled = true;
+```
+
+By default, nothing happens on date click. You can either use the `date click context menu feature` (more info below in the `Context Menu` section __[here](#date-click-context-menu)__) or implement your own logic, by overriding the `onDateClick` method:
+
+```php
+public function onDateClick(array $info = []): bool
+{
+    // Validate the data
+    // $info contains the event data:
+    // $info['date'] - the date clicked on
+    // $info['dateStr'] - the date clicked on as a UTC string
+    // $info['allDay'] - whether the date is an all-day slot
+    // $info['view'] - the view object
+    // $info['resource'] - the resource object
+}
+```
+
+### Date Select event
+A date select event is triggered when a date range is selected in the calendar.
+
+To listen to date select events, simply override the `dateSelectEnabled` property:
+
+```php
+protected bool $dateSelectEnabled = true;
+```
+
+By default, nothing happens on date select. You can either use the `date select context menu feature` (more info below in the `Context Menu` section __[here](#date-select-context-menu)__) or implement your own logic, by overriding the `onDateSelect` method:
+
+```php
+public function onDateSelect(array $info = []): bool
+{
+    // Validate the data
+    // $info contains the event data:
+    // $info['start'] - the start date of the range
+    // $info['startStr'] - the start date as an UTC string
+    // $info['end'] - the end date of the range
+    // $info['endStr'] - the end date as an UTC string
+    // $info['allDay'] - whether the date is an all-day slot
+    // $info['view'] - the view object
+    // $info['resource'] - the resource object
 }
 ```
 
@@ -444,10 +494,12 @@ https://github.com/user-attachments/assets/4996cc6a-7cee-4c7d-976a-60d3a4368f76
 ### Date click context menu
 This context menu is triggered when a user clicks on a date cell in the calendar.
 
-To enable the context menu, all you need to do is implement the `getDateClickContextMenuActions` method:
+To enable the context menu, all you need to do is enable date clicks and implement the `getDateClickContextMenuActions` method:
 
 For example:
 ```php
+protected bool $dateClickEnabled = true;
+
 public function getDateClickContextMenuActions(): array
 {
     CreateAction::make('foo')
@@ -467,10 +519,12 @@ The mount using function is used to fill the form with the arguments from the ca
 ### Date select context menu
 This context menu is triggered when a user selects on a date range in the calendar.
 
-To enable the context menu, all you need to do is implement the `getDateSelectContextMenuActions` method:
+To enable the context menu, all you need to do is enable date selects and implement the `getDateSelectContextMenuActions` method:
 
 For example:
 ```php
+protected bool $dateSelectEnabled = true;
+
 public function getDateSelectContextMenuActions(): array
 {
     CreateAction::make('foo')
@@ -485,10 +539,12 @@ public function getDateSelectContextMenuActions(): array
 ### Event click context menu
 This context menu is triggered when a user clicks on an event in the calendar.
 
-To enable the context menu, all you need to do is implement the `getEventClickContextMenuActions` method:
+To enable the context menu, all you need to do is enabled event Clicks and implement the `getEventClickContextMenuActions` method:
 
 For example:
 ```php
+protected bool $eventClickEnabled = true;
+
 public function getEventClickContextMenuActions(): array
 {
     return [
