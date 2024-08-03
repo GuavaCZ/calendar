@@ -6,10 +6,7 @@ trait HandlesDateClick
 {
     protected bool $dateClickEnabled = false;
 
-    public function onDateClick(array $info = []): void
-    {
-
-    }
+    public function onDateClick(array $info = []): void {}
 
     public function dateClickEnabled(bool $enabled = true): static
     {

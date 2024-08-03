@@ -14,6 +14,7 @@ use Guava\Calendar\Concerns\HandlesEventClick;
 use Guava\Calendar\Concerns\HandlesEventDragAndDrop;
 use Guava\Calendar\Concerns\HandlesEventResize;
 use Guava\Calendar\Concerns\HandlesNoEventsClick;
+use Guava\Calendar\Concerns\HandlesViewMount;
 use Guava\Calendar\Concerns\HasCalendarView;
 use Guava\Calendar\Concerns\HasContextMenuActions;
 use Guava\Calendar\Concerns\HasDayMaxEvents;
@@ -34,10 +35,13 @@ use Guava\Calendar\Concerns\InteractsWithRecord;
 class CalendarWidget extends Widget implements HasActions, HasForms
 {
     use EvaluatesClosures;
+    use HandlesDateClick;
+    use HandlesDateSelect;
     use HandlesEventClick;
     use HandlesEventDragAndDrop;
     use HandlesEventResize;
     use HandlesNoEventsClick;
+    use HandlesViewMount;
     use HasCalendarView;
     use HasContextMenuActions;
     use HasDayMaxEvents;
@@ -53,8 +57,6 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HasOptions;
     use HasResources;
     use HasSchema;
-    use HandlesDateClick;
-    use HandlesDateSelect;
     use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithRecord;
@@ -63,15 +65,8 @@ class CalendarWidget extends Widget implements HasActions, HasForms
 
     protected int | string | array $columnSpan = 'full';
 
-    public array $currentView;
-
     public function refreshRecords(): void
     {
         $this->dispatch('calendar--refresh');
-    }
-
-    public function getView(): array
-    {
-        return $this->currentView;
     }
 }

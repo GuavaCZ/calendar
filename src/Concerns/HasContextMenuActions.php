@@ -64,23 +64,11 @@ trait HasContextMenuActions
     public function getCachedDateClickContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::DateClick->value, []);
-        //        return collect($this->getCachedContextMenuActions())
-        //            ->filter(fn ($action) => ! method_exists($action, 'getContext')
-        //                || $action->getContext() === null
-        //                || $action->getContext() === Context::Click)
-        //            ->all()
-        //        ;
     }
 
     public function getCachedDateSelectContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::DateSelect->value, []);
-        //        return collect($this->getCachedContextMenuActions())
-        //            ->filter(fn ($action) => ! method_exists($action, 'getContext')
-        //                || $action->getContext() === null
-        //                || $action->getContext() === Context::Select)
-        //            ->all()
-        //        ;
     }
 
     public function getCachedEventClickContextMenuActions(): array

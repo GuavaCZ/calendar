@@ -5,6 +5,7 @@
     $noEventsClickEnabled = $this->isNoEventsClickEnabled();
     $dateClickEnabled = $this->isDateClickEnabled();
     $dateSelectEnabled = $this->isDateSelectEnabled();
+    $viewDidMountEnabled = $this->isViewDidMountEnabled();
     $onEventResizeStart = method_exists($this, 'onEventResizeStart');
     $onEventResizeStop = method_exists($this, 'onEventResizeStop');
     $hasDateClickContextMenu = !empty($this->getCachedDateClickContextMenuActions());
@@ -66,6 +67,9 @@
                 eventDragEnabled: @js($eventDragEnabled),
                 eventResizeEnabled: @js($eventResizeEnabled),
                 noEventsClickEnabled: @js($noEventsClickEnabled),
+                dateClickEnabled: @js($dateClickEnabled),
+                dateSelectEnabled: @js($dateSelectEnabled),
+                viewDidMountEnabled: @js($viewDidMountEnabled),
                 onEventResizeStart: @js($onEventResizeStart),
                 onEventResizeStop: @js($onEventResizeStop),
                 dayMaxEvents: @js($this->dayMaxEvents()),
@@ -75,8 +79,6 @@
                 hasDateSelectContextMenu: @js($hasDateSelectContextMenu),
                 hasEventClickContextMenu: @js($hasEventClickContextMenu),
                 hasNoEventsClickContextMenu: @js($hasNoEventsClickContextMenu),
-                dateClickEnabled: @js($dateClickEnabled),
-                dateSelectEnabled: @js($dateSelectEnabled),
                 options: @js($this->getOptions()),
             })"
         >

@@ -1,25 +1,26 @@
 export default function calendarWidget({
-    view = 'dayGridMonth',
-    locale = 'en',
-    firstDay = 1,
-    events = [],
-    eventContent = null,
-    selectable = false,
-    eventClickEnabled = false,
-    eventDragEnabled = false,
-    eventResizeEnabled = false,
-    noEventsClickEnabled = false,
-    dateSelectEnabled = false,
-    dateClickEnabled = false,
-    dayMaxEvents = false,
-    moreLinkContent = null,
-    resources = [],
-    hasDateClickContextMenu = false,
-    hasDateSelectContextMenu = false,
-    hasEventClickContextMenu = false,
-    hasNoEventsClickContextMenu = false,
-    options = {},
-}) {
+                                           view = 'dayGridMonth',
+                                           locale = 'en',
+                                           firstDay = 1,
+                                           events = [],
+                                           eventContent = null,
+                                           selectable = false,
+                                           eventClickEnabled = false,
+                                           eventDragEnabled = false,
+                                           eventResizeEnabled = false,
+                                           noEventsClickEnabled = false,
+                                           dateSelectEnabled = false,
+                                           dateClickEnabled = false,
+                                           viewDidMountEnabled = false,
+                                           dayMaxEvents = false,
+                                           moreLinkContent = null,
+                                           resources = [],
+                                           hasDateClickContextMenu = false,
+                                           hasDateSelectContextMenu = false,
+                                           hasEventClickContextMenu = false,
+                                           hasNoEventsClickContextMenu = false,
+                                           options = {},
+                                       }) {
     return {
 
         calendarEl: null,
@@ -40,69 +41,69 @@ export default function calendarWidget({
                 locale: locale,
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
-                selectable: hasDateSelectContextMenu || dateSelectEnabled,
+                selectable: dateSelectEnabled,
                 eventStartEditable: eventDragEnabled,
                 eventDurationEditable: eventResizeEnabled,
             };
 
-            if (hasDateClickContextMenu) {
+            if (dateClickEnabled) {
                 settings.dateClick = (info) => {
-                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
-                        detail: {
-                            mountData: {
-                                date: info.date,
-                                dateStr: info.dateStr,
-                                allDay: info.allDay,
-                                view: info.view,
-                                resource: info.resource,
+                    if (hasDateClickContextMenu) {
+                        self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                            detail: {
+                                mountData: {
+                                    date: info.date,
+                                    dateStr: info.dateStr,
+                                    allDay: info.allDay,
+                                    view: info.view,
+                                    resource: info.resource,
+                                },
+                                jsEvent: info.jsEvent,
+                                dayEl: info.dayEl,
+                                context: 'dateClick',
                             },
-                            jsEvent: info.jsEvent,
-                            dayEl: info.dayEl,
-                            context: 'dateClick',
-                        },
-                    }));
-                };
-            } else if (dateClickEnabled) {
-                settings.dateClick = (info) => {
-                    this.$wire.onDateClick({
-                        date: info.date,
-                        dateStr: info.dateStr,
-                        allDay: info.allDay,
-                        view: info.view,
-                        resource: info.resource,
-                    });
+                        }));
+                    } else {
+                        this.$wire.onDateClick({
+                            date: info.date,
+                            dateStr: info.dateStr,
+                            allDay: info.allDay,
+                            view: info.view,
+                            resource: info.resource,
+                        });
+                    }
                 };
             }
 
-            if (hasDateSelectContextMenu) {
+            if (dateSelectEnabled) {
                 settings.select = (info) => {
-                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
-                        detail: {
-                            mountData: {
-                                start: info.start,
-                                startStr: info.startStr,
-                                end: info.end,
-                                endStr: info.endStr,
-                                allDay: info.allDay,
-                                view: info.view,
-                                resource: info.resource,
+                    if (hasDateSelectContextMenu) {
+                        self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                            detail: {
+                                mountData: {
+                                    start: info.start,
+                                    startStr: info.startStr,
+                                    end: info.end,
+                                    endStr: info.endStr,
+                                    allDay: info.allDay,
+                                    view: info.view,
+                                    resource: info.resource,
+                                },
+                                jsEvent: info.jsEvent,
+                                context: 'dateSelect',
                             },
-                            jsEvent: info.jsEvent,
-                            context: 'dateSelect',
-                        },
-                    }));
-                };
-            } else if (dateSelectEnabled) {
-                settings.select = (info) => {
-                    this.$wire.onDateSelect({
-                        start: info.start,
-                        startStr: info.startStr,
-                        end: info.end,
-                        endStr: info.endStr,
-                        allDay: info.allDay,
-                        view: info.view,
-                        resource: info.resource,
-                    });
+                        }));
+                    } else {
+                        this.$wire.onDateSelect({
+                            start: info.start,
+                            startStr: info.startStr,
+                            end: info.end,
+                            endStr: info.endStr,
+                            allDay: info.allDay,
+                            view: info.view,
+                            resource: info.resource,
+                        });
+                    }
                 };
             }
 
@@ -220,20 +221,21 @@ export default function calendarWidget({
                 }
             };
 
-            settings.viewDidMount = (info) => {
-                this.$wire.currentView = info;
-            };
+
+            if (viewDidMountEnabled) {
+                settings.viewDidMount = (view) => {
+                    this.$wire.onViewDidMount({
+                        view: view,
+                    });
+                };
+            }
 
             this.ec = new EventCalendar(this.$el.querySelector('div'), {
                 ...settings,
                 ...options
             });
-            window.addEventListener('ec-add-event', this.addEvent);
-            window.addEventListener('calendar--refresh', () => this.ec.refetchEvents())
-        },
 
-        addEvent: function (event) {
-            this.ec.addEvent(event);
+            window.addEventListener('calendar--refresh', () => this.ec.refetchEvents())
         },
 
         getEventContent: function (info) {

@@ -6,10 +6,7 @@ trait HandlesDateSelect
 {
     protected bool $dateSelectEnabled = false;
 
-    public function onDateSelect(array $info = []): void
-    {
-
-    }
+    public function onDateSelect(array $info = []): void {}
 
     public function dateSelectEnabled(bool $enabled = true): static
     {
