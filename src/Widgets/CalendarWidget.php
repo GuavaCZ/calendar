@@ -8,10 +8,13 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Widgets\Widget;
+use Guava\Calendar\Concerns\HandlesDateClick;
+use Guava\Calendar\Concerns\HandlesDateSelect;
 use Guava\Calendar\Concerns\HandlesEventClick;
 use Guava\Calendar\Concerns\HandlesEventDragAndDrop;
 use Guava\Calendar\Concerns\HandlesEventResize;
 use Guava\Calendar\Concerns\HandlesNoEventsClick;
+use Guava\Calendar\Concerns\HandlesViewMount;
 use Guava\Calendar\Concerns\HasCalendarView;
 use Guava\Calendar\Concerns\HasContextMenuActions;
 use Guava\Calendar\Concerns\HasDayMaxEvents;
@@ -32,10 +35,13 @@ use Guava\Calendar\Concerns\InteractsWithRecord;
 class CalendarWidget extends Widget implements HasActions, HasForms
 {
     use EvaluatesClosures;
+    use HandlesDateClick;
+    use HandlesDateSelect;
     use HandlesEventClick;
     use HandlesEventDragAndDrop;
     use HandlesEventResize;
     use HandlesNoEventsClick;
+    use HandlesViewMount;
     use HasCalendarView;
     use HasContextMenuActions;
     use HasDayMaxEvents;

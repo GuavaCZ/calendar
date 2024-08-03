@@ -9,6 +9,9 @@ export default function calendarWidget({
                                            eventDragEnabled = false,
                                            eventResizeEnabled = false,
                                            noEventsClickEnabled = false,
+                                           dateSelectEnabled = false,
+                                           dateClickEnabled = false,
+                                           viewDidMountEnabled = false,
                                            dayMaxEvents = false,
                                            moreLinkContent = null,
                                            resources = [],
@@ -38,47 +41,69 @@ export default function calendarWidget({
                 locale: locale,
                 firstDay: firstDay,
                 dayMaxEvents: dayMaxEvents,
-                selectable: hasDateSelectContextMenu,
+                selectable: dateSelectEnabled,
                 eventStartEditable: eventDragEnabled,
                 eventDurationEditable: eventResizeEnabled,
             };
 
-            if (hasDateClickContextMenu) {
+            if (dateClickEnabled) {
                 settings.dateClick = (info) => {
-                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
-                        detail: {
-                            mountData: {
-                                date: info.date,
-                                dateStr: info.dateStr,
-                                allDay: info.allDay,
-                                view: info.view,
-                                resource: info.resource,
+                    if (hasDateClickContextMenu) {
+                        self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                            detail: {
+                                mountData: {
+                                    date: info.date,
+                                    dateStr: info.dateStr,
+                                    allDay: info.allDay,
+                                    view: info.view,
+                                    resource: info.resource,
+                                },
+                                jsEvent: info.jsEvent,
+                                dayEl: info.dayEl,
+                                context: 'dateClick',
                             },
-                            jsEvent: info.jsEvent,
-                            dayEl: info.dayEl,
-                            context: 'dateClick',
-                        },
-                    }));
+                        }));
+                    } else {
+                        this.$wire.onDateClick({
+                            date: info.date,
+                            dateStr: info.dateStr,
+                            allDay: info.allDay,
+                            view: info.view,
+                            resource: info.resource,
+                        });
+                    }
                 };
             }
 
-            if (hasDateSelectContextMenu) {
+            if (dateSelectEnabled) {
                 settings.select = (info) => {
-                    self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
-                        detail: {
-                            mountData: {
-                                start: info.start,
-                                startStr: info.startStr,
-                                end: info.end,
-                                endStr: info.endStr,
-                                allDay: info.allDay,
-                                view: info.view,
-                                resource: info.resource,
+                    if (hasDateSelectContextMenu) {
+                        self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
+                            detail: {
+                                mountData: {
+                                    start: info.start,
+                                    startStr: info.startStr,
+                                    end: info.end,
+                                    endStr: info.endStr,
+                                    allDay: info.allDay,
+                                    view: info.view,
+                                    resource: info.resource,
+                                },
+                                jsEvent: info.jsEvent,
+                                context: 'dateSelect',
                             },
-                            jsEvent: info.jsEvent,
-                            context: 'dateSelect',
-                        },
-                    }));
+                        }));
+                    } else {
+                        this.$wire.onDateSelect({
+                            start: info.start,
+                            startStr: info.startStr,
+                            end: info.end,
+                            endStr: info.endStr,
+                            allDay: info.allDay,
+                            view: info.view,
+                            resource: info.resource,
+                        });
+                    }
                 };
             }
 
@@ -196,16 +221,21 @@ export default function calendarWidget({
                 }
             };
 
+
+            if (viewDidMountEnabled) {
+                settings.viewDidMount = (view) => {
+                    this.$wire.onViewDidMount({
+                        view: view,
+                    });
+                };
+            }
+
             this.ec = new EventCalendar(this.$el.querySelector('div'), {
                 ...settings,
                 ...options
             });
-            window.addEventListener('ec-add-event', this.addEvent);
-            window.addEventListener('calendar--refresh', () => this.ec.refetchEvents())
-        },
 
-        addEvent: function (event) {
-            this.ec.addEvent(event);
+            window.addEventListener('calendar--refresh', () => this.ec.refetchEvents())
         },
 
         getEventContent: function (info) {
