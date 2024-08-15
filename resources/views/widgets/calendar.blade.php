@@ -63,6 +63,7 @@
                 locale: @js($this->getLocale()),
                 firstDay: @js($this->getFirstDay()),
                 eventContent: @js($this->getEventContentJs()),
+                resourceLabelContent: @js($this->getResourceLabelContentJs()),
                 eventClickEnabled: @js($eventClickEnabled),
                 eventDragEnabled: @js($eventDragEnabled),
                 eventResizeEnabled: @js($eventResizeEnabled),

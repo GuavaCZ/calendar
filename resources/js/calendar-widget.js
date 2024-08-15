@@ -4,6 +4,7 @@ export default function calendarWidget({
                                            firstDay = 1,
                                            events = [],
                                            eventContent = null,
+                                           resourceLabelContent = null,
                                            selectable = false,
                                            eventClickEnabled = false,
                                            eventDragEnabled = false,
@@ -129,6 +130,20 @@ export default function calendarWidget({
                 }
             }
 
+            if (resourceLabelContent !== null) {
+                settings.resourceLabelContent = (info) => {
+                    const content = self.getResourceLabelContent(info);
+
+                    if (content === undefined) {
+                        return undefined;
+                    }
+
+                    return {
+                        html: content,
+                    };
+                };
+            }
+
             if (eventClickEnabled) {
                 settings.eventClick = (info) => {
                     if (info.event.extendedProps.url) {
@@ -246,6 +261,25 @@ export default function calendarWidget({
             if (typeof eventContent === 'object') {
                 const model = info.event.extendedProps.model;
                 const content = eventContent[model];
+
+                if (content === undefined) {
+                    return undefined;
+                }
+
+                return this.wrapContent(content, info);
+            }
+
+            return undefined;
+        },
+
+        getResourceLabelContent: function(info) {
+            if (typeof resourceLabelContent === 'string') {
+                return this.wrapContent(resourceLabelContent, info);
+            }
+
+            if (typeof resourceLabelContent === 'object') {
+                const model = info.event.extendedProps.model;
+                const content = resourceLabelContent[model];
 
                 if (content === undefined) {
                     return undefined;

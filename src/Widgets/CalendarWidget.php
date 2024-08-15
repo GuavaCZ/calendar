@@ -28,6 +28,7 @@ use Guava\Calendar\Concerns\HasHeading;
 use Guava\Calendar\Concerns\HasLocale;
 use Guava\Calendar\Concerns\HasMoreLinkContent;
 use Guava\Calendar\Concerns\HasOptions;
+use Guava\Calendar\Concerns\HasResourceLabelContent;
 use Guava\Calendar\Concerns\HasResources;
 use Guava\Calendar\Concerns\HasSchema;
 use Guava\Calendar\Concerns\InteractsWithRecord;
@@ -55,6 +56,7 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HasLocale;
     use HasMoreLinkContent;
     use HasOptions;
+    use HasResourceLabelContent;
     use HasResources;
     use HasSchema;
     use InteractsWithActions;
