@@ -30,7 +30,7 @@ use Guava\Calendar\Concerns\HasMoreLinkContent;
 use Guava\Calendar\Concerns\HasOptions;
 use Guava\Calendar\Concerns\HasResources;
 use Guava\Calendar\Concerns\HasSchema;
-use Guava\Calendar\Concerns\InteractsWithRecord;
+use Guava\Calendar\Concerns\InteractsWithEventRecord;
 
 class CalendarWidget extends Widget implements HasActions, HasForms
 {
@@ -59,7 +59,7 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HasSchema;
     use InteractsWithActions;
     use InteractsWithForms;
-    use InteractsWithRecord;
+    use InteractsWithEventRecord;
 
     protected static string $view = 'guava-calendar::widgets.calendar';
 

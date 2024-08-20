@@ -10,9 +10,9 @@ class EditAction extends \Filament\Actions\EditAction
     {
         parent::setUp();
 
-        $this->model(fn (CalendarWidget $livewire) => $livewire->getModel());
-        $this->record(fn (CalendarWidget $livewire) => $livewire->getRecord());
-        $this->form(fn (CalendarWidget $livewire) => $livewire->getSchema($livewire->getModel()));
+        $this->model(fn (CalendarWidget $livewire) => $livewire->getEventModel());
+        $this->record(fn (CalendarWidget $livewire) => $livewire->getEventRecord());
+        $this->form(fn (CalendarWidget $livewire) => $livewire->getSchema($livewire->getEventModel()));
         $this->after(fn (CalendarWidget $livewire) => $livewire->refreshRecords());
         $this->cancelParentActions();
     }
