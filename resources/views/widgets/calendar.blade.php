@@ -28,6 +28,11 @@
 
             & .ec-event.ec-preview {
                 --ec-event-bg-color: rgb(var(--primary-400));
+                z-index: 30;
+            }
+
+            & .ec-now-indicator {
+                z-index:40;
             }
         }
 
