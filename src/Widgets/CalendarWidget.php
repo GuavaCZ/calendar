@@ -58,8 +58,8 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HasResources;
     use HasSchema;
     use InteractsWithActions;
-    use InteractsWithForms;
     use InteractsWithEventRecord;
+    use InteractsWithForms;
 
     protected static string $view = 'guava-calendar::widgets.calendar';
 

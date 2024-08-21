@@ -14,9 +14,9 @@ trait InteractsWithEventRecord
 
     /**
      * @deprecated Use getEventRecord() instead.
-     * @return Model|null
      */
-    public function getRecord(): ?Model {
+    public function getRecord(): ?Model
+    {
         return $this->getEventRecord();
     }
 
@@ -27,9 +27,9 @@ trait InteractsWithEventRecord
 
     /**
      * @deprecated Use getEventModel() instead.
-     * @return string|null
      */
-    public function getModel(): ?string {
+    public function getModel(): ?string
+    {
         return $this->getEventModel();
     }
 
