@@ -31,7 +31,7 @@ use Guava\Calendar\Concerns\HasOptions;
 use Guava\Calendar\Concerns\HasResourceLabelContent;
 use Guava\Calendar\Concerns\HasResources;
 use Guava\Calendar\Concerns\HasSchema;
-use Guava\Calendar\Concerns\InteractsWithRecord;
+use Guava\Calendar\Concerns\InteractsWithEventRecord;
 
 class CalendarWidget extends Widget implements HasActions, HasForms
 {
@@ -60,8 +60,8 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HasResources;
     use HasSchema;
     use InteractsWithActions;
+    use InteractsWithEventRecord;
     use InteractsWithForms;
-    use InteractsWithRecord;
 
     protected static string $view = 'guava-calendar::widgets.calendar';
 

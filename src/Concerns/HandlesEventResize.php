@@ -12,7 +12,7 @@ trait HandlesEventResize
         $key = data_get($info, 'event.extendedProps.key');
 
         if ($model && $key) {
-            $this->resolveRecord(
+            $this->resolveEventRecord(
                 data_get($info, 'event.extendedProps.model'),
                 data_get($info, 'event.extendedProps.key'),
             );

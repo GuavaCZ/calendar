@@ -11,10 +11,10 @@ class DeleteAction extends \Filament\Actions\DeleteAction
     {
         parent::setUp();
 
-        $this->model(fn (CalendarWidget $livewire) => $livewire->getModel());
-        $this->record(fn (CalendarWidget $livewire) => $livewire->getRecord());
+        $this->model(fn (CalendarWidget $livewire) => $livewire->getEventModel());
+        $this->record(fn (CalendarWidget $livewire) => $livewire->getEventRecord());
         $this->after(function (CalendarWidget $livewire) {
-            $livewire->record = null;
+            $livewire->eventRecord = null;
             $livewire->refreshRecords();
         });
         $this->hidden(static function (?Model $record): bool {

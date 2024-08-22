@@ -10,8 +10,6 @@
 
 This package adds support for [vkurko/calendar](https://github.com/vkurko/calendar) (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
 
-**Although the package is ready for production-use, it is still in active development. Please be cautious and double-check the documentation before updating the package, as new releases might introduce breaking changes due to refactoring and improvements to the DX. We do our best to keep these changes to a minimum.**
-
 ## Showcase
 ![Showcase 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_01.png)
 ![Showcase 02](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_02.png)
@@ -350,16 +348,16 @@ To listen to resize events, simply override the `eventResizeEnabled` property:
 protected bool $eventResizeEnabled = true;
 ```
 
-Except for resolving the record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventResize` method:
+Except for resolving the (event) record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventResize` method:
 
 ```php
 public function onEventResize(array $info = []): bool
 {
-    // Don't forget to call the parent method to resolve the record
+    // Don't forget to call the parent method to resolve the event record
     parent::onEventResize($info);
      
     // Validate the data
-    // Update the record ($this->getRecord())
+    // Update the record ($this->getEventRecord())
     // $info contains the event data:
     // $info['event'] - the event object
     // $info['oldEvent'] - the event object before resizing
@@ -379,16 +377,16 @@ To listen to drag and drop events, simply override the `eventDragEnabled` proper
 protected bool $eventDragEnabled = true;
 ```
 
-Except for resolving the record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventDrop` method:
+Except for resolving the (event) record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventDrop` method:
 
 ```php
 public function onEventDrop(array $info = []): bool
 {
-    // Don't forget to call the parent method to resolve the record
+    // Don't forget to call the parent method to resolve the event record
     parent::onEventDrop($info); 
     
     // Validate the data
-    // Update the record ($this->getRecord())
+    // Update the record ($this->getEventRecord())
     // $info contains the event data:
     // $info['event'] - the event object
     // $info['oldEvent'] - the event object before resizing
@@ -592,6 +590,9 @@ protected ?string $locale = 'en';
 ## Troubleshooting
 ### Context menu actions don't work
 If you encounter issues with the context menu, either that the actions don't mount correctly or that the arguments array is empty, make sure that the name of the action is unique across the whole widget. If there is another action with the same name, it might be mounted instead of the one you want.
+
+### Record vs Event record
+When working with resource widgets, `$record` is the record of the currently opened resource record, whereas `$eventRecord` is the record of the calendar event (during event actions, context menus, etc.).
 
 ## Authorization
 Due to security reasons, actions use Laravel's default authorization mechanism to check if user is allowed to perform actions.
