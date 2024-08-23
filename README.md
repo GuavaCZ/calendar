@@ -211,6 +211,30 @@ Event::make()
 ->extendedProps(['baz' => 'qux', 'quux' => 'corge']);
 ```
 
+## Available Methods
+
+### Refresh events
+If you need to trigger a refresh of the events in the calendar, you can call `refreshRecords()` on the widget.
+
+```php
+$this->refreshRecords();
+```
+
+### Refresh resources
+If you need to trigger a refresh of the resources in the calendar, you can call `refreshResources()` on the widget.
+
+```php
+$this->refreshResources();
+```
+
+### Set Option
+To change any calendar option during runtime, you can use the `setOption()` method on the widget.
+
+For example to programmatically change the date, you can use:
+```php
+$this->setOption('date', today()->addDay()->toIso8601String());
+```
+
 ## Custom Event Content
 By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getEventContent` method on your calendar widget class.
 
@@ -249,6 +273,20 @@ public function getEventContent(): null|string|array
         MyModel::class => view('calendar.my-model-event'),
         AnotherModel::class => view('calendar.another-model-event'),
     ];
+}
+```
+
+## Custom resource label content
+By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getResourceLabelContent` method on your calendar widget class.
+
+```php
+public function getResourceLabelContent(): null|string|array
+{
+    // return a blade view
+    return view('calendar.resource');
+    
+    // return a HtmlString
+    return new HtmlString('<div>My resource</div>');
 }
 ```
 

@@ -250,7 +250,13 @@ export default function calendarWidget({
                 ...options
             });
 
-            window.addEventListener('calendar--refresh', () => this.ec.refetchEvents())
+            window.addEventListener('calendar--refresh', () => {
+                this.ec.refetchEvents();
+            });
+
+            this.$wire.on('calendar--set', (data) => {
+                this.ec.setOption(data.key, data.value);
+            });
         },
 
         getEventContent: function (info) {

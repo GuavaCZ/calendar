@@ -67,8 +67,24 @@ class CalendarWidget extends Widget implements HasActions, HasForms
 
     protected int | string | array $columnSpan = 'full';
 
-    public function refreshRecords(): void
+    public function refreshRecords(): static
     {
         $this->dispatch('calendar--refresh');
+
+        return $this;
+    }
+
+    public function refreshResources(): static
+    {
+        $this->setOption('resources', $this->getResourcesJs());
+
+        return $this;
+    }
+
+    public function setOption(string $key, mixed $value): static
+    {
+        $this->dispatch('calendar--set', key: $key, value: $value);
+
+        return $this;
     }
 }
