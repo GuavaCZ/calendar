@@ -16,6 +16,8 @@ class Resource implements Arrayable, Resourceable
 
     protected ?string $eventTextColor = null;
 
+    protected array $extendedProps = [];
+
     private function __construct(Model | int | string $id)
     {
         if ($id instanceof Model) {
@@ -68,6 +70,28 @@ class Resource implements Arrayable, Resourceable
         return $this->eventTextColor;
     }
 
+    public function extendedProp(string $key, mixed $value): static
+    {
+        data_set($this->extendedProps, $key, $value);
+
+        return $this;
+    }
+
+    public function extendedProps(array $props): static
+    {
+        $this->extendedProps = [
+            ...$this->extendedProps,
+            ...$props,
+        ];
+
+        return $this;
+    }
+
+    public function getExtendedProps(): array
+    {
+        return $this->extendedProps;
+    }
+
     public static function make(Model | int | string $id): static
     {
         return new static($id);
@@ -80,6 +104,7 @@ class Resource implements Arrayable, Resourceable
             'title' => $this->getTitle(),
             'eventBackgroundColor' => $this->getEventBackgroundColor(),
             'eventTextColor' => $this->getEventTextColor(),
+            'extendedProps' => $this->getExtendedProps(),
         ];
     }
 
