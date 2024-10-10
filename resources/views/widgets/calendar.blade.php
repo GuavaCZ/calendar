@@ -6,12 +6,16 @@
     $dateClickEnabled = $this->isDateClickEnabled();
     $dateSelectEnabled = $this->isDateSelectEnabled();
     $viewDidMountEnabled = $this->isViewDidMountEnabled();
+    $eventAllUpdatedEnabled = $this->isEventAllUpdatedEnabled();
     $onEventResizeStart = method_exists($this, 'onEventResizeStart');
     $onEventResizeStop = method_exists($this, 'onEventResizeStop');
     $hasDateClickContextMenu = !empty($this->getCachedDateClickContextMenuActions());
     $hasDateSelectContextMenu = !empty($this->getCachedDateSelectContextMenuActions());
     $hasEventClickContextMenu = !empty($this->getCachedEventClickContextMenuActions());
     $hasNoEventsClickContextMenu = !empty($this->getCachedNoEventsClickContextMenuActions());
+
+    $dayHeaderFormatJs = $this->getDayHeaderFormatJs();
+    $slotLabelFormatJs = $this->getSlotLabelFormatJs();
 @endphp
 
 <x-filament-widgets::widget>
@@ -76,6 +80,7 @@
                 dateClickEnabled: @js($dateClickEnabled),
                 dateSelectEnabled: @js($dateSelectEnabled),
                 viewDidMountEnabled: @js($viewDidMountEnabled),
+                eventAllUpdatedEnabled: @js($eventAllUpdatedEnabled),
                 onEventResizeStart: @js($onEventResizeStart),
                 onEventResizeStop: @js($onEventResizeStop),
                 dayMaxEvents: @js($this->dayMaxEvents()),
@@ -86,6 +91,8 @@
                 hasEventClickContextMenu: @js($hasEventClickContextMenu),
                 hasNoEventsClickContextMenu: @js($hasNoEventsClickContextMenu),
                 options: @js($this->getOptions()),
+                dayHeaderFormat: {{$dayHeaderFormatJs}},
+                slotLabelFormat: {{$slotLabelFormatJs}},
             })"
         >
             <div id="calendar"></div>

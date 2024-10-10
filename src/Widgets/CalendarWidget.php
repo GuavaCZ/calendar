@@ -10,6 +10,7 @@ use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Widgets\Widget;
 use Guava\Calendar\Concerns\HandlesDateClick;
 use Guava\Calendar\Concerns\HandlesDateSelect;
+use Guava\Calendar\Concerns\HandlesEventAllUpdated;
 use Guava\Calendar\Concerns\HandlesEventClick;
 use Guava\Calendar\Concerns\HandlesEventDragAndDrop;
 use Guava\Calendar\Concerns\HandlesEventResize;
@@ -17,6 +18,7 @@ use Guava\Calendar\Concerns\HandlesNoEventsClick;
 use Guava\Calendar\Concerns\HandlesViewMount;
 use Guava\Calendar\Concerns\HasCalendarView;
 use Guava\Calendar\Concerns\HasContextMenuActions;
+use Guava\Calendar\Concerns\HasDayHeaderFormat;
 use Guava\Calendar\Concerns\HasDayMaxEvents;
 use Guava\Calendar\Concerns\HasDefaultActions;
 use Guava\Calendar\Concerns\HasEventContent;
@@ -31,6 +33,7 @@ use Guava\Calendar\Concerns\HasOptions;
 use Guava\Calendar\Concerns\HasResourceLabelContent;
 use Guava\Calendar\Concerns\HasResources;
 use Guava\Calendar\Concerns\HasSchema;
+use Guava\Calendar\Concerns\HasSlotLabelFormat;
 use Guava\Calendar\Concerns\InteractsWithEventRecord;
 
 class CalendarWidget extends Widget implements HasActions, HasForms
@@ -43,6 +46,7 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HandlesEventResize;
     use HandlesNoEventsClick;
     use HandlesViewMount;
+    use HandlesEventAllUpdated;
     use HasCalendarView;
     use HasContextMenuActions;
     use HasDayMaxEvents;
@@ -62,6 +66,8 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use InteractsWithActions;
     use InteractsWithEventRecord;
     use InteractsWithForms;
+    use HasDayHeaderFormat;
+    use HasSlotLabelFormat;
 
     protected static string $view = 'guava-calendar::widgets.calendar';
 

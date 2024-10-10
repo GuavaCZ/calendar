@@ -13,6 +13,7 @@ export default function calendarWidget({
                                            dateSelectEnabled = false,
                                            dateClickEnabled = false,
                                            viewDidMountEnabled = false,
+                                           eventAllUpdatedEnabled = false,
                                            dayMaxEvents = false,
                                            moreLinkContent = null,
                                            resources = [],
@@ -21,6 +22,8 @@ export default function calendarWidget({
                                            hasEventClickContextMenu = false,
                                            hasNoEventsClickContextMenu = false,
                                            options = {},
+                                           dayHeaderFormat = null,
+                                           slotLabelFormat = null,
                                        }) {
     return {
 
@@ -46,6 +49,14 @@ export default function calendarWidget({
                 eventStartEditable: eventDragEnabled,
                 eventDurationEditable: eventResizeEnabled,
             };
+
+            if (dayHeaderFormat) {
+                settings.dayHeaderFormat = dayHeaderFormat;
+            }
+
+            if (slotLabelFormat) {
+                settings.slotLabelFormat = slotLabelFormat;
+            }
 
             if (dateClickEnabled) {
                 settings.dateClick = (info) => {
@@ -245,6 +256,14 @@ export default function calendarWidget({
                 };
             }
 
+            if (eventAllUpdatedEnabled) {
+                settings.eventAllUpdated = (info) => {
+                    this.$wire.onEventAllUpdated({
+                        info: info,
+                    });
+                };
+            }
+
             this.ec = new EventCalendar(this.$el.querySelector('div'), {
                 ...settings,
                 ...options
@@ -278,7 +297,7 @@ export default function calendarWidget({
             return undefined;
         },
 
-        getResourceLabelContent: function(info) {
+        getResourceLabelContent: function (info) {
             if (typeof resourceLabelContent === 'string') {
                 return this.wrapContent(resourceLabelContent, info);
             }
