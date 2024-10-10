@@ -41,14 +41,15 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use EvaluatesClosures;
     use HandlesDateClick;
     use HandlesDateSelect;
+    use HandlesEventAllUpdated;
     use HandlesEventClick;
     use HandlesEventDragAndDrop;
     use HandlesEventResize;
     use HandlesNoEventsClick;
     use HandlesViewMount;
-    use HandlesEventAllUpdated;
     use HasCalendarView;
     use HasContextMenuActions;
+    use HasDayHeaderFormat;
     use HasDayMaxEvents;
     use HasDefaultActions;
     use HasEventContent;
@@ -63,11 +64,10 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HasResourceLabelContent;
     use HasResources;
     use HasSchema;
+    use HasSlotLabelFormat;
     use InteractsWithActions;
     use InteractsWithEventRecord;
     use InteractsWithForms;
-    use HasDayHeaderFormat;
-    use HasSlotLabelFormat;
 
     protected static string $view = 'guava-calendar::widgets.calendar';
 
