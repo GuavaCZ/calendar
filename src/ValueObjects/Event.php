@@ -4,8 +4,8 @@ namespace Guava\Calendar\ValueObjects;
 
 use Carbon\Carbon;
 use Guava\Calendar\Contracts\Eventable;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Support\Arrayable;
 
 class Event implements Arrayable, Eventable
 {
@@ -32,6 +32,8 @@ class Event implements Arrayable, Eventable
     protected array $resourceIds = [];
 
     protected array $extendedProps = [];
+
+    protected array $styles = [];
 
     private function __construct(?Model $model = null)
     {
@@ -117,6 +119,24 @@ class Event implements Arrayable, Eventable
     public function getTextColor(): ?string
     {
         return $this->textColor;
+    }
+
+    public function styles(array $styles): static
+    {
+        $this->styles = $styles;
+
+        return $this;
+    }
+
+    public function getStyles(): string
+    {
+        return implode(';', array_map(
+            function ($key, $value) {
+                return $key.':'.$value;
+            },
+            array_keys($this->styles),
+            $this->styles
+        )).';';
     }
 
     public function display(string $display): static
@@ -264,6 +284,7 @@ class Event implements Arrayable, Eventable
             'allDay' => $this->getAllDay(),
             'backgroundColor' => $this->getBackgroundColor(),
             'textColor' => $this->getTextColor(),
+            'styles' => $this->getStyles(),
             'resourceIds' => $this->getResourceIds(),
             'extendedProps' => $this->getExtendedProps(),
         ];
