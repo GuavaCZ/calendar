@@ -130,13 +130,25 @@ class Event implements Arrayable, Eventable
 
     public function getStyles(): string
     {
-        return implode(';', array_map(
-            function ($key, $value) {
-                return $key.':'.$value;
-            },
-            array_keys($this->styles),
-            $this->styles
-        )).';';
+
+        $styleString = '';
+
+        foreach ($this->styles as $key => $value) {
+
+            if (is_int($key)) {
+                $styleString .= $value.'; ';
+            } else {
+                if (is_string($value)) {
+                    $styleString .= $key.': '.$value.'; ';
+                } else {
+                    if ($value) {
+                        $styleString .= $key.'; ';
+                    }
+                }
+            }
+        }
+
+        return trim($styleString);
     }
 
     public function display(string $display): static
