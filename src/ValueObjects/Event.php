@@ -4,8 +4,9 @@ namespace Guava\Calendar\ValueObjects;
 
 use Carbon\Carbon;
 use Guava\Calendar\Contracts\Eventable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Event implements Arrayable, Eventable
 {
@@ -130,25 +131,19 @@ class Event implements Arrayable, Eventable
 
     public function getStyles(): string
     {
-
-        $styleString = '';
+        $styles = [];
 
         foreach ($this->styles as $key => $value) {
-
             if (is_int($key)) {
-                $styleString .= $value.'; ';
-            } else {
-                if (is_string($value)) {
-                    $styleString .= $key.': '.$value.'; ';
-                } else {
-                    if ($value) {
-                        $styleString .= $key.'; ';
-                    }
-                }
+                $styles[] = Str::finish($value, ';');
+            } elseif (! is_bool($value)) {
+                $styles[] = Str::finish("$key: $value", ';');
+            } elseif ($value) {
+                $styles[] = Str::finish($key, ';');
             }
         }
 
-        return trim($styleString);
+        return implode(' ', $styles);
     }
 
     public function display(string $display): static

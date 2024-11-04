@@ -47,14 +47,16 @@ it('should set the text color', function () {
 
 it('should set the styles', function () {
     $styles = [
-        'color' => 'red',
+        'color: red',
+        'display: flex; flex-direction: row;',
         'font-size' => '12px',
-        'background-color' => false,
+        'opacity' => 1,
+        'background-color: blue' => false,
         'border-color: red' => true,
     ];
     $this->event->styles($styles);
 
-    expect($this->event->getStyles())->toBe('color: red; font-size: 12px; border-color: red;');
+    expect($this->event->getStyles())->toBe('color: red; display: flex; flex-direction: row; font-size: 12px; opacity: 1; border-color: red;');
 });
 
 it('should set the display', function () {
