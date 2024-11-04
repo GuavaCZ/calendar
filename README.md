@@ -165,6 +165,32 @@ Event::make()
 ->textColor('#ffffff');
 ```
 
+#### Customizing Event Styles
+
+You can add custom styles to your event elements by using the styles method. This method accepts an array where each entry can be a CSS style declaration. The styles will be directly applied to the event element in the view. You can define styles in three ways:
+
+- As a key-value pair where the key is the CSS property and value is the condition under which the style should apply.
+- As a key-value pair where the key is the CSS property and the value is directly the CSS value.
+- As a single string for static styles that always apply.
+
+Here's how you can use it:
+
+```php
+Event::make()->styles([
+    'color: red' => true,            // Applies the style if the condition (true) is met
+    'background-color' => '#ffff00', // Directly applies the background color
+    'font-size: 12px'                // Always applies this font size
+]);
+````
+
+##### Usage Notes:
+
+- The first format ('color: red' => true) is useful for conditional styling based on dynamic conditions. For instance, changing the text color based on an event's type or status.
+
+- The second format ('background-color' => '#ffff00') is straightforward for applying styles where the values do not depend on conditions.
+- The third format ('font-size: 12px') is used when the style does not require any condition and is always applied to the event.
+This flexibility allows you to easily customize the appearance of events based on dynamic conditions or predefined settings.
+
 #### Customizing the display
 By default, events are rendered as `blocks`. This is when the display is set to `auto`, which it is by default. You can also change the event to be rendered as a background event, which then fills the whole date cell. To do so, you can set `display` to `background` on the event:
 

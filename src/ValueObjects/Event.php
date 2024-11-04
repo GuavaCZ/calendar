@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Guava\Calendar\Contracts\Eventable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Event implements Arrayable, Eventable
 {
@@ -32,6 +33,8 @@ class Event implements Arrayable, Eventable
     protected array $resourceIds = [];
 
     protected array $extendedProps = [];
+
+    protected array $styles = [];
 
     private function __construct(?Model $model = null)
     {
@@ -117,6 +120,30 @@ class Event implements Arrayable, Eventable
     public function getTextColor(): ?string
     {
         return $this->textColor;
+    }
+
+    public function styles(array $styles): static
+    {
+        $this->styles = $styles;
+
+        return $this;
+    }
+
+    public function getStyles(): string
+    {
+        $styles = [];
+
+        foreach ($this->styles as $key => $value) {
+            if (is_int($key)) {
+                $styles[] = Str::finish($value, ';');
+            } elseif (! is_bool($value)) {
+                $styles[] = Str::finish("$key: $value", ';');
+            } elseif ($value) {
+                $styles[] = Str::finish($key, ';');
+            }
+        }
+
+        return implode(' ', $styles);
     }
 
     public function display(string $display): static
@@ -264,6 +291,7 @@ class Event implements Arrayable, Eventable
             'allDay' => $this->getAllDay(),
             'backgroundColor' => $this->getBackgroundColor(),
             'textColor' => $this->getTextColor(),
+            'styles' => $this->getStyles(),
             'resourceIds' => $this->getResourceIds(),
             'extendedProps' => $this->getExtendedProps(),
         ];
