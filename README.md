@@ -193,7 +193,7 @@ This flexibility allows you to easily customize the appearance of events based o
 
 #### Customizing Event Classes
 
-Following the same pattern as with the styles property, it is possible to inject custom classes into the Event element using the classNames property.
+Following the same pattern as with the styles property, it is possible to inject custom classes into the Event element using the `classNames` or `classes` property.
 
 Here's how you can use it:
 

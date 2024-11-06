@@ -3,10 +3,11 @@
 namespace Guava\Calendar\ValueObjects;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Guava\Calendar\Contracts\Eventable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class Event implements Arrayable, Eventable
 {
@@ -124,6 +125,10 @@ class Event implements Arrayable, Eventable
         return $this->textColor;
     }
 
+    public function classes(array $classes): static
+    {
+        return $this->classNames($classes);
+    }
 
     public function classNames(array $classNames): static
     {
@@ -134,17 +139,9 @@ class Event implements Arrayable, Eventable
 
     public function getClassNames(): string
     {
-        $classes = [];
-
-        foreach ($this->classNames as $key => $value) {
-            if (is_int($key) || $value === true) {
-                $classes[] = is_int($key) ? $value : $key;
-            }
-        }
-    
-        return implode(' ', $classes);
+        return Arr::toCssClasses($this->classNames);
     }
-    
+
     public function styles(array $styles): static
     {
         $this->styles = $styles;
