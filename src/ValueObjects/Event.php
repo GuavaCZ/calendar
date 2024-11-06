@@ -3,10 +3,10 @@
 namespace Guava\Calendar\ValueObjects;
 
 use Carbon\Carbon;
-use Guava\Calendar\Contracts\Eventable;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Guava\Calendar\Contracts\Eventable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Support\Arrayable;
 
 class Event implements Arrayable, Eventable
 {
@@ -35,6 +35,8 @@ class Event implements Arrayable, Eventable
     protected array $extendedProps = [];
 
     protected array $styles = [];
+
+    protected array $classNames = [];
 
     private function __construct(?Model $model = null)
     {
@@ -122,6 +124,27 @@ class Event implements Arrayable, Eventable
         return $this->textColor;
     }
 
+
+    public function classNames(array $classNames): static
+    {
+        $this->classNames = $classNames;
+
+        return $this;
+    }
+
+    public function getClassNames(): string
+    {
+        $classes = [];
+
+        foreach ($this->classNames as $key => $value) {
+            if (is_int($key) || $value === true) {
+                $classes[] = is_int($key) ? $value : $key;
+            }
+        }
+    
+        return implode(' ', $classes);
+    }
+    
     public function styles(array $styles): static
     {
         $this->styles = $styles;
@@ -292,6 +315,7 @@ class Event implements Arrayable, Eventable
             'backgroundColor' => $this->getBackgroundColor(),
             'textColor' => $this->getTextColor(),
             'styles' => $this->getStyles(),
+            'classNames' => $this->getClassNames(),
             'resourceIds' => $this->getResourceIds(),
             'extendedProps' => $this->getExtendedProps(),
         ];

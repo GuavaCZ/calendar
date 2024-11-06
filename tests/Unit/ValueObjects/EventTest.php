@@ -59,6 +59,13 @@ it('should set the styles', function () {
     expect($this->event->getStyles())->toBe('color: red; display: flex; flex-direction: row; font-size: 12px; opacity: 1; border-color: red;');
 });
 
+it('should set some classes', function() {
+    $classes = ['class-1', 'class-2' => true, 'class3' => false];
+    $this->event->classNames($classes);
+
+    expect($this->event->getClassNames())->toBe('class-1 class-2');
+});
+
 it('should set the display', function () {
     $display = 'block';
     $this->event->display($display);
@@ -98,11 +105,12 @@ it('should return props to array', function () {
     $backgroundColor = '#ff0000';
     $textColor = '#00ff00';
     $styles = ['color' => 'red', 'font-size' => '12px', 'background-color' => false, 'border-color: red' => true];
+    $classNames = ['class-1', 'class-2' => true, 'class-3' => false];
     $resourceIds = [1, 2, 3];
     $extendedProps = ['key' => 'value', 'another_key' => 'another_value'];
 
     $this->event->start($start)->end($end)->title($title)->backgroundColor($backgroundColor)
-        ->textColor($textColor)->styles($styles)->resourceIds($resourceIds)->extendedProps($extendedProps)
+        ->textColor($textColor)->styles($styles)->classNames($classNames)->resourceIds($resourceIds)->extendedProps($extendedProps)
     ;
 
     $array = $this->event->toArray();
@@ -114,6 +122,7 @@ it('should return props to array', function () {
         'backgroundColor' => $backgroundColor,
         'textColor' => $textColor,
         'styles' => 'color: red; font-size: 12px; border-color: red;',
+        'classNames' => 'class-1 class-2',
         'resourceIds' => $resourceIds,
         'extendedProps' => $extendedProps,
     ]);
