@@ -72,7 +72,7 @@ class Resource implements Arrayable, Resourceable
         return $this->eventTextColor;
     }
 
-    public function child(array|Resource $child): static
+    public function child(array | Resource $child): static
     {
         return $this->children([$child]);
     }
