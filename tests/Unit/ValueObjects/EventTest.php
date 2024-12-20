@@ -59,7 +59,7 @@ it('should set the styles', function () {
     expect($this->event->getStyles())->toBe('color: red; display: flex; flex-direction: row; font-size: 12px; opacity: 1; border-color: red;');
 });
 
-it('should set some classes', function() {
+it('should set some classes', function () {
     $classes = ['class-1', 'class-2' => true, 'class3' => false];
     $this->event->classNames($classes);
 
