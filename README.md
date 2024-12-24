@@ -88,6 +88,9 @@ All available views are listed in the [calendar documentation](https://github.co
 By default, the calendar will be empty. To add events, simply override the `getEvents` method:
 
 ```php
+use Illuminate\Support\Collection;
+use Guava\Calendar\ValueObjects\Event;
+
 public function getEvents(array $fetchInfo = []): Collection | array
     {
         return [
