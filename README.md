@@ -140,7 +140,7 @@ The event object takes all available options like the underlying calendar packag
 
 Below is a list of available methods on the event object:
 
-#### Setting the tile
+#### Setting the title
 Sets the title of the event that is rendered in the calendar.
 ```php
 Event::make()->title('My event');
