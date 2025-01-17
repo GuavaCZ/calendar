@@ -584,12 +584,14 @@ protected bool $dateClickEnabled = true;
 
 public function getDateClickContextMenuActions(): array
 {
-    CreateAction::make('foo')
-        ->model(Foo::class)
-        ->mountUsing(fn ($arguments, $form) => $form->fill([
-            'starts_at' => data_get($arguments, 'dateStr'),
-            'ends_at' => data_get($arguments, 'dateStr'),
-        ])),
+    return [
+        CreateAction::make('foo')
+            ->model(Foo::class)
+            ->mountUsing(fn ($arguments, $form) => $form->fill([
+                'starts_at' => data_get($arguments, 'dateStr'),
+                'ends_at' => data_get($arguments, 'dateStr'),
+            ])),    
+    ];
 }
 ```
 
@@ -609,12 +611,14 @@ protected bool $dateSelectEnabled = true;
 
 public function getDateSelectContextMenuActions(): array
 {
-    CreateAction::make('foo')
-        ->model(Foo::class)
-        ->mountUsing(fn ($arguments, $form) => $form->fill([
-            'starts_at' => data_get($arguments, 'startStr'),
-            'ends_at' => data_get($arguments, 'endStr'),
-        ])),
+    return [
+        CreateAction::make('foo')
+            ->model(Foo::class)
+            ->mountUsing(fn ($arguments, $form) => $form->fill([
+                'starts_at' => data_get($arguments, 'startStr'),
+                'ends_at' => data_get($arguments, 'endStr'),
+            ])),
+    ];
 }
 ```
 
