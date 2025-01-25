@@ -29,18 +29,16 @@ trait HandlesEventClick
             $key = data_get($info, 'event.extendedProps.key');
 
             if ($model && $key) {
-                $this->resolveEventRecord(
-                    data_get($info, 'event.extendedProps.model'),
-                    data_get($info, 'event.extendedProps.key'),
-                );
-
-                $this->authorize(match ($action) {
-                    'edit' => 'update',
-                    default => $action,
-                }, [$this->eventRecord]);
+                $this->resolveEventRecord($model, $key);
 
                 $action ??= data_get($info, 'event.extendedProps.action', $this->getDefaultEventClickAction());
+
                 if ($action) {
+                    $this->authorize(match ($action) {
+                        'edit' => 'update',
+                        default => $action,
+                    }, [$this->eventRecord]);
+
                     $this->mountAction($action, [
                         'event' => data_get($info, 'event', []),
                     ]);
