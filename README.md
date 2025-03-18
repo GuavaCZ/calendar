@@ -414,7 +414,7 @@ And that's it! As long as pass your model policy checks, an edit modal will be m
 If you want to handle the event click logic completely by yourself, you may override the `onEventClick` method:
 
 ```php
-    public function onEventClick(array $info = []): void
+    public function onEventClick(array $info = [], ?string $action = null): void
 {
     // do something on click
     // $info contains the event data:
