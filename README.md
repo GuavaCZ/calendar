@@ -82,19 +82,22 @@ By default, we show the `dayGridMonth` view. You can customize the view by overr
 protected string $calendarView = 'resourceTimeGridWeek';
 ```
 
-In addition of that, you can initialize the options of the calendar (`duration`, `slotHeight`, `nowIndicator`,...) with the `getOptions` method:
+All available views and options are listed in the [calendar documentation](https://github.com/vkurko/calendar?tab=readme-ov-file#view).
+
+## Other options
+
+In addition of that, you can configure almost all [options from the underlying calendar package](https://github.com/vkurko/calendar?tab=readme-ov-file#options) using the `getOptions` method:
 
 ```php
 public function getOptions(): array
 {
-    return array_merge(parent::getOptions(), [
+    return [
         'nowIndicator' => true,
         'slotDuration' => '00:15:00'
-    ]);
+    ];
 }
 ```
 
-All available views and options are listed in the [calendar documentation](https://github.com/vkurko/calendar?tab=readme-ov-file#view).
 
 ## Adding events
 By default, the calendar will be empty. To add events, simply override the `getEvents` method:
