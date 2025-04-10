@@ -84,6 +84,21 @@ protected string $calendarView = 'resourceTimeGridWeek';
 
 All available views are listed in the [calendar documentation](https://github.com/vkurko/calendar?tab=readme-ov-file#view).
 
+## Other options
+
+In addition of that, you can configure almost all [options from the underlying calendar package](https://github.com/vkurko/calendar?tab=readme-ov-file#options) using the `getOptions` method:
+
+```php
+public function getOptions(): array
+{
+    return [
+        'nowIndicator' => true,
+        'slotDuration' => '00:15:00'
+    ];
+}
+```
+
+
 ## Adding events
 By default, the calendar will be empty. To add events, simply override the `getEvents` method:
 
@@ -414,7 +429,7 @@ And that's it! As long as pass your model policy checks, an edit modal will be m
 If you want to handle the event click logic completely by yourself, you may override the `onEventClick` method:
 
 ```php
-    public function onEventClick(array $info = []): void
+    public function onEventClick(array $info = [], ?string $action = null): void
 {
     // do something on click
     // $info contains the event data:
