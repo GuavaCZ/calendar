@@ -82,7 +82,7 @@ By default, we show the `dayGridMonth` view. You can customize the view by overr
 protected string $calendarView = 'resourceTimeGridWeek';
 ```
 
-All available views and options are listed in the [calendar documentation](https://github.com/vkurko/calendar?tab=readme-ov-file#view).
+All available views are listed in the [calendar documentation](https://github.com/vkurko/calendar?tab=readme-ov-file#view).
 
 ## Other options
 
