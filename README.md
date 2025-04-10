@@ -84,6 +84,21 @@ protected string $calendarView = 'resourceTimeGridWeek';
 
 All available views are listed in the [calendar documentation](https://github.com/vkurko/calendar?tab=readme-ov-file#view).
 
+## Other options
+
+In addition of that, you can configure almost all [options from the underlying calendar package](https://github.com/vkurko/calendar?tab=readme-ov-file#options) using the `getOptions` method:
+
+```php
+public function getOptions(): array
+{
+    return [
+        'nowIndicator' => true,
+        'slotDuration' => '00:15:00'
+    ];
+}
+```
+
+
 ## Adding events
 By default, the calendar will be empty. To add events, simply override the `getEvents` method:
 
