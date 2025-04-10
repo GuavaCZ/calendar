@@ -1,10 +1,10 @@
 <?php
 
 use Carbon\Carbon;
-use Guava\Calendar\ValueObjects\Event;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 
 beforeEach(function () {
-    $this->event = Event::make();
+    $this->event = CalendarEvent::make();
 });
 
 it('should set start and end', function () {

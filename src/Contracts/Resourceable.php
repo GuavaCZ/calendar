@@ -2,9 +2,9 @@
 
 namespace Guava\Calendar\Contracts;
 
-use Guava\Calendar\ValueObjects\Resource;
+use Guava\Calendar\ValueObjects\CalendarResource;
 
 interface Resourceable
 {
-    public function toResource(): array | Resource;
+    public function toCalendarResource(): array | CalendarResource;
 }

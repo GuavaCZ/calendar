@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class Event implements Arrayable, Eventable
+class CalendarEvent implements Arrayable, Eventable
 {
     protected string $title;
 
@@ -224,7 +224,7 @@ class Event implements Arrayable, Eventable
         return $this->durationEditable;
     }
 
-    public function resourceId(int | string | Resource $resource): static
+    public function resourceId(int | string | CalendarResource $resource): static
     {
         $this->resourceIds([$resource]);
 
@@ -336,7 +336,7 @@ class Event implements Arrayable, Eventable
         return $array;
     }
 
-    public function toEvent(): array
+    public function toCalendarEvent(): array
     {
         return $this->toArray();
     }

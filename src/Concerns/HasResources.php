@@ -27,7 +27,7 @@ trait HasResources
         return collect($this->getResources())
             ->map(function (array | Resourceable $resource) {
                 return match (true) {
-                    $resource instanceof Resourceable => $resource->toResource(),
+                    $resource instanceof Resourceable => $resource->toCalendarResource(),
                     default => $resource,
                 };
             })

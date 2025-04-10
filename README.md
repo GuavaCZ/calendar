@@ -89,13 +89,13 @@ By default, the calendar will be empty. To add events, simply override the `getE
 
 ```php
 use Illuminate\Support\Collection;
-use Guava\Calendar\ValueObjects\Event;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 
 public function getEvents(array $fetchInfo = []): Collection | array
     {
         return [
             // Chainable object-oriented variant
-            Event::make()
+            CalendarEvent::make()
                 ->title('My first event')
                 ->start(today())
                 ->end(today()),
@@ -124,8 +124,8 @@ class Foo extends Model implements Eventable
 {
     // ...
     
-    public function toEvent(): Event|array {
-        return Event::make($this)
+    public function toCalendarEvent(): CalendarEvent|array {
+        return CalendarEvent::make($this)
             ->title($this->name)
             ->start($this->starts_at)
             ->end($this->ends_at);
@@ -143,13 +143,13 @@ Below is a list of available methods on the event object:
 #### Setting the title
 Sets the title of the event that is rendered in the calendar.
 ```php
-Event::make()->title('My event');
+CalendarEvent::make()->title('My event');
 ```
 
 #### Customizing the start/end date
 Sets the start or end date (and time) of the event in the calendar.
 ```php
-Event::make()
+CalendarEvent::make()
     ->start(today())
     ->end(today()->addDays(3));
 ```
@@ -157,13 +157,13 @@ Event::make()
 #### Making the event all-day
 Sets whether the event is an all-day event or not.
 ```php
-Event::make()->allDay();
+CalendarEvent::make()->allDay();
 ```
 
 #### Customizing the background / text color
 Sets the background color of the event (by default it is the primary color of the panel).
 ```php
-Event::make()
+CalendarEvent::make()
 ->backgroundColor('#ff0000')
 ->textColor('#ffffff');
 ```
@@ -179,7 +179,7 @@ You can add custom styles to your event elements by using the styles method. Thi
 Here's how you can use it:
 
 ```php
-Event::make()->styles([
+CalendarEvent::make()->styles([
     'color: red' => true,            // Applies the style if the condition (true) is met
     'background-color' => '#ffff00', // Directly applies the background color
     'font-size: 12px'                // Always applies this font size
@@ -201,7 +201,7 @@ Following the same pattern as with the styles property, it is possible to inject
 Here's how you can use it:
 
 ```php
-Event::make()->classNames([
+CalendarEvent::make()->classNames([
     'class-1',            
     'class-2' => true  // Applies the class if the condition (true) is met
 ]);
@@ -217,7 +217,7 @@ By default, events are rendered as `blocks`. This is when the display is set to 
 This doesn't work always though, it only works on all day events and in specific views. If the `background` event is unsupported, the event will not be rendered at all.
 
 ```php
-Event::make()
+CalendarEvent::make()
 ->display('background') // or 'auto'
 ->displayAuto() // short-hand for ->display('auto')
 ->displayBackground(); // short-hand for ->display('background')
@@ -229,7 +229,7 @@ This sets the action that should be mounted when the event is clicked. It can be
 By default, all `CalendarWidget` classes already include a `view` and `edit` action.
 
 ```php
-Event::make()->action('edit');
+CalendarEvent::make()->action('edit');
 ```
 
 #### Set the model and record key
@@ -240,10 +240,10 @@ The model is also required if you want to display multiple types of events and h
 ```php
 $record = MyModel::find(1);
 // 1. variant
-Event::make($record);
+CalendarEvent::make($record);
 
 // 2. variant
-Event::make()
+CalendarEvent::make()
     ->model($record::class)
     ->key($record->getKey());
 ```
@@ -251,7 +251,7 @@ Event::make()
 #### Passing custom data
 You can pass any custom data to the event that you wish:
 ```php
-Event::make()
+CalendarEvent::make()
 ->extendedProp('foo', 'bar')
 // or
 ->extendedProps(['baz' => 'qux', 'quux' => 'corge']);
@@ -378,7 +378,7 @@ public function getResources(): Collection|array
 {
     return [
         // Chainable object-oriented variant
-        Resource::make('foo')
+        CalendarResource::make('foo')
             ->title('Room 1'),
             
         // Array variant

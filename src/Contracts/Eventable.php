@@ -2,9 +2,9 @@
 
 namespace Guava\Calendar\Contracts;
 
-use Guava\Calendar\ValueObjects\Event;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 
 interface Eventable
 {
-    public function toEvent(): array | Event;
+    public function toCalendarEvent(): array | CalendarEvent;
 }

@@ -29,7 +29,7 @@ trait HasEvents
         return collect($this->getEvents($fetchInfo))
             ->map(function (array | Eventable $event) {
                 return match (true) {
-                    $event instanceof Eventable => $event->toEvent(),
+                    $event instanceof Eventable => $event->toCalendarEvent(),
                     default => $event,
                 };
             })

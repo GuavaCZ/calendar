@@ -6,7 +6,7 @@ use Guava\Calendar\Contracts\Resourceable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 
-class Resource implements Arrayable, Resourceable
+class CalendarResource implements Arrayable, Resourceable
 {
     protected int | string $id;
 
@@ -72,7 +72,7 @@ class Resource implements Arrayable, Resourceable
         return $this->eventTextColor;
     }
 
-    public function child(array | Resource $child): static
+    public function child(array | CalendarResource $child): static
     {
         return $this->children([$child]);
     }
@@ -131,7 +131,7 @@ class Resource implements Arrayable, Resourceable
         ];
     }
 
-    public function toResource(): array
+    public function toCalendarResource(): array
     {
         return $this->toArray();
     }
