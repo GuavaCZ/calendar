@@ -1,12 +1,12 @@
 {
-    "name": "guava/calendar",
+    "name": "athuli7/temp-guava-calendar",
     "description": "Adds support for vkurko/calendar to Filament PHP.",
     "keywords": [
         "Guava",
         "laravel",
         "calendar"
     ],
-    "homepage": "https://github.com/GuavaCZ/calendar",
+    "homepage": "https://github.com/Athuli7/guavaCZ-calendar",
     "license": "MIT",
     "authors": [
         {
