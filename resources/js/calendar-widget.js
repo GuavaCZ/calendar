@@ -211,6 +211,10 @@ export default function calendarWidget({
 
                 if (enabled) {
                     await this.$wire.onEventResize({
+                        timestamps: {
+							start: new Date(info.event.start).getTime(),
+							end: new Date(info.event.end).getTime(),
+						},
                         event: info.event,
                         oldEvent: info.oldEvent,
                         endDelta: info.endDelta,
@@ -233,6 +237,10 @@ export default function calendarWidget({
 
                 if (enabled) {
                     await this.$wire.onEventDrop({
+                        timestamps: {
+							start: new Date(info.event.start).getTime(),
+							end: new Date(info.event.end).getTime(),
+						},
                         event: info.event,
                         oldEvent: info.oldEvent,
                         oldResource: info.oldResource,
