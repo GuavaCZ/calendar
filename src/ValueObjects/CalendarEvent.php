@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class CalendarEvent implements Arrayable, Eventable
 {
-    protected string $title;
+    protected string|array $title;
 
     protected Carbon $start;
 
@@ -87,14 +87,14 @@ class CalendarEvent implements Arrayable, Eventable
         return $this->allDay;
     }
 
-    public function title(string $title): static
+    public function title(string|array $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function getTitle(): string
+    public function getTitle(): string|array
     {
         return $this->title;
     }
