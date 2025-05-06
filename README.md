@@ -111,7 +111,7 @@ public function getEvents(array $fetchInfo = []): Collection | array
         return [
             // Chainable object-oriented variant
             CalendarEvent::make()
-                ->title('My first event')
+                ->title('My first event') // or ['html' => 'TITLE <small>something</small>']
                 ->start(today())
                 ->end(today()),
                 
