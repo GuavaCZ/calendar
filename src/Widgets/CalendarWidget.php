@@ -10,6 +10,7 @@ use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Widgets\Widget;
 use Guava\Calendar\Concerns\HandlesDateClick;
 use Guava\Calendar\Concerns\HandlesDateSelect;
+use Guava\Calendar\Concerns\HandlesDatesSet;
 use Guava\Calendar\Concerns\HandlesEventAllUpdated;
 use Guava\Calendar\Concerns\HandlesEventClick;
 use Guava\Calendar\Concerns\HandlesEventDragAndDrop;
@@ -41,6 +42,7 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use EvaluatesClosures;
     use HandlesDateClick;
     use HandlesDateSelect;
+    use HandlesDatesSet;
     use HandlesEventAllUpdated;
     use HandlesEventClick;
     use HandlesEventDragAndDrop;

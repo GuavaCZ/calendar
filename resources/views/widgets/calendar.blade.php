@@ -5,6 +5,7 @@
     $noEventsClickEnabled = $this->isNoEventsClickEnabled();
     $dateClickEnabled = $this->isDateClickEnabled();
     $dateSelectEnabled = $this->isDateSelectEnabled();
+    $datesSetEnabled = $this->isDatesSetEnabled();
     $viewDidMountEnabled = $this->isViewDidMountEnabled();
     $eventAllUpdatedEnabled = $this->isEventAllUpdatedEnabled();
     $onEventResizeStart = method_exists($this, 'onEventResizeStart');
@@ -79,6 +80,7 @@
                 noEventsClickEnabled: @js($noEventsClickEnabled),
                 dateClickEnabled: @js($dateClickEnabled),
                 dateSelectEnabled: @js($dateSelectEnabled),
+                datesSetEnabled: @js($datesSetEnabled),
                 viewDidMountEnabled: @js($viewDidMountEnabled),
                 eventAllUpdatedEnabled: @js($eventAllUpdatedEnabled),
                 onEventResizeStart: @js($onEventResizeStart),

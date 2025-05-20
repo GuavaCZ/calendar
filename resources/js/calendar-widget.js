@@ -10,8 +10,9 @@ export default function calendarWidget({
                                            eventDragEnabled = false,
                                            eventResizeEnabled = false,
                                            noEventsClickEnabled = false,
-                                           dateSelectEnabled = false,
                                            dateClickEnabled = false,
+                                           dateSelectEnabled = false,
+                                           datesSetEnabled = false,
                                            viewDidMountEnabled = false,
                                            eventAllUpdatedEnabled = false,
                                            dayMaxEvents = false,
@@ -116,6 +117,18 @@ export default function calendarWidget({
                             resource: info.resource,
                         });
                     }
+                };
+            }
+
+            if (datesSetEnabled) {
+                settings.datesSet = (info) => {
+                    this.$wire.onDatesSet({
+                        start: info.start,
+                        startStr: info.startStr,
+                        end: info.end,
+                        endStr: info.endStr,
+                        view: info.view,
+                    });
                 };
             }
 
@@ -264,7 +277,7 @@ export default function calendarWidget({
                 };
             }
 
-            this.ec = EventCalendar.create(this.$el.querySelector('div'), {
+            this.ec = new EventCalendar(this.$el.querySelector('div'), {
                 ...settings,
                 ...options
             });
