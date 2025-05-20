@@ -264,7 +264,7 @@ export default function calendarWidget({
                 };
             }
 
-            this.ec = new EventCalendar(this.$el.querySelector('div'), {
+            this.ec = EventCalendar.create(this.$el.querySelector('div'), {
                 ...settings,
                 ...options
             });
