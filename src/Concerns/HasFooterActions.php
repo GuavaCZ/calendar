@@ -57,6 +57,6 @@ trait HasFooterActions
     {
         return Actions::make($this->getCachedFooterActions())
             ->container(Schema::make($this))
-            ;
+        ;
     }
 }

@@ -16,7 +16,7 @@ class ViewAction extends \Filament\Actions\ViewAction
             fn (CalendarWidget $livewire) => $livewire
                 ->getInfolistSchemaForModel($livewire->getEventModel())
                 ->getComponents()
-        );;
+        );
         $this->cancelParentActions();
     }
 }
