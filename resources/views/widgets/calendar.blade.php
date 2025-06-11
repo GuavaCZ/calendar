@@ -1,4 +1,7 @@
 @php
+    use Filament\Schemas\Components\Actions;
+    use Filament\Support\Facades\FilamentAsset;
+
     $eventClickEnabled = $this->isEventClickEnabled();
     $eventDragEnabled = $this->isEventDragEnabled();
     $eventResizeEnabled = $this->isEventResizeEnabled();
@@ -20,44 +23,43 @@
 @endphp
 
 <x-filament-widgets::widget>
-
     {{--    @push('styles')--}}
     <style>
         .ec {
-            --ec-event-bg-color: rgb(var(--primary-600));
-            --ec-border-color: rgb(var(--gray-200));
-            --ec-button-border-color: rgba(var(--gray-950), 0.1);
-            --ec-button-bg-color: rgba(255, 255, 255, 1.0);
-            --ec-button-active-bg-color: rgba(var(--gray-50), 1.0);
+            --ec-event-bg-color: var(--primary-600);
+            --ec-border-color: var(--gray-200);
+            --ec-button-border-color: color-mix(in oklab, var(--gray-950) 10%, transparent);
+            --ec-button-bg-color: white;
+            --ec-button-active-bg-color: var(--gray-50);
             --ec-button-active-border-color: var(--ec-button-border-color);
 
             & .ec-event.ec-preview {
-                --ec-event-bg-color: rgb(var(--primary-400));
+                --ec-event-bg-color: var(--primary-400);
                 z-index: 30;
             }
 
             & .ec-now-indicator {
-                z-index:40;
+                z-index: 40;
             }
         }
 
         .dark .ec {
-            --ec-event-bg-color: rgb(var(--primary-500));
+            --ec-event-bg-color: var(--primary-500);
             --ec-border-color: rgba(255, 255, 255, 0.10);
-            --ec-button-border-color: rgba(var(--gray-600), 1.0);
+            --ec-button-border-color: var(--gray-600);
             --ec-button-bg-color: rgba(255, 255, 255, 0.05);
             --ec-button-active-bg-color: rgba(255, 255, 255, 0.1);
             --ec-button-active-border-color: var(--ec-button-border-color);
 
             & .ec-event.ec-preview {
-                --ec-event-bg-color: rgb(var(--primary-300));
+                --ec-event-bg-color: var(--primary-300);
             }
         }
     </style>
     {{--    @endpush--}}
     <x-filament::section
-        :header-actions="$this->getCachedHeaderActions()"
-        :footer-actions="$this->getCachedFooterActions()"
+                :after-header="$this->getCachedHeaderActionsComponent()"
+                :footer="$this->getCachedFooterActionsComponent()"
     >
         <x-slot name="heading">
             {{ $this->getHeading() }}
@@ -66,8 +68,8 @@
         <div
             wire:ignore
             x-ignore
-            ax-load
-            ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-widget', 'guava/calendar') }}"
+            x-load
+            x-load-src="{{ FilamentAsset::getAlpineComponentSrc('calendar-widget', 'guava/calendar') }}"
             x-data="calendarWidget({
                 view: @js($this->getCalendarView()),
                 locale: @js($this->getLocale()),

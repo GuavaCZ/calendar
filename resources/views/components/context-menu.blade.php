@@ -12,9 +12,9 @@
 @if($hasContextMenu)
 
     <div x-ignore
-         ax-load
+         x-load
          calendar-context-menu
-         ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-context-menu', 'guava/calendar') }}"
+         x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('calendar-context-menu', 'guava/calendar') }}"
          x-data="calendarContextMenu()"
          class="absolute top-0 left-0 z-30"
     >

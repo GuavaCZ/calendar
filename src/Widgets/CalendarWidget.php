@@ -6,6 +6,8 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Widgets\Widget;
 use Guava\Calendar\Concerns\HandlesDateClick;
@@ -37,7 +39,7 @@ use Guava\Calendar\Concerns\HasSchema;
 use Guava\Calendar\Concerns\HasSlotLabelFormat;
 use Guava\Calendar\Concerns\InteractsWithEventRecord;
 
-class CalendarWidget extends Widget implements HasActions, HasForms
+class CalendarWidget extends Widget implements HasActions, HasSchemas
 {
     use EvaluatesClosures;
     use HandlesDateClick;
@@ -69,9 +71,9 @@ class CalendarWidget extends Widget implements HasActions, HasForms
     use HasSlotLabelFormat;
     use InteractsWithActions;
     use InteractsWithEventRecord;
-    use InteractsWithForms;
+    use InteractsWithSchemas;
 
-    protected static string $view = 'guava-calendar::widgets.calendar';
+    protected string $view = 'guava-calendar::widgets.calendar';
 
     protected int | string | array $columnSpan = 'full';
 

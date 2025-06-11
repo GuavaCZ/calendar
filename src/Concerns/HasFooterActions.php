@@ -4,6 +4,8 @@ namespace Guava\Calendar\Concerns;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Schema;
 use InvalidArgumentException;
 
 trait HasFooterActions
@@ -49,5 +51,12 @@ trait HasFooterActions
     public function getFooterActions(): array
     {
         return [];
+    }
+
+    public function getCachedFooterActionsComponent(): Actions
+    {
+        return Actions::make($this->getCachedFooterActions())
+            ->container(Schema::make($this))
+            ;
     }
 }

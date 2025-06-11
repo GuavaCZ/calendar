@@ -351,31 +351,58 @@ public function getResourceLabelContent(): null|string|array
 }
 ```
 
-## Customize the form schema
-When an event triggers an action (such as view or edit actions), a modal with a form is mounted.
+## Customize the  schema
+When an event triggers an action (such as view or edit actions), a modal with a schema is mounted.
 
-You can customize the form schema by overriding the `getSchema` method in your widget class:
+However, because each event can be related to a different model (for example your calendar could render both "meeting" and "standup" models), we need to render the correct schema.
 
+To do so, we attempt to find the correct schema to be rendered in a variety of ways, in this exact order:
+#### 1) Method with ForModel attribute
+We search for a method with the `#[ForModel(<ModelClass>)]` attribute.
+
+For example:
 ```php
-public function getSchema(?string $model = null): ?array
-{
-    // If you only work with one model type, you can ignore the $model parameter and simply return a schema
-    return [
-        TextInput::make('title')
-    ];
-    
-    // If you have multiple model types on your calendar, you can return different schemas based on the $model property
-    return match($model) {
-        Foo::class => [
-            TextInput::make('name'),
-        ],
-        Bar::class => [
-            TextInput::make('title'),
-            TextArea::make('description'),
-        ],
-    }
+use Guava\Calendar\Attributes\ForModel;
+
+#[ForModel(ModelName::class)]
+public function modelSchema(Schema $schema): Schema {
+    return  $schema->components([
+       // ...
+    ]);
 }
 ```
+
+#### 2) Method named after camel case model name
+Next we try to look for a method corresponding the camel case model name, following `Schema`.
+
+So for example, if my model is `App\Models\Event`, the method would be:
+```php
+public function eventSchema(Schema $schema): Schema {
+    return  $schema->components([
+        // ...
+    ]);
+}
+```
+
+#### 3) Default schema method
+Sometimes your calendar only operates with a single model type, or multiple of your models work with the same attributes and so a shared schema is enough.
+
+In such a case you can use the `defaultSchema` or `schema` methods like this:
+```php
+public function defaultSchema(Schema $schema): Schema {
+    return  $schema->components([
+        // ...
+    ]);
+}
+```
+
+#### 4) Autoload from resource
+Lastly, we attempt to automatically load the schema from the model's resource (if present).
+
+In this case, if you have a model `App\Models\Event` and a `App\Filament\Resources\EventResource` resource, we will use the `EventResource::form` method as your schema.
+
+#### No schema found
+If no schema could be found for a given model, an exception is thrown.
 
 ## Resources
 Resource views (their names start with `resource`) allow you to group events into resources (such as rooms, projects, etc.).

@@ -12,7 +12,11 @@ class ViewAction extends \Filament\Actions\ViewAction
 
         $this->model(fn (CalendarWidget $livewire) => $livewire->getEventModel());
         $this->record(fn (CalendarWidget $livewire) => $livewire->getEventRecord());
-        $this->form(fn (CalendarWidget $livewire) => $livewire->getSchema($livewire->getEventModel()));
+        $this->schema(
+            fn (CalendarWidget $livewire) => $livewire
+                ->getInfolistSchemaForModel($livewire->getEventModel())
+                ->getComponents()
+        );;
         $this->cancelParentActions();
     }
 }
