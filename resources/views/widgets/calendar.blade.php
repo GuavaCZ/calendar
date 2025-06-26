@@ -17,6 +17,7 @@
     $hasDateSelectContextMenu = !empty($this->getCachedDateSelectContextMenuActions());
     $hasEventClickContextMenu = !empty($this->getCachedEventClickContextMenuActions());
     $hasNoEventsClickContextMenu = !empty($this->getCachedNoEventsClickContextMenuActions());
+    $hasContextMenu = $this->hasContextMenu();
 
     $dayHeaderFormatJs = $this->getDayHeaderFormatJs();
     $slotLabelFormatJs = $this->getSlotLabelFormatJs();
@@ -97,10 +98,14 @@
                 options: @js($this->getOptions()),
                 dayHeaderFormat: {{$dayHeaderFormatJs}},
                 slotLabelFormat: {{$slotLabelFormatJs}},
+                eventAssetUrl: @js(FilamentAsset::getAlpineComponentSrc('event', 'guava/calendar'))
             })"
+            x-ref="calendar"
         >
             <div id="calendar"></div>
-            <x-guava-calendar::context-menu/>
+            @if($hasContextMenu)
+                <x-guava-calendar::context-menu/>
+            @endif
         </div>
     </x-filament::section>
     <x-filament-actions::modals/>

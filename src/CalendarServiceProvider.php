@@ -41,6 +41,10 @@ class CalendarServiceProvider extends PackageServiceProvider
                     'calendar-context-menu',
                     __DIR__ . '/../dist/js/calendar-context-menu.js',
                 ),
+                AlpineComponent::make(
+                    'event',
+                    __DIR__ . '/../dist/js/event.js',
+                ),
                 Css::make('calendar-styles', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@4.3.0/dist/event-calendar.min.css'),
                 Js::make('calendar-script', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@4.3.0/dist/event-calendar.min.js'),
             ],

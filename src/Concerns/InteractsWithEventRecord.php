@@ -12,31 +12,44 @@ trait InteractsWithEventRecord
     #[Locked]
     public ?Model $eventRecord = null;
 
-    /**
-     * @deprecated Use getEventRecord() instead.
-     */
-    public function getRecord(): ?Model
-    {
-        return $this->getEventRecord();
-    }
-
     public function getEventRecord(): ?Model
     {
-        return $this->eventRecord;
-    }
+        $data = $this->getActionContextData();
 
-    /**
-     * @deprecated Use getEventModel() instead.
-     */
-    public function getModel(): ?string
-    {
-        return $this->getEventModel();
+        if ($event = data_get($data, 'event')) {
+            $key = data_get($event, 'extendedProps.key');
+            $model = data_get($event, 'extendedProps.model');
+
+            if ($model && $key) {
+                $record = $model::find($key);
+                $this->eventRecord = $record;
+
+                return $record;
+            }
+        }
+
+        return null;
     }
 
     public function getEventModel(): ?string
     {
         if ($record = $this->getEventRecord()) {
             return $record::class;
+        }
+
+        return null;
+    }
+
+    protected function setEventRecordFromEvent(?array $event = null): ?Model
+    {
+        $key = data_get($event, 'extendedProps.key');
+        $model = data_get($event, 'extendedProps.model');
+
+        if ($model && $key) {
+            $record = $model::find($key);
+            $this->eventRecord = $record;
+
+            return $record;
         }
 
         return null;

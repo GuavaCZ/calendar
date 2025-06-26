@@ -1,3 +1,5 @@
+import {createEventContent} from "@event-calendar/core";
+
 export default function calendarWidget({
                                            view = 'dayGridMonth',
                                            locale = 'en',
@@ -25,6 +27,7 @@ export default function calendarWidget({
                                            options = {},
                                            dayHeaderFormat = null,
                                            slotLabelFormat = null,
+                                           eventAssetUrl,
                                        }) {
     return {
 
@@ -59,9 +62,15 @@ export default function calendarWidget({
                 settings.slotLabelFormat = slotLabelFormat;
             }
 
+
             if (dateClickEnabled) {
                 settings.dateClick = (info) => {
                     if (hasDateClickContextMenu) {
+                        const element = document.querySelector('[calendar-context-menu]')
+                        const menu = Alpine.$data(element)
+                        menu.loadActions('dateClick')
+                        menu.openMenu(info.jsEvent)
+                        return;
                         self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
                             detail: {
                                 mountData: {
@@ -170,29 +179,10 @@ export default function calendarWidget({
 
             if (eventClickEnabled) {
                 settings.eventClick = (info) => {
-                    if (info.event.extendedProps.url) {
-                        const target = info.event.extendedProps.url_target ?? '_blank';
-                        window.open(info.event.extendedProps.url, target);
-                    } else if (hasEventClickContextMenu) {
-                        self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {
-                            detail: {
-                                mountData: {
-                                    event: info.event,
-                                    view: info.view,
-                                },
-                                jsEvent: info.jsEvent,
-                                context: 'eventClick',
-                            },
-                        }));
-                    } else {
-                        this.$wire.onEventClick({
-                            event: info.event,
-                            view: info.view,
-                        });
-                    }
+                    const component = Alpine.$data(info.el)
+                    component.onClick(info)
                 };
             }
-
 
             if (noEventsClickEnabled) {
                 settings.noEventsClick = (info) => {
@@ -275,6 +265,17 @@ export default function calendarWidget({
                         info: info,
                     });
                 };
+            }
+
+            settings.eventDidMount = (info) => {
+                info.el.setAttribute('x-load')
+                info.el.setAttribute('x-load-src', eventAssetUrl)
+                info.el.setAttribute('x-data', `event({
+                    event: ${JSON.stringify(info.event)},
+                    timeText: "${info.timeText}",
+                    view: ${JSON.stringify(info.view)},
+                    hasEventClickContextMenu: ${hasEventClickContextMenu},
+                })`)
             }
 
             this.ec = EventCalendar.create(this.$el.querySelector('div'), {

@@ -1,4 +1,6 @@
-export default function calendarContextMenu() {
+export default function calendarContextMenu({
+                                                getActionsUsing,
+                                            }) {
     return {
 
         open: false,
@@ -13,6 +15,8 @@ export default function calendarContextMenu() {
         },
         mountData: {},
         context: null,
+        actions: [],
+        isLoading: false,
 
         menu: {
             ['x-show']() {
@@ -41,15 +45,30 @@ export default function calendarContextMenu() {
             this.$el.addEventListener('calendar--open-menu', (event) => this.openMenu(event));
         },
 
-        openMenu: function (event) {
-            this.context = event.detail.context;
-            this.mountData = event.detail.mountData;
+        loadActions: async function(context, data = {}) {
+            this.isLoading = true
+            getActionsUsing(context, data)
+                .then((actions) => {
+                    this.actions = actions
+                })
+                .finally(() => this.isLoading = false)
+        },
+
+        openMenu: async function (event) {
+            // this.context = event.detail.context;
+            // this.mountData = event.detail.mountData;
+            // this.isLoading = true
+            // getActionsUsing(event.detail)
+            //     .then((actions) => {
+            //         this.actions = actions
+            //     })
+            //     .finally(() => this.isLoading = false)
 
             this.$nextTick(() => {
-                const clientX = event.detail.jsEvent.clientX;
-                const clientY = event.detail.jsEvent.clientY;
-                const pageX = event.detail.jsEvent.pageX;
-                const pageY = event.detail.jsEvent.pageY;
+                const clientX = event.clientX;
+                const clientY = event.clientY;
+                const pageX = event.pageX;
+                const pageY = event.pageY;
 
                 const offsetX = clientX + this.size.width > window.innerWidth
                     ? clientX + this.size.width - window.innerWidth
@@ -66,6 +85,7 @@ export default function calendarContextMenu() {
 
         closeMenu: function () {
             this.open = false;
+            this.actions = [];
         }
     }
 }

@@ -2,10 +2,9 @@
 
 namespace Guava\Calendar\Widgets;
 
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Concerns\EvaluatesClosures;
@@ -38,6 +37,9 @@ use Guava\Calendar\Concerns\HasResources;
 use Guava\Calendar\Concerns\HasSchema;
 use Guava\Calendar\Concerns\HasSlotLabelFormat;
 use Guava\Calendar\Concerns\InteractsWithEventRecord;
+use Guava\Calendar\Enums\Context;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class CalendarWidget extends Widget implements HasActions, HasSchemas
 {
@@ -75,6 +77,8 @@ class CalendarWidget extends Widget implements HasActions, HasSchemas
 
     protected string $view = 'guava-calendar::widgets.calendar';
 
+    public array $actionContextData = [];
+
     protected int | string | array $columnSpan = 'full';
 
     public function refreshRecords(): static
@@ -96,5 +100,37 @@ class CalendarWidget extends Widget implements HasActions, HasSchemas
         $this->dispatch('calendar--set', key: $key, value: $value);
 
         return $this;
+    }
+
+    public function getActionsUsing(Context $context, array $data = []): Collection
+    {
+        $this->setActionContextData($data);
+
+        $actions = match ($context) {
+            Context::EventClick => $this->getCachedEventClickContextMenuActions(),
+            Context::DateClick => $this->getCachedDateClickContextMenuActions(),
+            Context::DateSelect => $this->getCachedDateSelectContextMenuActions(),
+            Context::NoEventsClick => $this->getCachedNoEventsClickContextMenuActions()
+        };
+
+        return collect($actions)
+            ->filter(fn (Action $action) => $action->isVisible())
+            ->map(fn (Action $action) => $action->toHtml())
+        ;
+    }
+
+    protected function setActionContextData(array $data): void
+    {
+        $this->actionContextData = $data;
+    }
+
+    protected function getActionContextData(): array
+    {
+        return $this->actionContextData;
+    }
+
+    public function testing()
+    {
+        dd('testing on wire!');
     }
 }

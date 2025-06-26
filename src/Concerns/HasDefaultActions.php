@@ -16,7 +16,7 @@ trait HasDefaultActions
 
     public function editAction(): Action
     {
-        return EditAction::make();
+        return \Filament\Actions\EditAction::make();
     }
 
     public function deleteAction(): Action

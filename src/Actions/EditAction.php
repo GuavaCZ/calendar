@@ -12,9 +12,12 @@ class EditAction extends \Filament\Actions\EditAction
 
         $this->model(fn (CalendarWidget $livewire) => $livewire->getEventModel());
         $this->record(fn (CalendarWidget $livewire) => $livewire->getEventRecord());
-        $this->schema(
-            fn (CalendarWidget $livewire) => $livewire
-                ->getFormSchemaForModel($livewire->getEventModel())
+        $this
+//            ->resolveRecordUsing(fn($key) => dd('asdf', $key))
+//            ->mountUsing(fn($arguments, $context) => dd($arguments, $context))
+            ->schema(
+            fn (CalendarWidget $livewire, $record) => $livewire
+                ->getFormSchemaForModel($record)
                 ->getComponents()
         );
         $this->after(fn (CalendarWidget $livewire) => $livewire->refreshRecords());
