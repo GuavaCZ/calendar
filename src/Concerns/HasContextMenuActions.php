@@ -3,8 +3,8 @@
 namespace Guava\Calendar\Concerns;
 
 use Filament\Actions\Action;
-use Guava\Calendar\Actions\EventClickAction;
 use Guava\Calendar\Enums\Context;
+use Guava\Calendar\Widgets\CalendarWidget;
 use InvalidArgumentException;
 
 trait HasContextMenuActions
@@ -30,7 +30,7 @@ trait HasContextMenuActions
             $this->cacheContextMenuAction($action, Context::DateSelect);
         }
         foreach ($this->getEventClickContextMenuActions() as $action) {
-            $this->cacheContextMenuAction(EventClickAction::configure($action), Context::EventClick);
+            $this->cacheContextMenuAction($action, Context::EventClick);
         }
         foreach ($this->getNoEventsClickContextMenuActions() as $action) {
             $this->cacheContextMenuAction($action, Context::NoEventsClick);
@@ -86,11 +86,8 @@ trait HasContextMenuActions
     {
         $action = $action
             ->grouped()
-//            ->when(
-//                $context === Context::EventClick,
-//                fn ($action) => $action->alpineClickHandler(fn ($action) => "\$wire.onEventClick(mountData, '{$action->getName()}')"),
-//                fn ($action) => $action->alpineClickHandler(fn ($action) => "\$wire.mountAction('{$action->getName()}', mountData)")
-//            )
+            ->model(fn (CalendarWidget $livewire) => $livewire->getEventModel())
+            ->record(fn (CalendarWidget $livewire) => $livewire->getEventRecord())
         ;
 
         if (! $action instanceof Action) {

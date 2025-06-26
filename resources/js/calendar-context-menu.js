@@ -47,6 +47,7 @@ export default function calendarContextMenu({
 
         loadActions: async function(context, data = {}) {
             this.isLoading = true
+            this.actions = []
             getActionsUsing(context, data)
                 .then((actions) => {
                     this.actions = actions
@@ -85,7 +86,7 @@ export default function calendarContextMenu({
 
         closeMenu: function () {
             this.open = false;
-            this.actions = [];
+            // this.actions = [];
         }
     }
 }

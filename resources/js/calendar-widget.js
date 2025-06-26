@@ -68,7 +68,13 @@ export default function calendarWidget({
                     if (hasDateClickContextMenu) {
                         const element = document.querySelector('[calendar-context-menu]')
                         const menu = Alpine.$data(element)
-                        menu.loadActions('dateClick')
+                        menu.loadActions('dateClick', {
+                            date: info.date,
+                            dateStr: info.dateStr,
+                            allDay: info.allDay,
+                            view: info.view,
+                            resource: info.resource,
+                        })
                         menu.openMenu(info.jsEvent)
                         return;
                         self.$el.querySelector('[calendar-context-menu]').dispatchEvent(new CustomEvent('calendar--open-menu', {

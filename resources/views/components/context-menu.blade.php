@@ -18,6 +18,7 @@
      class="absolute top-0 left-0 z-30"
 >
     <div x-bind="menu"
+         x-transition:enter-start="fi-opacity-0" x-transition:leave-end="fi-opacity-0"
         {{--             x-bind:class="--}}
         {{--            if(context == @js(Context::DateClick) && @js(empty($dateClickContextMenuActions))--}}
         {{--            || context == @js(Context::DateSelect) && @js(empty($dateSelectContextMenuActions))--}}
