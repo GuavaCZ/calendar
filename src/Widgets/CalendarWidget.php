@@ -2,11 +2,16 @@
 
 namespace Guava\Calendar\Widgets;
 
+use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Widgets\Widget;
 use Guava\Calendar\Concerns\HandlesDateClick;
@@ -38,7 +43,6 @@ use Guava\Calendar\Concerns\HasSchema;
 use Guava\Calendar\Concerns\HasSlotLabelFormat;
 use Guava\Calendar\Concerns\InteractsWithEventRecord;
 use Guava\Calendar\Enums\Context;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class CalendarWidget extends Widget implements HasActions, HasSchemas
@@ -132,5 +136,17 @@ class CalendarWidget extends Widget implements HasActions, HasSchemas
     public function testing()
     {
         dd('testing on wire!');
+    }
+
+    public function getDefaultActionSchemaResolver(Action $action): ?Closure
+    {
+        return match (true) {
+            $action instanceof CreateAction => fn (Schema $schema): Schema => $this->getFormSchemaForModel($schema, $this->getEventModel()),
+            $action instanceof EditAction => fn (Schema $schema): Schema => $this->getFormSchemaForModel($schema, $this->getEventModel())
+                ->record($this->getEventRecord()),
+            $action instanceof ViewAction => fn (Schema $schema): Schema => $this->getInfolistSchemaForModel($schema, $this->getEventModel())
+                ->record($this->getEventRecord()),
+            default => null,
+        };
     }
 }

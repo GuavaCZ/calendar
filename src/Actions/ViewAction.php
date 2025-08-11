@@ -2,6 +2,7 @@
 
 namespace Guava\Calendar\Actions;
 
+use Filament\Schemas\Schema;
 use Guava\Calendar\Widgets\CalendarWidget;
 
 class ViewAction extends \Filament\Actions\ViewAction
@@ -11,11 +12,13 @@ class ViewAction extends \Filament\Actions\ViewAction
         parent::setUp();
 
         $this
-            ->schema(
-                fn (CalendarWidget $livewire) => $livewire
-                    ->getInfolistSchemaForModel($livewire->getEventModel())
-                    ->getComponents()
-            )
+            ->model(fn (CalendarWidget $livewire) => $livewire->getEventModel())
+            ->record(fn (CalendarWidget $livewire) => $livewire->getEventRecord())
+//            ->schema(
+//                fn (CalendarWidget $livewire, ViewAction $action, Schema $schema) => $livewire
+//                    ->getInfolistSchemaForModel($schema, $action->getModel())
+//                    ->record($action->getRecord())
+//            )
             ->cancelParentActions()
         ;
     }

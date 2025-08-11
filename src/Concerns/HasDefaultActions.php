@@ -7,13 +7,24 @@ use Guava\Calendar\Actions\CreateAction;
 use Guava\Calendar\Actions\DeleteAction;
 use Guava\Calendar\Actions\EditAction;
 use Guava\Calendar\Actions\ViewAction;
+use Illuminate\Support\Str;
 
 trait HasDefaultActions
 {
+    /**
+     * A create action for the specified model.
+     *
+     * @param  string  $model  The model class for which you want to make a create action.
+     */
     public function createAction(string $model): Action
     {
-        return CreateAction::make()->model($model);
+        $modelSnakeCase = Str::snake(class_basename($model));
+
+        return CreateAction::make("create_$modelSnakeCase")
+            ->model($model)
+        ;
     }
+
     public function viewAction(): Action
     {
         return ViewAction::make();

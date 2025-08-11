@@ -2,6 +2,7 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

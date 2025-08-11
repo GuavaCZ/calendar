@@ -8,6 +8,10 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/guava/calendar/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/GuavaCZ/calendar/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/guava/calendar.svg?style=flat-square)](https://packagist.org/packages/guava/calendar)
 
+> [!NOTE]  
+> You are viewing the documentation for guava/calendar v2, which supports only filament v4.
+> For filament v3, please check guava/calendar v1 here.
+
 This package adds support for [vkurko/calendar](https://github.com/vkurko/calendar) (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
 
 ## Showcase
@@ -40,19 +44,12 @@ Make sure to publish the package assets using:
 php artisan filament:assets
 ```
 
-Make sure you have a custom filament theme (read [here](https://filamentphp.com/docs/3.x/panels/themes#creating-a-custom-theme) how to create one) and add the following to the `content` property of your theme's tailwind.config.js:
+Finally, make sure you have a **custom filament theme** (read [here](https://filamentphp.com/docs/4.x/styling/overview#creating-a-custom-theme) how to create one) and add the following source path to your **theme.css** file:
 
-```js
-{
-    content: [
-        //...
-
-        './vendor/guava/calendar/resources/**/*.blade.php',
-    ]
-}
+```css
+@source '../../../../vendor/guava/calendar/resources/**/*';
 ```
 This ensures that the CSS is properly built.
-
 
 ## Usage
 
@@ -129,16 +126,19 @@ As shown in the example, there are multiple ways to create events. At the very l
 
 To help you with creating events, we provide an `Event` ValueObject which contains methods with all available properties an event can have.
 
-This is possible because the `Event` clas implements the `Eventable` interface, which returns the array object. You can add this interface to any class you want which should be treated as an event, such as your eloquent models.
+This is possible because the `Event` clas implements the `Eventable` interface, which returns the array object. 
+
+You can add the `Eventable` interface to any class you want to be treated as an event, such as your eloquent models!
 
 Here is an example:
 
-#### using an Eloquent model as Events
+#### using Eloquent models as Events
 ```php
 class Foo extends Model implements Eventable
 {
     // ...
     
+    // This is where you map your model into a calendar event object
     public function toCalendarEvent(): CalendarEvent|array {
         return CalendarEvent::make($this)
             ->title($this->name)
@@ -148,7 +148,22 @@ class Foo extends Model implements Eventable
 }
 ```
 
-Notice that the model is passed to the `Event` constructor in the `make` method. This sets the `key` and `model` properties to the event object, so it can be used to trigger actions.
+Notice that the model instance is passed to the `Event` constructor in the `make` method. This sets the `key` and `model` properties to the event object, so it can be used to trigger actions.
+
+Then in your calendar widget, you can simply return a collection of your models and we will automatically map them into calendar events:
+```php
+// In your calendar widgets
+public function getEvents(array $fetchInfo = []): Collection | array
+{
+    return Foo::query()->get();
+    
+    // You can use $fetchInfo to query only the visible events for the current calendar view:
+    return Foo::query()
+            ->where('ends_at', '>=', $fetchInfo['start'])
+            ->where('starts_at', '<=', $fetchInfo['end'])
+            ->get();
+}
+```
 
 ### Event object
 The event object takes all available options like the underlying calendar package, for more info [read here](https://github.com/vkurko/calendar?tab=readme-ov-file#event-object).
@@ -361,8 +376,9 @@ To do so, we attempt to find the correct schema to be rendered in a variety of w
 We search for a method with the `#[ForModel(<ModelClass>)]` attribute.
 
 For example:
+
 ```php
-use Guava\Calendar\Attributes\ForModel;
+use Guava\Calendar\Attributes\CalendarSchema;
 
 #[ForModel(ModelName::class)]
 public function modelSchema(Schema $schema): Schema {
@@ -429,6 +445,39 @@ public function getResources(): Collection|array
         // Eloquent model implementing the `Resourceable` interface
         MyRoom::find(1),
     ];
+}
+```
+
+
+Here is an example:
+
+#### using Eloquent models as Resources
+```php
+use Guava\Calendar\Contracts\Resourceable;
+use Guava\Calendar\ValueObjects\CalendarResource;
+
+class Bar extends Model implements Resourceable
+{
+    // ...
+    
+    // This is where you map your model into a calendar resource object
+    public function toCalendarResource(): CalendarResource|array
+    {
+        return CalendarResource::make($this)
+            ->title($this->name);
+    }
+}
+```
+
+After that you should update your Events by providing an array of resources it belongs to:
+
+```php
+// Your calendar event eloquent model
+
+public function toCalendarEvent(): CalendarEvent|array {
+    return CalendarEvent::make($this)
+        // other settings
+        ->resourceId() // TODO: add example
 }
 ```
 

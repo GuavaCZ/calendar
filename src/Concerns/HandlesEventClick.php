@@ -29,6 +29,7 @@ trait HandlesEventClick
             $key = data_get($info, 'event.extendedProps.key');
 
             if ($model && $key) {
+                $this->setActionContextData($info);
                 $this->resolveEventRecord($model, $key);
 
                 $action ??= data_get($info, 'event.extendedProps.action', $this->getDefaultEventClickAction());
