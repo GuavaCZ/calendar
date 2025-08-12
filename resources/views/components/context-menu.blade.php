@@ -14,26 +14,16 @@
             },
          })"
      calendar-context-menu
-{{--     x-teleport="body"--}}
+     {{--     x-teleport="body"--}}
      class="absolute top-0 left-0 z-30"
 >
     <div x-bind="menu"
          x-transition:enter-start="fi-opacity-0" x-transition:leave-end="fi-opacity-0"
-        {{--             x-bind:class="--}}
-        {{--            if(context == @js(Context::DateClick) && @js(empty($dateClickContextMenuActions))--}}
-        {{--            || context == @js(Context::DateSelect) && @js(empty($dateSelectContextMenuActions))--}}
-        {{--            || context == @js(Context::EventClick) && @js(empty($eventClickContextMenuActions))--}}
-        {{--            || context == @js(Context::NoEventsClick) && @js(empty($noEventsClickContextMenuActions))) {--}}
-        {{--                return 'hidden';--}}
-        {{--            } else {--}}
-        {{--                return '';--}}
-        {{--            }--}}
-        {{--         "--}}
         @class([
            "fi-dropdown-panel absolute w-screen max-w-xs divide-y divide-gray-100 rounded-lg bg-white shadow-lg ring-1 ring-gray-950/5 transition dark:divide-white/5 dark:bg-gray-800 dark:ring-white/10",
        ])
     >
-{{--        <div class="w-full flex items-center justify-center p-2">{{generate_loading_indicator_html()}}</div>--}}
+        {{--        <div class="w-full flex items-center justify-center p-2">{{generate_loading_indicator_html()}}</div>--}}
         <div wire:loading.flex wire:target="getActionsUsing" class="w-full flex items-center justify-center p-2">{{generate_loading_indicator_html()}}</div>
         <x-filament::dropdown.list>
             {{--                    <div x-html="renderedActions"></div>--}}
