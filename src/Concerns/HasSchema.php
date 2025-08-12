@@ -2,7 +2,6 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Exception;
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -17,9 +16,9 @@ trait HasSchema
     /**
      * @throws SchemaNotFoundException
      */
-    public function getSchemaForModel(?string $model = null): Schema
+    public function getSchemaForModel(Schema $schema, ?string $model = null): Schema
     {
-        // Try finding a method with a SchemaForModel attribute
+        // Try finding a method with a ForModel attribute
         $reflectionClass = new ReflectionClass($this);
 
         foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC + ReflectionMethod::IS_PROTECTED) as $method) {
@@ -27,45 +26,45 @@ trait HasSchema
 
             foreach ($attributes as $attribute) {
                 if ($model === $attribute->newInstance()->model) {
-                    return $this->{$method->getName()};
+                    return $this->{$method->getName()}($schema);
                 }
             }
         }
 
-        // Try guessing and finding a method with the correct name (<camelCaseModel>Schema, such as eventSchema)
+        // Try guessing and finding a method with the correct name (<camelCaseModel>Schema, such as fooBarSchema)
         $methodName = Str::of(class_basename($model))
             ->camel()
             ->append('Schema')
             ->toString()
         ;
         if (method_exists($this, $methodName)) {
-            return $this->{$methodName};
+            return $this->{$methodName}($schema);
         }
 
         // Try finding a "defaultSchema" or "schema" method.
         if (method_exists($this, 'defaultSchema')) {
-            return $this->defaultSchema;
+            return $this->defaultSchema($schema);
         }
 
         if (method_exists($this, 'schema')) {
-            return $this->schema;
+            return $this->schema($schema);
         }
 
-        throw new SchemaNotFoundException('No schema found for the given model');
+        throw new SchemaNotFoundException;
     }
 
     /**
      * @throws SchemaNotFoundException
      */
-    public function getFormSchemaForModel(?string $model = null): Schema
+    public function getFormSchemaForModel(Schema $schema, ?string $model = null): Schema
     {
         try {
-            return $this->getSchemaForModel($model);
+            return $this->getSchemaForModel($schema, $model);
         } catch (SchemaNotFoundException $e) {
             // Try to find form schema in resource
             /** @var resource $resource */
             if ($resource = Filament::getModelResource($model)) {
-                return $resource::form(Schema::make($this));
+                return $resource::form($schema);
             }
 
             throw $e;
@@ -75,15 +74,15 @@ trait HasSchema
     /**
      * @throws SchemaNotFoundException
      */
-    public function getInfolistSchemaForModel(?string $model = null): Schema
+    public function getInfolistSchemaForModel(Schema $schema, ?string $model = null): Schema
     {
         try {
-            return $this->getSchemaForModel($model);
+            return $this->getSchemaForModel($schema, $model);
         } catch (SchemaNotFoundException $e) {
             // Try to find infolist schema in resource
             /** @var resource $resource */
             if ($resource = Filament::getModelResource($model)) {
-                return $resource::infolist(Schema::make($this));
+                return $resource::infolist($schema);
             }
 
             throw $e;
