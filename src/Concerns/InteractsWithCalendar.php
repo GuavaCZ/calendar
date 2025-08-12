@@ -27,6 +27,7 @@ trait InteractsWithCalendar
     use InteractsWithEventRecord;
     use InteractsWithSchemas;
     use InteractsWithActions;
+    use HasEventContent;
 
     public function getDefaultActionSchemaResolver(Action $action): ?Closure
     {

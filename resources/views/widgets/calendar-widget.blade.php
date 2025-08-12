@@ -16,7 +16,9 @@
             x-load
             x-load-src="{{ FilamentAsset::getAlpineComponentSrc('calendar', 'guava/calendar') }}"
             x-data="calendar({
-                eventClickEnabled: @js($this->isEventClickEnabled())
+                eventAssetUrl: @js(FilamentAsset::getAlpineComponentSrc('calendar-event', 'guava/calendar')),
+                eventClickEnabled: @js($this->isEventClickEnabled()),
+                eventContent: @js($this->getEventContent()),
             })"
         >
 {{--            <div data-calendar></div>--}}

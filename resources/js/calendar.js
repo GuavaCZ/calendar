@@ -1,5 +1,7 @@
 export default function calendar({
+    eventAssetUrl,
                                      eventClickEnabled = false,
+    eventContent = null,
                                  }
 ) {
     return {
@@ -28,23 +30,54 @@ export default function calendar({
                 ],
             }
 
-            if (eventClickEnabled) {
-                settings.eventClick = (info) => {
-                    if (info.event.extendedProps.url) {
-                        const target = info.event.extendedProps.url_target ?? '_blank'
-                        window.open(target, '_blank')
-                        return
+            if (eventContent !== null) {
+                settings.eventContent = (info) => {
+                    const content = self.getEventContent(info);
+
+                    if (content === undefined) {
+                        return undefined;
                     }
 
-                    // if (hasEventClickContextMenu) {
-                        // todo
-                    // }
-
-                    this.$wire.onEventClick({
-                        event: info.event,
-                        view: info.view,
-                    })
+                    return {
+                        html: content,
+                    };
                 }
+            }
+
+            if (eventClickEnabled) {
+                settings.eventClick = (info) => {
+                    const component = Alpine.$data(info.el)
+                    component.onClick(info)
+                };
+            }
+            // if (eventClickEnabled) {
+                // settings.eventClick = (info) => {
+                //     if (info.event.extendedProps.url) {
+                //         const target = info.event.extendedProps.url_target ?? '_blank'
+                //         window.open(target, '_blank')
+                //         return
+                //     }
+                //
+                //     // if (hasEventClickContextMenu) {
+                //         // todo
+                //     // }
+                //
+                //     this.$wire.onEventClick({
+                //         event: info.event,
+                //         view: info.view,
+                //     })
+                // }
+            // }
+
+            settings.eventDidMount = (info) => {
+                info.el.setAttribute('x-load')
+                info.el.setAttribute('x-load-src', eventAssetUrl)
+                info.el.setAttribute('x-data', `event({
+                    event: ${JSON.stringify(info.event)},
+                    timeText: "${info.timeText}",
+                    view: ${JSON.stringify(info.view)},
+                    hasEventClickContextMenu: ${hasEventClickContextMenu},
+                })`)
             }
 
             return settings
