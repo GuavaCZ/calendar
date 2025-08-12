@@ -12,10 +12,7 @@ class CalendarPlugin implements Plugin
         return 'guava-calendar';
     }
 
-    public function register(Panel $panel): void
-    {
-        // TODO: Implement register() method.
-    }
+    public function register(Panel $panel): void {}
 
     public function boot(Panel $panel): void {}
 

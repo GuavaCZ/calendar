@@ -3,28 +3,12 @@
 namespace Guava\Calendar\Concerns;
 
 use Filament\Actions\Action;
-use Guava\Calendar\Actions\CreateAction;
-use Guava\Calendar\Actions\DeleteAction;
-use Guava\Calendar\Actions\EditAction;
-use Guava\Calendar\Actions\ViewAction;
-use Illuminate\Support\Str;
+use Filament\Infolists\Components\TextEntry;
+use Guava\Calendar\Filament\Actions\EditAction;
+use Guava\Calendar\Filament\Actions\ViewAction;
 
 trait HasDefaultActions
 {
-    /**
-     * A create action for the specified model.
-     *
-     * @param  string  $model  The model class for which you want to make a create action.
-     */
-    public function createAction(string $model): Action
-    {
-        $modelSnakeCase = Str::snake(class_basename($model));
-
-        return CreateAction::make("create_$modelSnakeCase")
-            ->model($model)
-        ;
-    }
-
     public function viewAction(): Action
     {
         return ViewAction::make();
@@ -34,9 +18,9 @@ trait HasDefaultActions
     {
         return EditAction::make();
     }
-
-    public function deleteAction(): Action
-    {
-        return DeleteAction::make();
-    }
+//
+//    public function deleteAction(): Action
+//    {
+//        return DeleteAction::make();
+//    }
 }

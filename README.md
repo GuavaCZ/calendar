@@ -108,12 +108,12 @@ public function getEvents(array $fetchInfo = []): Collection | array
         return [
             // Chainable object-oriented variant
             CalendarEvent::make()
-                ->title('My first event')
+                ->title('My first calendar')
                 ->start(today())
                 ->end(today()),
                 
             // Array variant
-            ['title' => 'My second event', 'start' => today()->addDays(3), 'end' => today()->addDays(3)],
+            ['title' => 'My second calendar', 'start' => today()->addDays(3), 'end' => today()->addDays(3)],
             
             // Eloquent model implementing the `Eventable` interface
             MyEvent::find(1),
@@ -124,11 +124,11 @@ public function getEvents(array $fetchInfo = []): Collection | array
 ### Creating events
 As shown in the example, there are multiple ways to create events. At the very least, an array object with a `title`, `start` and `end` properties is required.
 
-To help you with creating events, we provide an `Event` ValueObject which contains methods with all available properties an event can have.
+To help you with creating events, we provide an `Event` ValueObject which contains methods with all available properties an calendar can have.
 
 This is possible because the `Event` clas implements the `Eventable` interface, which returns the array object. 
 
-You can add the `Eventable` interface to any class you want to be treated as an event, such as your eloquent models!
+You can add the `Eventable` interface to any class you want to be treated as an calendar, such as your eloquent models!
 
 Here is an example:
 
@@ -138,7 +138,7 @@ class Foo extends Model implements Eventable
 {
     // ...
     
-    // This is where you map your model into a calendar event object
+    // This is where you map your model into a calendar calendar object
     public function toCalendarEvent(): CalendarEvent|array {
         return CalendarEvent::make($this)
             ->title($this->name)
@@ -148,7 +148,7 @@ class Foo extends Model implements Eventable
 }
 ```
 
-Notice that the model instance is passed to the `Event` constructor in the `make` method. This sets the `key` and `model` properties to the event object, so it can be used to trigger actions.
+Notice that the model instance is passed to the `Event` constructor in the `make` method. This sets the `key` and `model` properties to the calendar object, so it can be used to trigger actions.
 
 Then in your calendar widget, you can simply return a collection of your models and we will automatically map them into calendar events:
 ```php
@@ -166,32 +166,32 @@ public function getEvents(array $fetchInfo = []): Collection | array
 ```
 
 ### Event object
-The event object takes all available options like the underlying calendar package, for more info [read here](https://github.com/vkurko/calendar?tab=readme-ov-file#event-object).
+The calendar object takes all available options like the underlying calendar package, for more info [read here](https://github.com/vkurko/calendar?tab=readme-ov-file#event-object).
 
-Below is a list of available methods on the event object:
+Below is a list of available methods on the calendar object:
 
 #### Setting the title
-Sets the title of the event that is rendered in the calendar.
+Sets the title of the calendar that is rendered in the calendar.
 ```php
-CalendarEvent::make()->title('My event');
+CalendarEvent::make()->title('My calendar');
 ```
 
 #### Customizing the start/end date
-Sets the start or end date (and time) of the event in the calendar.
+Sets the start or end date (and time) of the calendar in the calendar.
 ```php
 CalendarEvent::make()
     ->start(today())
     ->end(today()->addDays(3));
 ```
 
-#### Making the event all-day
-Sets whether the event is an all-day event or not.
+#### Making the calendar all-day
+Sets whether the calendar is an all-day calendar or not.
 ```php
 CalendarEvent::make()->allDay();
 ```
 
 #### Customizing the background / text color
-Sets the background color of the event (by default it is the primary color of the panel).
+Sets the background color of the calendar (by default it is the primary color of the panel).
 ```php
 CalendarEvent::make()
 ->backgroundColor('#ff0000')
@@ -200,7 +200,7 @@ CalendarEvent::make()
 
 #### Customizing Event Styles
 
-You can add custom styles to your event elements by using the styles method. This method accepts an array where each entry can be a CSS style declaration. The styles will be directly applied to the event element in the view. You can define styles in three ways:
+You can add custom styles to your calendar elements by using the styles method. This method accepts an array where each entry can be a CSS style declaration. The styles will be directly applied to the calendar element in the view. You can define styles in three ways:
 
 - As a key-value pair where the key is the CSS property and value is the condition under which the style should apply.
 - As a key-value pair where the key is the CSS property and the value is directly the CSS value.
@@ -218,10 +218,10 @@ CalendarEvent::make()->styles([
 
 ##### Usage Notes:
 
-- The first format ('color: red' => true) is useful for conditional styling based on dynamic conditions. For instance, changing the text color based on an event's type or status.
+- The first format ('color: red' => true) is useful for conditional styling based on dynamic conditions. For instance, changing the text color based on an calendar's type or status.
 
 - The second format ('background-color' => '#ffff00') is straightforward for applying styles where the values do not depend on conditions.
-- The third format ('font-size: 12px') is used when the style does not require any condition and is always applied to the event.
+- The third format ('font-size: 12px') is used when the style does not require any condition and is always applied to the calendar.
 This flexibility allows you to easily customize the appearance of events based on dynamic conditions or predefined settings.
 
 #### Customizing Event Classes
@@ -242,9 +242,9 @@ CalendarEvent::make()->classNames([
 - The second format ('class-2' => true) is useful for conditional classes based on dynamic conditions.
 
 #### Customizing the display
-By default, events are rendered as `blocks`. This is when the display is set to `auto`, which it is by default. You can also change the event to be rendered as a background event, which then fills the whole date cell. To do so, you can set `display` to `background` on the event:
+By default, events are rendered as `blocks`. This is when the display is set to `auto`, which it is by default. You can also change the calendar to be rendered as a background calendar, which then fills the whole date cell. To do so, you can set `display` to `background` on the calendar:
 
-This doesn't work always though, it only works on all day events and in specific views. If the `background` event is unsupported, the event will not be rendered at all.
+This doesn't work always though, it only works on all day events and in specific views. If the `background` calendar is unsupported, the calendar will not be rendered at all.
 
 ```php
 CalendarEvent::make()
@@ -254,7 +254,7 @@ CalendarEvent::make()
 ```
 
 #### Setting the action on click
-This sets the action that should be mounted when the event is clicked. It can be any name of a filament action you defined in your widget, such as `edit` or `view`.
+This sets the action that should be mounted when the calendar is clicked. It can be any name of a filament action you defined in your widget, such as `edit` or `view`.
 
 By default, all `CalendarWidget` classes already include a `view` and `edit` action.
 
@@ -265,7 +265,7 @@ CalendarEvent::make()->action('edit');
 #### Set the model and record key
 To mount the action with the correct record, we need to pass the model type and primary key of the record.
 
-The model is also required if you want to display multiple types of events and have each be rendered differently (see customizing event content).
+The model is also required if you want to display multiple types of events and have each be rendered differently (see customizing calendar content).
 
 ```php
 $record = MyModel::find(1);
@@ -279,7 +279,7 @@ CalendarEvent::make()
 ```
 
 #### Passing custom data
-You can pass any custom data to the event that you wish:
+You can pass any custom data to the calendar that you wish:
 ```php
 CalendarEvent::make()
 ->extendedProp('foo', 'bar')
@@ -314,9 +314,9 @@ $this->setOption('date', today()->addDay()->toIso8601String());
 ## Custom Event Content
 By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getEventContent` method on your calendar widget class.
 
-In order to keep things performant, the blade view is rendered **once** on the server and then re-used for every event. Thus, you **cannot** access the event data from the server side via Blade or Laravel, or do any server-side operations.
+In order to keep things performant, the blade view is rendered **once** on the server and then re-used for every calendar. Thus, you **cannot** access the calendar data from the server side via Blade or Laravel, or do any server-side operations.
 
-However, each event is wrapped in an alpine component, which exposes the event data that you can freely use using [AlpineJS](https://alpinejs.dev/).
+However, each calendar is wrapped in an alpine component, which exposes the calendar data that you can freely use using [AlpineJS](https://alpinejs.dev/).
 
 If you only have one type of events or events that render the same way, you can simply return a view or a HtmlString from the getEventContent method:
 
@@ -324,18 +324,18 @@ If you only have one type of events or events that render the same way, you can 
 public function getEventContent(): null|string|array
 {
     // return a blade view
-    return view('calendar.event');
+    return view('calendar.calendar');
     
     // return a HtmlString
-    return new HtmlString('<div>My event</div>');
+    return new HtmlString('<div>My calendar</div>');
 }
 ```
 
-Example of the `calendar.event` view blade file: 
+Example of the `calendar.calendar` view blade file: 
 ```bladehtml
 <div class="flex flex-col items-start">
-    <span x-text="event.title"></span>
-    <template x-for="user in event.extendedProps.users">
+    <span x-text="calendar.title"></span>
+    <template x-for="user in calendar.extendedProps.users">
         <span x-text="user.name"></span>
     </template>
 </div>
@@ -346,8 +346,8 @@ If you want to render events differently based on their model type, you can retu
 public function getEventContent(): null|string|array
 {
     return [
-        MyModel::class => view('calendar.my-model-event'),
-        AnotherModel::class => view('calendar.another-model-event'),
+        MyModel::class => view('calendar.my-model-calendar'),
+        AnotherModel::class => view('calendar.another-model-calendar'),
     ];
 }
 ```
@@ -367,9 +367,9 @@ public function getResourceLabelContent(): null|string|array
 ```
 
 ## Customize the  schema
-When an event triggers an action (such as view or edit actions), a modal with a schema is mounted.
+When an calendar triggers an action (such as view or edit actions), a modal with a schema is mounted.
 
-However, because each event can be related to a different model (for example your calendar could render both "meeting" and "standup" models), we need to render the correct schema.
+However, because each calendar can be related to a different model (for example your calendar could render both "meeting" and "standup" models), we need to render the correct schema.
 
 To do so, we attempt to find the correct schema to be rendered in a variety of ways, in this exact order:
 #### 1) Method with ForModel attribute
@@ -472,7 +472,7 @@ class Bar extends Model implements Resourceable
 After that you should update your Events by providing an array of resources it belongs to:
 
 ```php
-// Your calendar event eloquent model
+// Your calendar calendar eloquent model
 
 public function toCalendarEvent(): CalendarEvent|array {
     return CalendarEvent::make($this)
@@ -485,8 +485,8 @@ public function toCalendarEvent(): CalendarEvent|array {
 
 By default, the calendar is a view-only collection of events. You can enable more functionalities by configuring various events as described below.
 
-### Event-click event
-An event click event is triggered when an event in the calendar is clicked. By default, a click event mounts the `view` action.
+### Event-click calendar
+An calendar click calendar is triggered when an calendar in the calendar is clicked. By default, a click calendar mounts the `view` action.
 
 To listen to click events, simply override the `eventClickEnabled` property:
 
@@ -500,22 +500,22 @@ You can set the default click action by overriding the `defaultEventClickAction`
 protected ?string $defaultEventClickAction = 'edit';
 ```
 
-And that's it! As long as pass your model policy checks, an edit modal will be mounted when you click on an event.
+And that's it! As long as pass your model policy checks, an edit modal will be mounted when you click on an calendar.
 
-If you want to handle the event click logic completely by yourself, you may override the `onEventClick` method:
+If you want to handle the calendar click logic completely by yourself, you may override the `onEventClick` method:
 
 ```php
     public function onEventClick(array $info = [], ?string $action = null): void
 {
     // do something on click
-    // $info contains the event data:
-    // $info['event'] - the event object
+    // $info contains the calendar data:
+    // $info['calendar'] - the calendar object
     // $info['view'] - the view object
 }
 ```
 
-### Event Resize event
-A resize event is triggered when an event is resized at the ending edge of the event. This allows you to quickly modify the duration of an event.
+### Event Resize calendar
+A resize calendar is triggered when an calendar is resized at the ending edge of the calendar. This allows you to quickly modify the duration of an calendar.
 
 To listen to resize events, simply override the `eventResizeEnabled` property:
 
@@ -523,28 +523,28 @@ To listen to resize events, simply override the `eventResizeEnabled` property:
 protected bool $eventResizeEnabled = true;
 ```
 
-Except for resolving the (event) record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventResize` method:
+Except for resolving the (calendar) record the calendar is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventResize` method:
 
 ```php
 public function onEventResize(array $info = []): bool
 {
-    // Don't forget to call the parent method to resolve the event record
+    // Don't forget to call the parent method to resolve the calendar record
     parent::onEventResize($info);
      
     // Validate the data
     // Update the record ($this->getEventRecord())
-    // $info contains the event data:
-    // $info['event'] - the event object
-    // $info['oldEvent'] - the event object before resizing
-    // $info['endDelta'] - the difference in time between the old and new event
+    // $info contains the calendar data:
+    // $info['calendar'] - the calendar object
+    // $info['oldEvent'] - the calendar object before resizing
+    // $info['endDelta'] - the difference in time between the old and new calendar
     
-    // Return true if the event was resized successfully
-    // Return false if the event was not resized and should be reverted on the client-side   
+    // Return true if the calendar was resized successfully
+    // Return false if the calendar was not resized and should be reverted on the client-side   
 }
 ```
 
-### Event Drag & Drop event
-A drop event is triggered when an event is dragged and dropped to a different slot in the calendar. This allows you to quicky move the start (and end) date of an event.
+### Event Drag & Drop calendar
+A drop calendar is triggered when an calendar is dragged and dropped to a different slot in the calendar. This allows you to quicky move the start (and end) date of an calendar.
 
 To listen to drag and drop events, simply override the `eventDragEnabled` property:
 
@@ -552,31 +552,31 @@ To listen to drag and drop events, simply override the `eventDragEnabled` proper
 protected bool $eventDragEnabled = true;
 ```
 
-Except for resolving the (event) record the event is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventDrop` method:
+Except for resolving the (calendar) record the calendar is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventDrop` method:
 
 ```php
 public function onEventDrop(array $info = []): bool
 {
-    // Don't forget to call the parent method to resolve the event record
+    // Don't forget to call the parent method to resolve the calendar record
     parent::onEventDrop($info); 
     
     // Validate the data
     // Update the record ($this->getEventRecord())
-    // $info contains the event data:
-    // $info['event'] - the event object
-    // $info['oldEvent'] - the event object before resizing
+    // $info contains the calendar data:
+    // $info['calendar'] - the calendar object
+    // $info['oldEvent'] - the calendar object before resizing
     // $info['oldResource'] - the old resource object
     // $info['newResource'] - the new resource object
-    // $info['delta'] - the duration object representing the amount of time the event was moved by
+    // $info['delta'] - the duration object representing the amount of time the calendar was moved by
     // $info['view'] - the view object
     
-    // Return true if the event was moved successfully
-    // Return false if the event was not moved and should be reverted on the client-side
+    // Return true if the calendar was moved successfully
+    // Return false if the calendar was not moved and should be reverted on the client-side
 }
 ```
 
-### Date Click event
-A date click event is triggered when an date cell is clicked in the calendar.
+### Date Click calendar
+A date click calendar is triggered when an date cell is clicked in the calendar.
 
 To listen to date click events, simply override the `dateClickEnabled` property:
 
@@ -590,7 +590,7 @@ By default, nothing happens on date click. You can either use the `date click co
 public function onDateClick(array $info = []): bool
 {
     // Validate the data
-    // $info contains the event data:
+    // $info contains the calendar data:
     // $info['date'] - the date clicked on
     // $info['dateStr'] - the date clicked on as a UTC string
     // $info['allDay'] - whether the date is an all-day slot
@@ -599,8 +599,8 @@ public function onDateClick(array $info = []): bool
 }
 ```
 
-### Date Select event
-A date select event is triggered when a date range is selected in the calendar.
+### Date Select calendar
+A date select calendar is triggered when a date range is selected in the calendar.
 
 To listen to date select events, simply override the `dateSelectEnabled` property:
 
@@ -614,7 +614,7 @@ By default, nothing happens on date select. You can either use the `date select 
 public function onDateSelect(array $info = []): bool
 {
     // Validate the data
-    // $info contains the event data:
+    // $info contains the calendar data:
     // $info['start'] - the start date of the range
     // $info['startStr'] - the start date as an UTC string
     // $info['end'] - the end date of the range
@@ -625,9 +625,9 @@ public function onDateSelect(array $info = []): bool
 }
 ```
 
-### No-events-click event
+### No-events-click calendar
 
-A no-events-click event is applicable only on `list` views and is triggered when a user clicks on the `no events` cell. By default, this event does nothing and it's up to you to implement the logic.
+A no-events-click calendar is applicable only on `list` views and is triggered when a user clicks on the `no events` cell. By default, this calendar does nothing and it's up to you to implement the logic.
 
 To listen to no-events-click events, simply override the `noEventsClickEnabled` property:
 
@@ -641,7 +641,7 @@ To handle the no-events-click logic, override the `onNoEventsClick` method:
 public function onNoEventsClick(array $info = []): void
 {
     // do something on click
-    // $info contains the event data:
+    // $info contains the calendar data:
     // $info['view'] - the view object
 }
 ```
@@ -714,9 +714,9 @@ public function getDateSelectContextMenuActions(): array
 ```
 
 ### Event click context menu
-This context menu is triggered when a user clicks on an event in the calendar.
+This context menu is triggered when a user clicks on an calendar in the calendar.
 
-To enable the context menu, all you need to do is enabled event Clicks and implement the `getEventClickContextMenuActions` method:
+To enable the context menu, all you need to do is enabled calendar Clicks and implement the `getEventClickContextMenuActions` method:
 
 For example:
 ```php
@@ -771,12 +771,12 @@ protected ?string $locale = 'en';
 If you encounter issues with the context menu, either that the actions don't mount correctly or that the arguments array is empty, make sure that the name of the action is unique across the whole widget. If there is another action with the same name, it might be mounted instead of the one you want.
 
 ### Record vs Event record
-When working with resource widgets, `$record` is the record of the currently opened resource record, whereas `$eventRecord` is the record of the calendar event (during event actions, context menus, etc.).
+When working with resource widgets, `$record` is the record of the currently opened resource record, whereas `$eventRecord` is the record of the calendar calendar (during calendar actions, context menus, etc.).
 
 ## Authorization
 Due to security reasons, actions use Laravel's default authorization mechanism to check if user is allowed to perform actions.
 
-This means that most likely your actions might not work when you add them (such as view or edit actions on event click). If that's the case, please create a policy for your model and add the necessary checks to the policy.
+This means that most likely your actions might not work when you add them (such as view or edit actions on calendar click). If that's the case, please create a policy for your model and add the necessary checks to the policy.
 
 You can also overide the `authorize` method on your widget class and handle all authorization logic on your own.
 

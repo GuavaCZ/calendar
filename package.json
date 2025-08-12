@@ -1,5 +1,6 @@
 {
     "devDependencies": {
+        "@event-calendar/core": "^4.5.0",
         "conventional-changelog-conventionalcommits": "^7.0.2",
         "esbuild": "^0.21.3",
         "semantic-release": "^22.0.5"
@@ -7,7 +8,6 @@
     "type": "module",
     "dependencies": {
         "@awcodes/alpine-floating-ui": "^3.6.3",
-        "@event-calendar/core": "^3.0.0",
         "@event-calendar/day-grid": "^3.0.0",
         "@event-calendar/time-grid": "^3.0.0"
     }

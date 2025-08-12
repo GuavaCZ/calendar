@@ -45,17 +45,18 @@ const defaultOptions = {
 
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/calendar-widget.js'],
-    outfile: './dist/js/calendar-widget.js',
+    entryPoints: ['./resources/js/calendar.js'],
+    outfile: './dist/js/calendar.js',
 })
 
-compile({
-    ...defaultOptions,
-    entryPoints: ['./resources/js/calendar-context-menu.js'],
-    outfile: './dist/js/calendar-context-menu.js',
-})
-compile({
-    ...defaultOptions,
-    entryPoints: ['./resources/js/event.js'],
-    outfile: './dist/js/event.js',
-})
+// compile({
+//     ...defaultOptions,
+//     entryPoints: ['./resources/js/calendar-context-menu.js'],
+//     outfile: './dist/js/calendar-context-menu.js',
+// })
+//
+// compile({
+//     ...defaultOptions,
+//     entryPoints: ['./resources/js/event.js'],
+//     outfile: './dist/js/event.js',
+// })

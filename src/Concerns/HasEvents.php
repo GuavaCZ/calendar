@@ -2,32 +2,29 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
 use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\FetchInfo;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 trait HasEvents
 {
-    protected Collection | array | Closure $events = [];
+    abstract public function getEvents(FetchInfo $fetchInfo): Collection | array | Builder;
 
-    public function events(Closure | array | Collection $events): static
+    public function getEventsJs(array $fetchInfo): array
     {
-        $this->events = $events;
+        $events = $this->getEvents(new FetchInfo($fetchInfo));
 
-        return $this;
-    }
+        if ($events instanceof Builder) {
+            $events = $events->get();
+        }
 
-    public function getEvents(array $fetchInfo = []): Collection | array
-    {
-        return $this->evaluate($this->events, [
-            'fetchInfo' => $fetchInfo,
-        ]);
-    }
+        if (is_array($events)) {
+            $events = collect($events);
+        }
 
-    public function getEventsJs(array $fetchInfo = []): array
-    {
-        return collect($this->getEvents($fetchInfo))
-            ->map(function (array | Eventable $event) {
+        return $events
+            ->map(function (Eventable $event) {
                 return match (true) {
                     $event instanceof Eventable => $event->toCalendarEvent(),
                     default => $event,
