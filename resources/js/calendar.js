@@ -48,6 +48,38 @@ export default function calendar({
             }
 
             return settings
-        }
+        },
+
+
+        getEventContent: function (info) {
+            if (typeof eventContent === 'string') {
+                return this.wrapContent(eventContent, info)
+            }
+
+            if (typeof eventContent === 'object') {
+                const model = info.event.extendedProps.model
+                const content = eventContent[model]
+
+                if (content === undefined) {
+                    return undefined
+                }
+
+                return this.wrapContent(content, info)
+            }
+
+            return undefined
+        },
+
+        wrapContent: function (content, info) {
+            let container = document.createElement('div')
+            container.innerHTML = content
+
+            // Add alpine data and classes
+            container.setAttribute('x-data', JSON.stringify(info))
+            container.classList.add('w-full')
+
+            // Get the modified HTML
+            return container.outerHTML
+        },
     }
 }
