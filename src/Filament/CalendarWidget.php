@@ -16,8 +16,6 @@ use Guava\Calendar\Contracts\HasCalendar;
 abstract class CalendarWidget extends Widget implements HasCalendar, HasSchemas, HasActions
 {
     use InteractsWithCalendar;
-    use InteractsWithSchemas;
-    use InteractsWithActions;
 
     protected string $view = 'guava-calendar::widgets.calendar-widget';
 
