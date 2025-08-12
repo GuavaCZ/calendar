@@ -1,53 +1,90 @@
-export default function calendar({
-                                     eventClickEnabled = false,
-                                 }
-) {
+export default function calendarContextMenu({
+                                                getActionsUsing,
+                                            }) {
     return {
+        open: false,
 
-        init: function () {
-            this.mountCalendar()
+        size: {
+            width: 0,
+            height: 0,
+        },
+        position: {
+            x: 0,
+            y: 0,
+        },
+        mountData: {},
+        context: null,
+        actions: [],
+        isLoading: false,
+
+        menu: {
+            ['x-show']() {
+                return this.open
+            },
+            ['x-bind:style']() {
+                return `
+                    position: absolute;
+                    z-index: 40;
+                    top: ${this.position.y}px;
+                    left: ${this.position.x}px;
+                `
+            },
+            ['x-on:click.away']() {
+                this.closeMenu()
+            }
         },
 
-        mountCalendar: function () {
-            let ec = EventCalendar.create(
-                this.$el,
-                // this.$el.querySelector('[data-calendar]'),
-                this.getSettings(),
-            )
+        init: async function () {
+            const menu = this.$el.querySelector('[x-bind="menu"]')
+            this.size = {
+                width: menu.offsetWidth,
+                height: menu.offsetHeight,
+            }
+
+            this.$el.addEventListener('calendar--open-menu', (event) => this.openMenu(event))
         },
 
-        getSettings: function () {
-            let settings = {
-                view: 'dayGridMonth',
-                eventSources: [
-                    {
-                        events: (fetchInfo) => {
-                            return this.$wire.getEventsJs(fetchInfo)
-                        }
-                    }
-                ],
-            }
+        loadActions: async function(context, data = {}) {
+            this.isLoading = true
+            this.actions = []
+            getActionsUsing(context, data)
+                .then((actions) => {
+                    this.actions = actions
+                })
+                .finally(() => this.isLoading = false)
+        },
 
-            if (eventClickEnabled) {
-                settings.eventClick = (info) => {
-                    if (info.event.extendedProps.url) {
-                        const target = info.event.extendedProps.url_target ?? '_blank'
-                        window.open(target, '_blank')
-                        return
-                    }
+        openMenu: async function (event) {
+            // this.context = event.detail.context;
+            // this.mountData = event.detail.mountData;
+            // this.isLoading = true
+            // getActionsUsing(event.detail)
+            //     .then((actions) => {
+            //         this.actions = actions
+            //     })
+            //     .finally(() => this.isLoading = false)
 
-                    // if (hasEventClickContextMenu) {
-                        // todo
-                    // }
+            this.$nextTick(() => {
+                const clientX = event.clientX;
+                const clientY = event.clientY;
+                const pageX = event.pageX;
+                const pageY = event.pageY;
 
-                    this.$wire.onEventClick({
-                        event: info.event,
-                        view: info.view,
-                    })
-                }
-            }
+                const offsetX = clientX + this.size.width > window.innerWidth
+                    ? clientX + this.size.width - window.innerWidth
+                    : 0;
+                const offsetY = clientY + this.size.height > window.innerHeight
+                    ? clientY + this.size.height - window.innerHeight
+                    : 0;
 
-            return settings
+                this.position.x = pageX - offsetX;
+                this.position.y = pageY - offsetY;
+                this.open = true;
+            });
+        },
+
+        closeMenu: function () {
+            this.open = false;
         }
     }
 }
