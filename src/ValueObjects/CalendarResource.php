@@ -7,7 +7,7 @@ use Guava\Calendar\Contracts\Resourceable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 
-class CalendarResource implements Arrayable, Resourceable
+class CalendarResource
 {
     protected int | string $id;
 
@@ -120,7 +120,7 @@ class CalendarResource implements Arrayable, Resourceable
         return new static($id);
     }
 
-    public function toArray(): array
+    public function toCalendarObject(): array
     {
         return [
             'id' => $this->id,
@@ -130,10 +130,5 @@ class CalendarResource implements Arrayable, Resourceable
             'children' => collect($this->getChildren())->toArray(),
             'extendedProps' => $this->getExtendedProps(),
         ];
-    }
-
-    public function toCalendarResource(): array
-    {
-        return $this->toArray();
     }
 }

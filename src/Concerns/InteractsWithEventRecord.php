@@ -2,6 +2,7 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,8 +27,16 @@ trait InteractsWithEventRecord
         return null;
     }
 
-    protected function resolveEventRecord(string $model, mixed $key): ?Model
+    protected function resolveEventRecord(): ?Model
     {
+        $model = $this->getMountedActionContextData('event.extendedProps.model');
+        $key = $this->getMountedActionContextData('event.extendedProps.key');
+
+        // Cannot resolve event record
+        if (! $model || ! $key) {
+            throw new Exception('Could not resolve event record. A [model] or [key] property set in the [extendedProps] of the mounted event was missing.');
+        }
+
         if ($record = $this->resolveEventRecordRouteBinding($model, $key)) {
             return $this->eventRecord = $record;
         }

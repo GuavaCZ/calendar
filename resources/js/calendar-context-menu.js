@@ -1,5 +1,5 @@
 export default function calendarContextMenu({
-                                                getActionsUsing,
+                                                getContextMenuActionsUsing,
                                             }) {
     return {
         open: false,
@@ -16,6 +16,7 @@ export default function calendarContextMenu({
         context: null,
         actions: [],
         isLoading: false,
+        onCloseCallback: null,
 
         menu: {
             ['x-show']() {
@@ -44,26 +45,17 @@ export default function calendarContextMenu({
             this.$el.addEventListener('calendar--open-menu', (event) => this.openMenu(event))
         },
 
-        loadActions: async function(context, data = {}) {
+        loadActions: async function (context, data = {}) {
             this.isLoading = true
             this.actions = []
-            getActionsUsing(context, data)
+            getContextMenuActionsUsing(context, data)
                 .then((actions) => {
                     this.actions = actions
                 })
                 .finally(() => this.isLoading = false)
         },
 
-        openMenu: async function (event) {
-            // this.context = event.detail.context;
-            // this.mountData = event.detail.mountData;
-            // this.isLoading = true
-            // getActionsUsing(event.detail)
-            //     .then((actions) => {
-            //         this.actions = actions
-            //     })
-            //     .finally(() => this.isLoading = false)
-
+        openMenu: async function (event, eventElement = null) {
             this.$nextTick(() => {
                 const clientX = event.clientX;
                 const clientY = event.clientY;
@@ -80,11 +72,22 @@ export default function calendarContextMenu({
                 this.position.x = pageX - offsetX;
                 this.position.y = pageY - offsetY;
                 this.open = true;
+
+                if (eventElement) {
+                    eventElement.classList.add('gu-context-menu-open');
+                }
             });
         },
 
         closeMenu: function () {
             this.open = false;
+
+            document.querySelectorAll('.ec-event').forEach(
+                event => event.classList.remove('gu-context-menu-open')
+            )
+            if (this.onCloseCallback) {
+                this.onCloseCallback();
+            }
         }
     }
 }

@@ -11,13 +11,15 @@ class EditAction extends \Filament\Actions\EditAction
     {
         parent::setUp();
 
-        $this->model(fn (HasCalendar $livewire) => $livewire->getEventModel());
-        $this->record(fn (HasCalendar $livewire) => $livewire->getEventRecord());
-//        $this->schema(
-//            fn (Schema $schema, HasCalendar $livewire): Schema => $livewire
-//                ->getInfolistSchemaForModel($schema, $livewire->getEventModel())
-//                ->record($livewire->getEventRecord())
-//        );
-        $this->cancelParentActions();
+        $this
+            ->model(fn (HasCalendar $livewire) => $livewire->getEventModel())
+            ->record(fn (HasCalendar $livewire) => $livewire->getEventRecord())
+            ->schema(
+                fn (EditAction $action, Schema $schema, HasCalendar $livewire): Schema => $livewire
+                    ->getFormSchemaForModel($schema, $action->getModel())
+                    ->record($livewire->getEventRecord())
+            )->after(fn (HasCalendar $livewire) => $livewire->refreshRecords())
+            ->cancelParentActions()
+        ;
     }
 }

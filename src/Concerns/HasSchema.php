@@ -5,7 +5,7 @@ namespace Guava\Calendar\Concerns;
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Guava\Calendar\Attributes\SchemaForModel;
+use Guava\Calendar\Attributes\CalendarSchema;
 use Guava\Calendar\Exceptions\SchemaNotFoundException;
 use Illuminate\Support\Str;
 use ReflectionClass;
@@ -22,7 +22,7 @@ trait HasSchema
         $reflectionClass = new ReflectionClass($this);
 
         foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC + ReflectionMethod::IS_PROTECTED) as $method) {
-            $attributes = $method->getAttributes(SchemaForModel::class);
+            $attributes = $method->getAttributes(CalendarSchema::class);
 
             foreach ($attributes as $attribute) {
                 if ($model === $attribute->newInstance()->model) {

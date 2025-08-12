@@ -2,21 +2,23 @@
 
 namespace Guava\Calendar\ValueObjects;
 
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
-class FetchInfo
+use function Guava\Calendar\browser_date_to_app_date;
+
+readonly class FetchInfo
 {
-    protected Carbon $start;
+    public CarbonImmutable $start;
 
-    protected Carbon $end;
+    public CarbonImmutable $end;
 
-    protected array $original = [];
+    protected array $originalData;
 
     public function __construct(array $data)
     {
-        $this->original = $data;
+        $this->originalData = $data;
 
-        $this->start = Carbon::make($data['start']);
-        $this->end = Carbon::make($data['end']);
+        $this->start = browser_date_to_app_date(CarbonImmutable::make($data['startStr']));
+        $this->end = browser_date_to_app_date(CarbonImmutable::make($data['endStr']));
     }
 }

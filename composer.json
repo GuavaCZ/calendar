@@ -38,7 +38,10 @@
         "psr-4": {
             "Guava\\Calendar\\": "src/",
             "Guava\\Calendar\\Database\\Factories\\": "database/factories/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

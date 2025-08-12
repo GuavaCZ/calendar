@@ -49,6 +49,18 @@ compile({
     outfile: './dist/js/calendar.js',
 })
 
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/calendar-context-menu.js'],
+    outfile: './dist/js/calendar-context-menu.js',
+})
+
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/calendar-event.js'],
+    outfile: './dist/js/calendar-event.js',
+})
+
 // compile({
 //     ...defaultOptions,
 //     entryPoints: ['./resources/js/calendar-context-menu.js'],

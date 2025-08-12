@@ -9,8 +9,8 @@
      x-load
      x-load-src="{{ FilamentAsset::getAlpineComponentSrc('calendar-context-menu', 'guava/calendar') }}"
      x-data="calendarContextMenu({
-            getActionsUsing: async (context, data) => {
-                return await $wire.getActionsUsing(context, data)
+            getContextMenuActionsUsing: async (context, data) => {
+                return await $wire.getContextMenuActionsUsing(context, data)
             },
          })"
      calendar-context-menu
@@ -24,7 +24,7 @@
        ])
     >
         {{--        <div class="w-full flex items-center justify-center p-2">{{generate_loading_indicator_html()}}</div>--}}
-        <div wire:loading.flex wire:target="getActionsUsing" class="w-full flex items-center justify-center p-2">{{generate_loading_indicator_html()}}</div>
+        <div wire:loading.flex wire:target="getContextMenuActionsUsing" class="w-full flex items-center justify-center p-2">{{generate_loading_indicator_html()}}</div>
         <x-filament::dropdown.list>
             {{--                    <div x-html="renderedActions"></div>--}}
             <template x-for="action in actions">

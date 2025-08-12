@@ -6,5 +6,5 @@ use Guava\Calendar\ValueObjects\CalendarEvent;
 
 interface Eventable
 {
-    public function toCalendarEvent(): array | CalendarEvent;
+    public function toCalendarEvent(): CalendarEvent;
 }

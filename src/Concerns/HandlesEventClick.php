@@ -2,9 +2,7 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Exception;
-
-use function Filament\get_authorization_response;
+use Guava\Calendar\ValueObjects\EventClickInfo;
 
 trait HandlesEventClick
 {
@@ -15,42 +13,14 @@ trait HandlesEventClick
     /**
      * @throws \Exception
      */
-    public function onEventClick(array $info = [], ?string $action = null): void
+    protected function onEventClick(EventClickInfo $info, ?string $action = null): void
     {
-        // Check if event click is enabled
-        if (! $this->isEventClickEnabled()) {
-            return;
-        }
-
-        $model = data_get($info, 'event.extendedProps.model');
-        $key = data_get($info, 'event.extendedProps.key');
-
-        // Cannot resolve event record
-        if (! $model || ! $key) {
-            throw new Exception('Event click requires a [model] and [key] set in the [extendedProps] of the event to work.');
-        }
-
-        $this->resolveEventRecord($model, $key);
-
-        $action ??= data_get($info, 'event.extendedProps.action') ?? $this->getDefaultEventClickAction();
-
         // No action to trigger
         if (! $action) {
             return;
         }
 
-        $response = $this->getAuthorizationResponse($action, $this->getEventRecord());
-
-        // Action is not allowed
-        if (! $response->allowed()) {
-            $this->sendUnauthorizedNotification($response);
-
-            return;
-        }
-
-        $this->mountAction($action, [
-            'event' => data_get($info, 'event', []),
-        ]);
+        $this->mountCalendarAction($action, $info);
     }
 
     public function isEventClickEnabled(): bool
@@ -61,6 +31,32 @@ trait HandlesEventClick
     public function getDefaultEventClickAction(): ?string
     {
         return $this->evaluate($this->defaultEventClickAction);
+    }
+
+    /**
+     * @internal Do not override, internal purpose only. Use `onEventClick` instead
+     */
+    public function onEventClickJs(array $info = [], ?string $action = null): void
+    {
+        // Check if event click is enabled
+        if (! $this->isEventClickEnabled()) {
+            return;
+        }
+
+        $action ??= $this->getMountedActionContextData('event.extendedProps.action');
+        $action ??= $this->getDefaultEventClickAction();
+
+        $this->setMountedActionContextData($info);
+        $this->resolveEventRecord();
+
+        $this->onEventClick(
+            new EventClickInfo(
+                $info,
+                $this->getEventRecord(),
+                $this->shouldUseFilamentTimezone()
+            ),
+            $action
+        );
     }
 
     //    protected function resolveDefaultEventClickAction() {
