@@ -2,12 +2,8 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
-use Filament\Forms\Form;
-use Filament\Schemas\Schema;
 use Guava\Calendar\Contracts\ContextualInfo;
 use Guava\Calendar\Contracts\HasCalendar;
-use Guava\Calendar\Enums\Context;
 use Guava\Calendar\ValueObjects\DateClickInfo;
 use Guava\Calendar\ValueObjects\DateSelectInfo;
 use Guava\Calendar\ValueObjects\EventClickInfo;
@@ -15,7 +11,6 @@ use Guava\Calendar\ValueObjects\NoEventsClickInfo;
 
 trait CalendarAction
 {
-
     protected function resolveDefaultClosureDependencyForEvaluationByType(string $parameterType): array
     {
         /** @var InteractsWithCalendar $livewire */

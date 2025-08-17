@@ -3,9 +3,7 @@
 namespace Guava\Calendar\Concerns;
 
 use Guava\Calendar\Attributes\CalendarEventContent;
-use Guava\Calendar\Exceptions\EventContentNotFoundException;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Str;
 use ReflectionClass;
 
 trait HasEventContent
