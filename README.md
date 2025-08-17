@@ -595,6 +595,11 @@ By now you should have a perfectly fine and working calendar. However, it is sti
 The calendar supports many ways to interact with, which will be described below individually.
 
 ### Actions
+> [!CAUTION]
+> Actions have no default authorization. This means, anyone can use any action.
+> 
+> Please check the [Authorization section](#authorization) to learn how to authorize actions.
+
 Before you read about the different ways to add interactions to your calendar, you need to understand how actions in the calendar work.
 
 Actions used within the Calendar context need the `CalendarAction` trait to work properly.
@@ -1186,6 +1191,36 @@ protected function barResourceLabelContent(): HtmlString|string
 
 Both variants are equal, it's up to your personal preference which one you want to use.
 
+## Authorization
+
+By default, everyone can use all actions! The package does not handle authorization, this is your responsibility.
+
+Since we use regular filament actions, adding authorizations is a breeze. 
+
+For example to add authorization to the createTaskAction:
+
+```php
+use Guava\Calendar\Filament\Actions\CreateAction;
+
+public function createFooAction(): CreateAction
+{
+    return $this->createAction(Foo::class)
+        ->authorize('create', Foo::class)
+        // At this point, it will authorize against the FooPolicy
+        //
+        // However, you might want to give the user some feedback:
+        ->authorizationNotification()
+        // Now it will send a notification with the response message from your policy
+        //
+        // For context menu actions, you can instead use:
+        ->authorizationTooltip()
+        // which will disable the action and show a tooltip with the response message
+    ;
+}
+```
+
+For detailed information, please follow the default filament documentation on how to add [authorization to actions](https://filamentphp.com/docs/4.x/actions/overview#authorization).
+
 ## Utility Classes
 We provide various helper and utility classes to provide you with type hints for various arguments that are being passed from the calendar to your widget.
 
@@ -1204,22 +1239,10 @@ Use this to query only models that are visible in the current view.
 
 ## Troubleshooting
 ### Context menu actions don't work
-If you encounter issues with the context menu, either that the actions don't mount correctly or that the arguments array is empty, make sure that the name of the action is unique across the whole widget. If there is another action with the same name, it might be mounted instead of the one you want.
+If you encounter issues with the context menu, make sure that the name of the action is unique across the whole widget. If there is another action with the same name, it might be mounted instead of the one you want.
 
 ### Record vs Event record
-When working with resource widgets, `$record` is the record of the currently opened resource record, whereas `$eventRecord` is the record of the calendar calendar (during calendar actions, context menus, etc.).
-
-## Authorization
-Due to security reasons, actions use Laravel's default authorization mechanism to check if user is allowed to perform actions.
-
-This means that most likely your actions might not work when you add them (such as view or edit actions on calendar click). If that's the case, please create a policy for your model and add the necessary checks to the policy.
-
-You can also overide the `authorize` method on your widget class and handle all authorization logic on your own.
-
-```php
-// $ability will contain the name of the action
-public function authorize($ability, $arguments = []);
-```
+When working with resource widgets, `$record` is the record of the currently opened resource record, whereas `$eventRecord` is the record of the calendar event (during calendar actions, context menus, etc.).
 
 ## Security measures
 Keep in mind that a lot of the data in this package comes from the client side JavaScript and could be tampered with. Always validate the data on the server side and never trust the data from the client side.
