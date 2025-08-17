@@ -56,6 +56,6 @@ trait HasHeaderActions
     {
         return Actions::make($this->getCachedHeaderActions())
             ->container(Schema::make($this))
-            ;
+        ;
     }
 }

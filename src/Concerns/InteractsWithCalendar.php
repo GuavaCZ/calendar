@@ -21,7 +21,6 @@ trait InteractsWithCalendar
     use HandlesEventResize;
     use HandlesNoEventsClick;
     use HandlesViewDidMount;
-    use HasAuthorization;
     use HasCalendarView;
     use HasContextMenu;
     use HasDayMaxEvents;
@@ -34,8 +33,7 @@ trait InteractsWithCalendar
     use HasHeading;
     use HasLocale;
     use HasMoreLinkContent;
-    use HasMountedActionContextData;
-    use HasNotifications;
+    use HasCalendarContextData;
     use HasOptions;
     use HasResourceLabelContent;
     use HasResources;
@@ -54,26 +52,5 @@ trait InteractsWithCalendar
             ...$this->getRawCalendarContextData() ?? [],
         ], $context);
     }
-
-    //    public function mountCalendarAction(string $name, ContextualInfo $info): void
-    //    {
-    //        $this->mountAction($name, [
-    //            'context' => $info->getContext()->value,
-    //            'data' => $info->getOriginalData(),
-    //            'useFilamentTimezone' => $this->shouldUseFilamentTimezone(),
-    //        ]);
-    //    }
-
-    //    public function getDefaultActionSchemaResolver(Action $action): ?Closure
-    //    {
-    //        return match (true) {
-    //            $action instanceof CreateAction => fn (Schema $schema, $action): Schema => $this->getFormSchemaForModel($schema, $action->getModel()),
-    //            $action instanceof EditAction => fn (Schema $schema, $action): Schema => $this->getFormSchemaForModel($schema, $action->getModel())
-    //                ->record($this->getEventRecord()),
-    //            $action instanceof ViewAction => fn (Schema $schema, $action): Schema => $this->getInfolistSchemaForModel($schema, $action->getModel())
-    //                ->record($this->getEventRecord()),
-    //            default => null,
-    //        };
-    //    }
 
 }

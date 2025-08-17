@@ -56,6 +56,8 @@ trait HandlesEventClick
         $this->onEventClick($this->getCalendarContextInfo(), $this->getEventRecord(), $action);
     }
 
+    // TODO: Might be worth looking into to automatically choose between view /edit action based on the permissions
+    //
     //    protected function resolveDefaultEventClickAction() {
     //        foreach (['view', 'edit'] as $action) {
     //            $action = $this->getAction($action);

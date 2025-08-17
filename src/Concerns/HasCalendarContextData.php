@@ -11,7 +11,7 @@ use Guava\Calendar\ValueObjects\EventDropInfo;
 use Guava\Calendar\ValueObjects\EventResizeInfo;
 use Guava\Calendar\ValueObjects\NoEventsClickInfo;
 
-trait HasMountedActionContextData
+trait HasCalendarContextData
 {
     protected ?array $rawCalendarContextData = null;
 

@@ -49,7 +49,7 @@ trait InteractsWithEventRecord
         return app($model)
             ->resolveRouteBindingQuery($this->getEloquentQuery($model), $key, $this->getEventRecordRouteKeyName($model))
             ->first()
-            ;
+        ;
     }
 
     protected function getEloquentQuery(string $model): Builder
