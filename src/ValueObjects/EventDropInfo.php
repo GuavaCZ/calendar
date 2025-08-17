@@ -2,9 +2,11 @@
 
 namespace Guava\Calendar\ValueObjects;
 
+use Guava\Calendar\Contracts\ContextualInfo;
+use Guava\Calendar\Enums\Context;
 use Illuminate\Database\Eloquent\Model;
 
-readonly class EventDropInfo
+readonly class EventDropInfo implements ContextualInfo
 {
     public Model $record;
 
@@ -44,5 +46,10 @@ readonly class EventDropInfo
             data_get($data, 'tzOffset'),
             $useFilamentTimezone
         );
+    }
+
+    public function getContext(): Context
+    {
+        return Context::EventDragAndDrop;
     }
 }

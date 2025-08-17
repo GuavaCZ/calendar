@@ -2,9 +2,11 @@
 
 namespace Guava\Calendar\ValueObjects;
 
+use Guava\Calendar\Contracts\ContextualInfo;
+use Guava\Calendar\Enums\Context;
 use Illuminate\Database\Eloquent\Model;
 
-readonly class EventResizeInfo
+readonly class EventResizeInfo implements ContextualInfo
 {
     public Model $record;
 
@@ -43,5 +45,10 @@ readonly class EventResizeInfo
             data_get($data, 'tzOffset'),
             $useFilamentTimezone
         );
+    }
+
+    public function getContext(): Context
+    {
+        return Context::EventResize;
     }
 }

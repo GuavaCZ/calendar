@@ -1,11 +1,8 @@
 @php
     use Filament\Support\Facades\FilamentAsset;
-
-    $hasDateClickContextMenu = !empty($this->getCachedDateClickContextMenuActions());
-    $hasDateSelectContextMenu = !empty($this->getCachedDateSelectContextMenuActions());
-    $hasEventClickContextMenu = !empty($this->getCachedEventClickContextMenuActions());
-    $hasNoEventsClickContextMenu = !empty($this->getCachedNoEventsClickContextMenuActions());
-    $hasContextMenu = $this->hasContextMenu();
+    use Guava\Calendar\Enums\Context;
+    use Filament\Support\Facades\FilamentColor;
+    use Filament\Support\View\Components\ButtonComponent;
 @endphp
 
 <x-filament-widgets::widget>
@@ -36,7 +33,7 @@
                 locale: @js($this->getLocale()),
                 firstDay: @js($this->getFirstDay()),
                 dayMaxEvents: @js($this->getDayMaxEvents()),
-                eventContent: @js($this->getEventContent()),
+                eventContent: @js($this->getEventContentJs()),
                 eventClickEnabled: @js($this->isEventClickEnabled()),
                 eventDragEnabled: @js($this->isEventDragEnabled()),
                 eventResizeEnabled: @js($this->isEventResizeEnabled()),
@@ -46,19 +43,20 @@
                 datesSetEnabled: @js($this->isDatesSetEnabled()),
                 viewDidMountEnabled: @js($this->isViewDidMountEnabled()),
                 eventAllUpdatedEnabled: @js($this->isEventAllUpdatedEnabled()),
-                hasDateClickContextMenu: @js($hasDateClickContextMenu),
-                hasDateSelectContextMenu: @js($hasDateSelectContextMenu),
-                hasEventClickContextMenu: @js($hasEventClickContextMenu),
-                hasNoEventsClickContextMenu: @js($hasNoEventsClickContextMenu),
+                hasDateClickContextMenu: @js($this->hasContextMenu(Context::DateClick)),
+                hasDateSelectContextMenu: @js($this->hasContextMenu(Context::DateSelect)),
+                hasEventClickContextMenu: @js($this->hasContextMenu(Context::EventClick)),
+                hasNoEventsClickContextMenu: @js($this->hasContextMenu(Context::NoEventsClick)),
                 resources: @js($this->getResourcesJs()),
+                resourceLabelContent: @js($this->getResourceLabelContentJs()),
                 theme: @js($this->getTheme()),
                 options: @js($this->getOptions()),
                 eventAssetUrl: @js(FilamentAsset::getAlpineComponentSrc('calendar-event', 'guava/calendar')),
             })"
-            @class(\Filament\Support\Facades\FilamentColor::getComponentClasses(\Filament\Support\View\Components\ButtonComponent::class, 'primary'))
+            @class(FilamentColor::getComponentClasses(ButtonComponent::class, 'primary'))
         >
             <div data-calendar></div>
-            @if($hasContextMenu)
+            @if($this->hasContextMenu())
                 <x-guava-calendar::context-menu/>
             @endif
         </div>

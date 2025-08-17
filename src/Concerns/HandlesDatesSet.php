@@ -37,13 +37,13 @@ trait HandlesDatesSet
     /**
      * @internal Do not override, internal purpose only. Use `onDatesSet` instead
      */
-    public function onDatesSetJs(array $info = []): void
+    public function onDatesSetJs(array $data): void
     {
         // Check if dates set is enabled
         if (! $this->isDatesSetEnabled()) {
             return;
         }
 
-        $this->onDatesSet(new DatesSetInfo($info, $this->shouldUseFilamentTimezone()));
+        $this->onDatesSet(new DatesSetInfo($data, $this->shouldUseFilamentTimezone()));
     }
 }

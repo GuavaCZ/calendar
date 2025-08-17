@@ -13,6 +13,19 @@ export default function calendarEvent({
             if (hasContextMenu) {
                 this.initializeContextMenu()
             }
+            this.$el.setAttribute('data-event-id', event.id)
+
+            this.$el.addEventListener('mouseenter', () => {
+                document.querySelectorAll(`.ec-event[data-event-id="${event.id}"]`).forEach(el => {
+                    el.classList.add('gu-hover')
+                })
+            })
+
+            this.$el.addEventListener('mouseleave', () => {
+                document.querySelectorAll(`.ec-event[data-event-id="${event.id}"]`).forEach(el => {
+                    el.classList.remove('gu-hover')
+                })
+            })
             // Preloading
             // this.$el.addEventListener('mouseenter', () => {
             //     this.contextMenu.loadActions(this.event)
@@ -37,8 +50,14 @@ export default function calendarEvent({
                 return
             }
 
+            const data = {
+                event: info.event,
+                view: info.view,
+                tzOffset: -new Date().getTimezoneOffset()
+            }
+
             if (hasContextMenu) {
-                this.contextMenu.loadActions('eventClick', {event: this.event})
+                this.contextMenu.loadActions('eventClick', data)
                 this.contextMenu.openMenu(
                     info.jsEvent,
                     this.$el
@@ -46,11 +65,7 @@ export default function calendarEvent({
                 return
             }
 
-            this.$wire.onEventClickJs({
-                event: info.event,
-                view: info.view,
-                tzOffset: -new Date().getTimezoneOffset()
-            })
+            this.$wire.onEventClickJs(data)
         },
     }
 }

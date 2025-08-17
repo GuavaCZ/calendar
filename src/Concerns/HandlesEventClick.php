@@ -2,7 +2,9 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Guava\Calendar\Enums\Context;
 use Guava\Calendar\ValueObjects\EventClickInfo;
+use Illuminate\Database\Eloquent\Model;
 
 trait HandlesEventClick
 {
@@ -13,14 +15,14 @@ trait HandlesEventClick
     /**
      * @throws \Exception
      */
-    protected function onEventClick(EventClickInfo $info, ?string $action = null): void
+    protected function onEventClick(EventClickInfo $info, Model $event, ?string $action = null): void
     {
         // No action to trigger
         if (! $action) {
             return;
         }
 
-        $this->mountCalendarAction($action, $info);
+        $this->mountAction($action);
     }
 
     public function isEventClickEnabled(): bool
@@ -36,27 +38,22 @@ trait HandlesEventClick
     /**
      * @internal Do not override, internal purpose only. Use `onEventClick` instead
      */
-    public function onEventClickJs(array $info = [], ?string $action = null): void
+    public function onEventClickJs(array $data = [], ?string $action = null): void
     {
         // Check if event click is enabled
         if (! $this->isEventClickEnabled()) {
             return;
         }
 
-        $action ??= $this->getMountedActionContextData('event.extendedProps.action');
+        $this->setRawCalendarContextData(Context::EventClick, $data);
+
+        $action ??= $this->getRawCalendarContextData('event.extendedProps.action');
         $action ??= $this->getDefaultEventClickAction();
 
-        $this->setMountedActionContextData($info);
-        $this->resolveEventRecord();
-
-        $this->onEventClick(
-            new EventClickInfo(
-                $info,
-                $this->getEventRecord(),
-                $this->shouldUseFilamentTimezone()
-            ),
-            $action
-        );
+        // TODO: Similar to how Schemas work, allow users to define a method for each Event Model Type
+        // TODO: using attributes. such as #[CalendarEventClick(Sprint::class)] above a method
+        // TODO: such as onSprintEventClick would be only called for Sprint.
+        $this->onEventClick($this->getCalendarContextInfo(), $this->getEventRecord(), $action);
     }
 
     //    protected function resolveDefaultEventClickAction() {

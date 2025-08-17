@@ -2,6 +2,7 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Guava\Calendar\Enums\Context;
 use Guava\Calendar\ValueObjects\NoEventsClickInfo;
 
 trait HandlesNoEventsClick
@@ -18,13 +19,15 @@ trait HandlesNoEventsClick
     /**
      * @internal Do not override, internal purpose only. Use `onDateClick` instead
      */
-    public function onNoEventsClickJs(array $info): void
+    public function onNoEventsClickJs(array $data): void
     {
         // Check if no events click is enabled
         if (! $this->isNoEventsClickEnabled()) {
             return;
         }
 
-        $this->onNoEventsClick(new NoEventsClickInfo($info, $this->shouldUseFilamentTimezone()));
+        $this->setRawCalendarContextData(Context::NoEventsClick, $data);
+
+        $this->onNoEventsClick($this->getCalendarContextInfo());
     }
 }

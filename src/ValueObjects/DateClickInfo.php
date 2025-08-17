@@ -41,9 +41,4 @@ readonly class DateClickInfo implements ContextualInfo
     {
         return Context::DateClick;
     }
-
-    public function getOriginalData(): array
-    {
-        return $this->originalData;
-    }
 }

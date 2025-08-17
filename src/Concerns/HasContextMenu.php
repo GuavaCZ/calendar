@@ -18,10 +18,7 @@ trait HasContextMenu
 
     public function getContextMenuActionsUsing(Context $context, array $data = []): Collection
     {
-        $this->setMountedActionContextData($data);
-        if ($context === Context::EventClick) {
-            $this->resolveEventRecord();
-        }
+        $this->setRawCalendarContextData($context, $data);
 
         $actions = match ($context) {
             Context::EventClick => $this->getCachedEventClickContextMenuActions(),
@@ -34,19 +31,21 @@ trait HasContextMenu
             ->filter(fn (Action $action) => $action->isVisible())
             ->map(
                 fn (Action $action) => $action
-                    ->arguments([
-                        'context' => $context,
-                        'data' => $data,
-                        'useFilamentTimezone' => $this->shouldUseFilamentTimezone(),
-                    ])
+                    ->arguments($this->getRawCalendarContextData())
                     ->toHtml()
             )
         ;
     }
 
-    public function hasContextMenu(): bool
+    public function hasContextMenu(?Context $context = null): bool
     {
-        return ! empty($this->getCachedContextMenuActions());
+        return match ($context) {
+            Context::DateClick => ! empty($this->getCachedDateClickContextMenuActions()),
+            Context::DateSelect => ! empty($this->getCachedDateSelectContextMenuActions()),
+            Context::EventClick => ! empty($this->getCachedEventClickContextMenuActions()),
+            Context::NoEventsClick => ! empty($this->getCachedNoEventsClickContextMenuActions()),
+            default => ! empty($this->getCachedContextMenuActions()),
+        };
     }
 
     protected function cacheContextMenuActions(): void
@@ -65,47 +64,47 @@ trait HasContextMenu
         }
     }
 
-    public function getCachedContextMenuActions(): array
+    protected function getCachedContextMenuActions(): array
     {
         return $this->cachedContextMenuActions;
     }
 
-    public function getDateClickContextMenuActions(): array
+    protected function getDateClickContextMenuActions(): array
     {
         return [];
     }
 
-    public function getDateSelectContextMenuActions(): array
+    protected function getDateSelectContextMenuActions(): array
     {
         return [];
     }
 
-    public function getEventClickContextMenuActions(): array
+    protected function getEventClickContextMenuActions(): array
     {
         return [];
     }
 
-    public function getNoEventsClickContextMenuActions(): array
+    protected function getNoEventsClickContextMenuActions(): array
     {
         return [];
     }
 
-    public function getCachedDateClickContextMenuActions(): array
+    protected function getCachedDateClickContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::DateClick->value, []);
     }
 
-    public function getCachedDateSelectContextMenuActions(): array
+    protected function getCachedDateSelectContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::DateSelect->value, []);
     }
 
-    public function getCachedEventClickContextMenuActions(): array
+    protected function getCachedEventClickContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::EventClick->value, []);
     }
 
-    public function getCachedNoEventsClickContextMenuActions(): array
+    protected function getCachedNoEventsClickContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::NoEventsClick->value, []);
     }

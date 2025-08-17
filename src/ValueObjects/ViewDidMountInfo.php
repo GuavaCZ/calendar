@@ -2,10 +2,11 @@
 
 namespace Guava\Calendar\ValueObjects;
 
-use Guava\Calendar\Contracts\ContextualInfo;
-use Guava\Calendar\Enums\Context;
+use Carbon\CarbonImmutable;
 
-readonly class NoEventsClickInfo implements ContextualInfo
+use function Guava\Calendar\utc_to_user_local_time;
+
+readonly class ViewDidMountInfo
 {
     public CalendarView $view;
 
@@ -20,10 +21,5 @@ readonly class NoEventsClickInfo implements ContextualInfo
             data_get($data, 'tzOffset'),
             $useFilamentTimezone
         );
-    }
-
-    public function getContext(): Context
-    {
-        return Context::NoEventsClick;
     }
 }

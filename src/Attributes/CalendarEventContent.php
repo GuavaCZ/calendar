@@ -5,7 +5,7 @@ namespace Guava\Calendar\Attributes;
 use Illuminate\Database\Eloquent\Model;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
-class EventContentForModel
+class CalendarEventContent
 {
     /**
      * @param  class-string<Model>  $model

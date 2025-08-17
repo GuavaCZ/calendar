@@ -2,22 +2,20 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Guava\Calendar\Attributes\CalendarEventContent;
-use Guava\Calendar\Exceptions\EventContentNotFoundException;
+use Guava\Calendar\Attributes\CalendarResourceLabelContent;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Str;
 use ReflectionClass;
 
-trait HasEventContent
+trait HasResourceLabelContent
 {
-    public function getEventContentJs(): ?array
+    public function getResourceLabelContentJs(): ?array
     {
         // Try finding a method with a CalendarEventContent attribute
         $reflectionClass = new ReflectionClass($this);
 
         $views = [];
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC + \ReflectionMethod::IS_PROTECTED) as $method) {
-            $attributes = $method->getAttributes(CalendarEventContent::class);
+            $attributes = $method->getAttributes(CalendarResourceLabelContent::class);
 
             foreach ($attributes as $attribute) {
                 $content = $this->{$method->getName()}();
@@ -25,14 +23,14 @@ trait HasEventContent
             }
         }
 
-        // Try finding a "defaultEventContent" or "eventContent" method.
-        if (method_exists($this, 'defaultEventContent')) {
-            $views['_default'] = $this->defaultEventContent();
+        // Try finding a "defaultResourceLabelContent" or "resourceLabelContent" method.
+        if (method_exists($this, 'defaultResourceLabelContent')) {
+            $views['_default'] = $this->defaultResourceLabelContent();
         }
 
-        // Try finding a "defaultEventContent" or "eventContent" method.
-        if (method_exists($this, 'eventContent')) {
-            $views['_default'] = $this->eventContent();
+        // Try finding a "defaultResourceLabelContent" or "resourceLabelContent" method.
+        if (method_exists($this, 'resourceLabelContent')) {
+            $views['_default'] = $this->resourceLabelContent();
         }
 
         if (! empty($views)) {

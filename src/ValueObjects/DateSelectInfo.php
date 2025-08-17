@@ -49,9 +49,4 @@ readonly class DateSelectInfo implements ContextualInfo
     {
         return Context::DateSelect;
     }
-
-    public function getOriginalData(): array
-    {
-        return $this->originalData;
-    }
 }

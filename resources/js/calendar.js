@@ -18,6 +18,7 @@ export default function calendar({
                                      hasEventClickContextMenu = null,
                                      hasNoEventsClickContextMenu = null,
                                      resources = null,
+                                     resourceLabelContent = null,
                                      theme = null,
                                      options = {},
                                      eventAssetUrl,
@@ -66,7 +67,8 @@ export default function calendar({
 
             if (eventContent !== null) {
                 settings.eventContent = (info) => {
-                    const content = self.getEventContent(info)
+                    const model = info.event.extendedProps.model
+                    const content = eventContent[model] ?? eventContent['_default']
 
                     if (content === undefined) {
                         return undefined
@@ -76,6 +78,21 @@ export default function calendar({
                         html: content,
                     }
                 }
+            }
+
+            if (resourceLabelContent !== null) {
+                settings.resourceLabelContent = (info) => {
+                    const model = info.resource.extendedProps.model
+                    const content = resourceLabelContent[model] ?? resourceLabelContent['_default']
+
+                    if (content === undefined) {
+                        return undefined
+                    }
+
+                    return {
+                        html: this.wrapContent(content, info),
+                    }
+                };
             }
 
             if (dateClickEnabled) {
@@ -213,9 +230,10 @@ export default function calendar({
             }
 
             if (viewDidMountEnabled) {
-                settings.viewDidMount = (view) => {
-                    this.$wire.onViewDidMount({
-                        view: view,
+                settings.viewDidMount = (info) => {
+                    this.$wire.onViewDidMountJs({
+                        view: info.view,
+                        tzOffset: -new Date().getTimezoneOffset()
                     })
                 }
             }
@@ -242,26 +260,6 @@ export default function calendar({
                 ...settings,
                 ...options,
             }
-        },
-
-
-        getEventContent: function (info) {
-            if (typeof eventContent === 'string') {
-                return this.wrapContent(eventContent, info)
-            }
-
-            if (typeof eventContent === 'object') {
-                const model = info.event.extendedProps.model
-                const content = eventContent[model]
-
-                if (content === undefined) {
-                    return undefined
-                }
-
-                return this.wrapContent(content, info)
-            }
-
-            return undefined
         },
 
         wrapContent: function (content, info) {

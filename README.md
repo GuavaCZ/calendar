@@ -26,6 +26,30 @@ It allows you to create a widget with a calendar with support for **multiple** m
 
 https://github.com/user-attachments/assets/a4460084-e8a8-4b1b-9ccd-4d887895155b
 
+
+![Resources Screenshot 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/resources_screenshot_01.png)
+
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview.mp4" type="video/mp4">
+</video>
+
+https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
+
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview_2.mp4" type="video/mp4">
+</video>
+
+
+https://github.com/user-attachments/assets/4996cc6a-7cee-4c7d-976a-60d3a4368f76
+
+
+<video width="320" height="240" controls>
+  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/no_events_context_menu.mp4" type="video/mp4">
+</video>
+
+https://github.com/user-attachments/assets/7c2537d5-8acf-459f-a9a8-be02d4018448
+
+
 ## Support us
 
 Your support is key to the continual advancement of our plugin. We appreciate every user who has contributed to our journey so far.
@@ -564,11 +588,6 @@ public function getHeading(): string|HtmlString
 }
 ```
 
-
-// OLD DOC BELOW THIS POINT
-
-
-
 ## Interactivity
 
 By now you should have a perfectly fine and working calendar. However, it is still very static - you can view your events, but there is no way to interact with them.
@@ -578,7 +597,9 @@ The calendar supports many ways to interact with, which will be described below 
 ### Actions
 Before you read about the different ways to add interactions to your calendar, you need to understand how actions in the calendar work.
 
-We provide a few drop-in replacements of the regular Filament actions:
+Actions used within the Calendar context need the `CalendarAction` trait to work properly.
+
+We provide a few drop-in replacements of the regular Filament actions that already implement everything necessary:
 
 - CreateAction
 - ViewAction
@@ -615,35 +636,45 @@ public function createFooAction(): CreateAction
 Both variants are equal, and it's just up to your personal preference which one you want to use.
 
 #### Mounting actions
-whenever you want to mount an action programmatically within a calendar context, such as in the `onDateClick` method (more on this later), you need to use our `mountCalendarAction` instead of the regular `mountAction` method.
+whenever you want to mount an action programmatically within a calendar context, such as in the `onDateClick` method (more on this later), you can use the `mountAction` method. 
 
 ```php
 public function onDateClick(DateClickInfo $info) {
-    // You need to use our mountCalendarAction method
-    // Since we need the contextual $info so we can pass it to your action
-    $this->mountCalendarAction('createFoo', $info);
+    $this->mountAction('createFoo');
 }
 ```
 
-Thanks to this, you can work with the contextual info in your create action:
+In the background, we pass a few more arguments to the mount method.
+Thanks to that, you can type hint the contextual info in your actions:
 
 ```php
 use Guava\Calendar\Enums\Context;
-use Guava\Calendar\ValueObjects\DateClickInfo $info;
+use Guava\Calendar\Contracts\ContextualInfo;
+use Guava\Calendar\ValueObjects\DateClickInfo;
+use Guava\Calendar\ValueObjects\DateSelectInfo;
 
 public function createFooAction(): CreateAction
 {
     return $this->createAction(Foo::class)
-        ->mountInCalendarUsing(function (?DateClickInfo $info) {
-            // You can now access the information from the date click using the $info argument 
+        ->mountUsing(function (?ContextualInfo $info) {
+            // You can now access contextual info from the calendar using the $info argument 
+            if ($info instanceof DateClickInfo) {
+                // do something on date click
+            }
+            
+            // Both comparison checks are equal, but instanceof is better for IDE help
+            if ($info->getContext() === Context::DateSelect) {
+                // do something on date select
+            }
         })
+        // You could also type hint each contextual info directly:
+        ->mountUsing(fn(?DateClickInfo $dateClick, ?DateSelectInfo $dateSelect))
     ;
 }
 ```
 
-As you can see, here we use `mountInCalendarUsing` instead of filament's regular `mountUsing`. In the background, we still utilize the filament's method.
-
-The `mountInCalendarUsing` method provides multiple parameters for you to use:
+#### Accessing context information
+As seen above, we provide various contextual information for you when using calendar actions:
 
 | Parameter         | Description                                                                            |
 |-------------------|----------------------------------------------------------------------------------------|
@@ -655,6 +686,18 @@ The `mountInCalendarUsing` method provides multiple parameters for you to use:
 
 You simply need to type hint the parameter correctly and it will be injected for you if available.
 
+These are not only limited to `mountUsing`, almost all action methods will have access to these.
+
+For example, to conditionally hide an action in the DateClick context:
+```php
+use Guava\Calendar\Enums\Context;
+
+$this->createAction(Foo::class)
+    ->hidden(function (?ContextualInfo $info) {
+        return $info->getContext() === Context::DateClick;
+    });
+```
+
 ### Schemas
 
 The `create`, `view` and `edit` actions should work out of the box and use the correct schemas.
@@ -664,6 +707,7 @@ We attempt to guess your Resource and reuse the appropriate schema: `Create` and
 But sometimes, you might want to customize the Schema that will be used in your Calendar Modals.
 
 You have a few options available:
+- Stick to auto discovery, in which case you are ready to go :-),
 - if your calendar works with a single model only or you reuse the same schema for multiple models, you can implement the `schema` or `defaultSchema` method,
 - or you can implement a schema per model
 
@@ -732,11 +776,11 @@ If you want to take full control over what happens when a date cell is clicked, 
 ```php
 use Guava\Calendar\ValueObjects\DateClickInfo;
 
-public function onDateClick(DateClickInfo $info): void
+protected function onDateClick(DateClickInfo $info): void
 {
     // Validate the data and handle the event
     // For example, you might want to mount a create action
-    $this->mountCalendarAction('createFoo', $info);
+    $this->mountAction('createFoo');
 }
 ```
 
@@ -746,7 +790,7 @@ Another option is to use our context menu feature. When enabled, a context menu 
 To use the context menu feature, all you need to do is implement the `getDateClickContextMenuActions` method:
 
 ```php
-public function getDateClickContextMenuActions(): array
+protected function getDateClickContextMenuActions(): array
 {
     return [
         $this->createFooAction(),
@@ -783,11 +827,11 @@ If you want to take full control over what happens when a date selection is made
 ```php
 use Guava\Calendar\ValueObjects\DateSelectInfo;
 
-public function onDateSelect(DateSelectInfo $info): void
+protected function onDateSelect(DateSelectInfo $info): void
 {
     // Validate the data and handle the event
     // For example, you might want to mount a create action
-    $this->mountCalendarAction('createFoo', $info);
+    $this->mountAction('createFoo');
 }
 ```
 
@@ -797,7 +841,7 @@ Another option is to use our context menu feature. When enabled, a context menu 
 To use the context menu feature, all you need to do is implement the `getDateSelectContextMenuActions` method:
 
 ```php
-public function getDateSelectContextMenuActions(): array
+protected function getDateSelectContextMenuActions(): array
 {
     return [
         $this->createFooAction(),
@@ -839,11 +883,14 @@ You can now choose to either:
 If you want to take full control over what happens when an event is clicked, override the `onEventClick` method and implement your own custom logic:
 
 ```php
+use Illuminate\Database\Eloquent\Model;
 use Guava\Calendar\ValueObjects\EventClickInfo;
 
-public function onEventClick(EventClickInfo $info): void
+protected function onEventClick(EventClickInfo $info, Model $event, ?string $action = null): void
 {
-    // Validate the data and handle the event
+    // Validate the data and handle the event click
+    // $event contains the clicked event record
+    // you can also access it via $info->record
 }
 ```
 
@@ -853,7 +900,7 @@ Another option is to use our context menu feature. When enabled, a context menu 
 To use the context menu feature, all you need to do is implement the `getEventClickContextMenuActions` method:
 
 ```php
-public function getEventClickContextMenuActions(): array
+protected function getEventClickContextMenuActions(): array
 {
     return [
         $this->viewAction(),
@@ -865,52 +912,243 @@ public function getEventClickContextMenuActions(): array
 
 The context menu has a higher priority, so if it returns a non-empty array, it will always take precedence over your custom handler.
 
-## Custom Event Content
-By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getEventContent` method on your calendar widget class.
+### No Events Click
+> [!NOTE]  
+> This has affect only in list views.
 
-In order to keep things performant, the blade view is rendered **once** on the server and then re-used for every calendar. Thus, you **cannot** access the calendar data from the server side via Blade or Laravel, or do any server-side operations.
+A no events click event is triggered when a list view has no events to display and the calendar content was clicked.
 
-However, each calendar is wrapped in an alpine component, which exposes the calendar data that you can freely use using [AlpineJS](https://alpinejs.dev/).
-
-If you only have one type of events or events that render the same way, you can simply return a view or a HtmlString from the getEventContent method:
+To handle no events clicks, first enable them by overriding the `noEventsClickEnabled` property:
 
 ```php
-public function getEventContent(): null|string|array
+protected bool $noEventsClickEnabled = true;
+```
+
+Now no events clicks are enabled and a request will be sent to livewire each time a click is made.
+
+But by default, nothing happens, and each click will be silently ignored.
+
+You can now choose to either:
+- implement your own logic
+- or use our context menu feature
+
+#### Implementing your own logic
+
+If you want to take full control over what happens when a click is made, override the `onNoEventsClick` method and implement your own custom logic:
+
+```php
+use Guava\Calendar\ValueObjects\NoEventsClickInfo;
+
+protected function onNoEventsClick(NoEventsClickInfo $info): void
 {
-    // return a blade view
-    return view('calendar.calendar');
-    
-    // return a HtmlString
-    return new HtmlString('<div>My calendar</div>');
+    // Validate the data and handle the event
+    // For example, you might want to mount a create action
+    $this->mountAction('createFoo');
 }
 ```
 
-Example of the `calendar.calendar` view blade file: 
+#### Using the context menu feature
+Another option is to use our context menu feature. When enabled, a context menu will be rendered at your mouse cursor when you click, which you can populate with actions.
+
+To use the context menu feature, all you need to do is implement the `getNoEventsClickContextMenuActions` method:
+
+```php
+protected function getNoEventsClickContextMenuActions(): array
+{
+    return [
+        $this->createFooAction(),
+        $this->createBarAction(),
+        // Any other action you want
+    ];
+}
+```
+
+The context menu has a higher priority, so if it returns a non-empty array, it will always take precedence over your custom handler.
+
+### Event Resize
+
+Callback function that is triggered when you finish resizing an event in your calendar.
+
+To handle the callback, first enable it by overriding the `eventResizeEnabled` property:
+
+```php
+protected bool $eventResizeEnabled = true;
+```
+
+Now it is enabled and a request will be sent to livewire after you complete the resize of an event.
+
+#### Implementing your own logic
+
+> [!IMPORTANT]  
+> Notice that unlike the other callbacks, this callback returns a boolean value.
+> 
+> This is used to control whether the event resize should be reverted visually on the frontend or not.
+
+To handle the callback, override the `onEventResize` method and implement your own custom logic:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Guava\Calendar\ValueObjects\EventResizeInfo;
+
+protected function onEventResize(EventResizeInfo $info, Model $event): void
+{
+    // Validate the data and handle the event
+    // Most likely you will want to update the event with the new start /end dates to persist the resize in the database
+}
+```
+
+### Event Drag & Drop
+
+Callback function that is triggered when you finish dragging and drop an event to a date cell in your calendar.
+
+To handle the callback, first enable it by overriding the `eventDragEnabled` property:
+
+```php
+protected bool $eventDragEnabled = true;
+```
+
+Now it is enabled and a request will be sent to livewire after you drop the event to a date cell in the calendar.
+
+#### Implementing your own logic
+
+> [!IMPORTANT]  
+> Notice that unlike the other callbacks, this callback returns a boolean value.
+>
+> This is used to control whether the event should be reverted visually to it's original position on the frontend or not.
+
+To handle the callback, override the `onEventDrop` method and implement your own custom logic:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Guava\Calendar\ValueObjects\EventDropInfo;
+
+protected function onEventDrop(EventDropInfo $info, Model $event): void
+{
+    // Validate the data and handle the event
+    // Most likely you will want to update the event with the new start /end dates to persist the drag & drop in the database
+}
+```
+
+### Dates Set
+
+When the date range of the calendar was originally set or changed by clicking the previous/next buttons, changing the view, manipulating the current date via the API, etc. a Dates Set event is triggered.
+
+To handle the Dates Set callback, first enable it by overriding the `datesSetEnabled` property:
+
+```php
+protected bool $datesSetEnabled = true;
+```
+
+Now it is enabled and a request will be sent to livewire each time the calendar date range is changed (or initially set).
+
+#### Implementing your own logic
+
+To handle the callback, override the `onDatesSet` method and implement your own custom logic:
+
+```php
+use Guava\Calendar\ValueObjects\DatesSetInfo;
+
+protected function onDatesSet(DatesSetInfo $info): void
+{
+    // Validate the data and handle the event
+    // For example, you might want to store the date range in a cookie or session
+    // to remember the date range across page refreshes
+}
+```
+
+### View Did Mount
+
+Callback function that is triggered right after the view has been added to the DOM.
+
+To handle the callback, first enable it by overriding the `viewDidMountEnabled` property:
+
+```php
+protected bool $viewDidMountEnabled = true;
+```
+
+Now it is enabled and a request will be sent to livewire right after the calendar view has been added to the DOM.
+
+#### Implementing your own logic
+
+To handle the callback, override the `onViewDidMount` method and implement your own custom logic:
+
+```php
+use Guava\Calendar\ValueObjects\ViewDidMountInfo;
+
+protected function onViewDidMount(ViewDidMountInfo $info): void
+{
+    // Validate the data and handle the event
+    // For example, you might want to store the date range in a cookie or session
+    // to remember the date range across page refreshes
+}
+```
+
+## Custom Event Content
+By default, we use the default view from the calendar package. However, you are able to use your own content.
+
+To keep things performant, the blade view is rendered **once** on the server and then re-used for every event. Thus, you **cannot** access the calendar event data from the server side via Blade or Laravel, or do any server-side operations.
+
+However, each event is wrapped in an alpine component, which exposes the event data that you can freely use using [AlpineJS](https://alpinejs.dev/).
+
+If you only have one type of events or events that render the same way, you can simply return a view or a HtmlString from the `defaultEventContent` or `eventContent` method:
+
+```php
+use Illuminate\Support\HtmlString;
+
+protected function eventContent(): HtmlString|string
+{
+    // return a blade view
+    return view('calendar.event');
+    
+    // return a HtmlString
+    return new HtmlString('<div>My event</div>');
+}
+```
+
+Example of the `calendar.event` view blade file: 
 ```bladehtml
 <div class="flex flex-col items-start">
-    <span x-text="calendar.title"></span>
-    <template x-for="user in calendar.extendedProps.users">
+    <span x-text="event.title"></span>
+    <template x-for="user in event.extendedProps.users">
         <span x-text="user.name"></span>
     </template>
 </div>
 ```
 
-If you want to render events differently based on their model type, you can return an array like so:
+If you want to render events differently based on their model type, you can implement an Event Content method for each model, by using the `CalendarEventContent` attribute or by using a specific naming convention for the method - `camelCaseModelNameEventContent` such as `fooEventContent` (where Foo is your model):
 ```php
-public function getEventContent(): null|string|array
+use Illuminate\Support\HtmlString;
+use Guava\Calendar\Attributes\CalendarEventContent;
+
+// Variant 1.
+#[CalendarEventContent(Foo::class)]
+protected function eventContentForFoo(): HtmlString|string
 {
-    return [
-        MyModel::class => view('calendar.my-model-calendar'),
-        AnotherModel::class => view('calendar.another-model-calendar'),
-    ];
+    return view('calendar.foo-model-event');
+}
+
+// Variant 2.
+protected function barEventContent(): HtmlString|string
+{
+    return view('calendar.bar-model-event');
 }
 ```
 
-## Custom resource label content
-By default, we use the default view from the calendar package. However, you are able to use your own by overriding the `getResourceLabelContent` method on your calendar widget class.
+Both variants are equal, it's up to your personal preference which one you want to use.
+
+## Custom Resource Label Content
+By default, we use the default view from the calendar package. However, you are able to use your own content.
+
+To keep things performant, the blade view is rendered **once** on the server and then re-used for every resource. Thus, you **cannot** access the calendar resource data from the server side via Blade or Laravel, or do any server-side operations.
+
+However, each resource is wrapped in an alpine component, which exposes the resource data that you can freely use using [AlpineJS](https://alpinejs.dev/).
+
+If you only have one type of resources or resources that render the same way, you can simply return a view or a HtmlString from the `defaultResourceLabelContent` or `resourceLabelContent` method:
 
 ```php
-public function getResourceLabelContent(): null|string|array
+use Illuminate\Support\HtmlString;
+
+protected function resourceLabelContent(): HtmlString|string
 {
     // return a blade view
     return view('calendar.resource');
@@ -920,409 +1158,36 @@ public function getResourceLabelContent(): null|string|array
 }
 ```
 
-## Customize the  schema
-When an calendar triggers an action (such as view or edit actions), a modal with a schema is mounted.
-
-However, because each calendar can be related to a different model (for example your calendar could render both "meeting" and "standup" models), we need to render the correct schema.
-
-To do so, we attempt to find the correct schema to be rendered in a variety of ways, in this exact order:
-#### 1) Method with ForModel attribute
-We search for a method with the `#[ForModel(<ModelClass>)]` attribute.
-
-For example:
-
-```php
-use Guava\Calendar\Attributes\CalendarSchema;
-
-#[ForModel(ModelName::class)]
-public function modelSchema(Schema $schema): Schema {
-    return  $schema->components([
-       // ...
-    ]);
-}
+Example of the `calendar.resource` view blade file:
+```bladehtml
+<div class="flex flex-col items-start">
+    <span x-text="resource.title"></span>
+</div>
 ```
 
-#### 2) Method named after camel case model name
-Next we try to look for a method corresponding the camel case model name, following `Schema`.
-
-So for example, if my model is `App\Models\Event`, the method would be:
+If you want to render resources differently based on their model type, you can implement a Resource Label Content method for each model, by using the `CalendarResourceLabelContent` attribute or by using a specific naming convention for the method - `camelCaseModelNameResourceLabelContent` such as `fooResourceLabelContent` (where Foo is your model):
 ```php
-public function eventSchema(Schema $schema): Schema {
-    return  $schema->components([
-        // ...
-    ]);
-}
-```
+use Illuminate\Support\HtmlString;
+use Guava\Calendar\Attributes\CalendarResourceLabelContent;
 
-#### 3) Default schema method
-Sometimes your calendar only operates with a single model type, or multiple of your models work with the same attributes and so a shared schema is enough.
-
-In such a case you can use the `defaultSchema` or `schema` methods like this:
-```php
-public function defaultSchema(Schema $schema): Schema {
-    return  $schema->components([
-        // ...
-    ]);
-}
-```
-
-#### 4) Autoload from resource
-Lastly, we attempt to automatically load the schema from the model's resource (if present).
-
-In this case, if you have a model `App\Models\Event` and a `App\Filament\Resources\EventResource` resource, we will use the `EventResource::form` method as your schema.
-
-#### No schema found
-If no schema could be found for a given model, an exception is thrown.
-
-## Resources
-Resource views (their names start with `resource`) allow you to group events into resources (such as rooms, projects, etc.).
-
-To use resource views, you need to create resources and assign your events to these resources.
-
-![Resources Screenshot 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/resources_screenshot_01.png)
-
-
-### Creating resources
-To create resources, you need to override the `getResources` method on your calendar widget class. Just like events, there are three options you can choose from to create resources:
-
-```php
-public function getResources(): Collection|array
+// Variant 1.
+#[CalendarResourceLabel(Foo::class)]
+protected function resourceLabelContentForFoo(): HtmlString|string
 {
-    return [
-        // Chainable object-oriented variant
-        CalendarResource::make('foo')
-            ->title('Room 1'),
-            
-        // Array variant
-        ['id' => 'bar', 'title' => 'Room 2'],
-        
-        // Eloquent model implementing the `Resourceable` interface
-        MyRoom::find(1),
-    ];
+    return view('calendar.foo-model-resource');
 }
-```
 
-
-Here is an example:
-
-#### using Eloquent models as Resources
-```php
-use Guava\Calendar\Contracts\Resourceable;
-use Guava\Calendar\ValueObjects\CalendarResource;
-
-class Bar extends Model implements Resourceable
+// Variant 2.
+protected function barResourceLabelContent(): HtmlString|string
 {
-    // ...
-    
-    // This is where you map your model into a calendar resource object
-    public function toCalendarResource(): CalendarResource|array
-    {
-        return CalendarResource::make($this)
-            ->title($this->name);
-    }
+    return view('calendar.bar-model-resource');
 }
 ```
 
-After that you should update your Events by providing an array of resources it belongs to:
-
-```php
-// Your calendar calendar eloquent model
-
-public function toCalendarEvent(): CalendarEvent
-{
-    return CalendarEvent::make($this)
-        // other settings
-        ->resourceId() // TODO: add example
-}
-```
-
-## Handling events
-
-By default, the calendar is a view-only collection of events. You can enable more functionalities by configuring various events as described below.
-
-### Event-click calendar
-An calendar click calendar is triggered when an calendar in the calendar is clicked. By default, a click calendar mounts the `view` action.
-
-To listen to click events, simply override the `eventClickEnabled` property:
-
-```php
-protected bool $eventClickEnabled = true;
-```
-
-You can set the default click action by overriding the `defaultEventClickAction` property of the widget. This simply needs to be the name of an action that you can freely define in your widget, like regular Filament actions:
-
-```php
-protected ?string $defaultEventClickAction = 'edit';
-```
-
-And that's it! As long as pass your model policy checks, an edit modal will be mounted when you click on an calendar.
-
-If you want to handle the calendar click logic completely by yourself, you may override the `onEventClick` method:
-
-```php
-    public function onEventClick(array $info = [], ?string $action = null): void
-{
-    // do something on click
-    // $info contains the calendar data:
-    // $info['calendar'] - the calendar object
-    // $info['view'] - the view object
-}
-```
-
-### Event Resize calendar
-A resize calendar is triggered when an calendar is resized at the ending edge of the calendar. This allows you to quickly modify the duration of an calendar.
-
-To listen to resize events, simply override the `eventResizeEnabled` property:
-
-```php
-protected bool $eventResizeEnabled = true;
-```
-
-Except for resolving the (calendar) record the calendar is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventResize` method:
-
-```php
-public function onEventResize(array $info = []): bool
-{
-    // Don't forget to call the parent method to resolve the calendar record
-    parent::onEventResize($info);
-     
-    // Validate the data
-    // Update the record ($this->getEventRecord())
-    // $info contains the calendar data:
-    // $info['calendar'] - the calendar object
-    // $info['oldEvent'] - the calendar object before resizing
-    // $info['endDelta'] - the difference in time between the old and new calendar
-    
-    // Return true if the calendar was resized successfully
-    // Return false if the calendar was not resized and should be reverted on the client-side   
-}
-```
-
-### Event Drag & Drop calendar
-A drop calendar is triggered when an calendar is dragged and dropped to a different slot in the calendar. This allows you to quicky move the start (and end) date of an calendar.
-
-To listen to drag and drop events, simply override the `eventDragEnabled` property:
-
-```php
-protected bool $eventDragEnabled = true;
-```
-
-Except for resolving the (calendar) record the calendar is related to, there is no default action and it's up to you to implement the logic. To do that, override the `onEventDrop` method:
-
-```php
-public function onEventDrop(array $info = []): bool
-{
-    // Don't forget to call the parent method to resolve the calendar record
-    parent::onEventDrop($info); 
-    
-    // Validate the data
-    // Update the record ($this->getEventRecord())
-    // $info contains the calendar data:
-    // $info['calendar'] - the calendar object
-    // $info['oldEvent'] - the calendar object before resizing
-    // $info['oldResource'] - the old resource object
-    // $info['newResource'] - the new resource object
-    // $info['delta'] - the duration object representing the amount of time the calendar was moved by
-    // $info['view'] - the view object
-    
-    // Return true if the calendar was moved successfully
-    // Return false if the calendar was not moved and should be reverted on the client-side
-}
-```
-
-### Date Click calendar
-A date click calendar is triggered when an date cell is clicked in the calendar.
-
-To listen to date click events, simply override the `dateClickEnabled` property:
-
-```php
-protected bool $dateClickEnabled = true;
-```
-
-By default, nothing happens on date click. You can either use the `date click context menu feature` (more info below in the `Context Menu` section __[here](#date-click-context-menu)__) or implement your own logic, by overriding the `onDateClick` method:
-
-```php
-public function onDateClick(array $info = []): bool
-{
-    // Validate the data
-    // $info contains the calendar data:
-    // $info['date'] - the date clicked on
-    // $info['dateStr'] - the date clicked on as a UTC string
-    // $info['allDay'] - whether the date is an all-day slot
-    // $info['view'] - the view object
-    // $info['resource'] - the resource object
-}
-```
-
-### Date Select calendar
-A date select calendar is triggered when a date range is selected in the calendar.
-
-To listen to date select events, simply override the `dateSelectEnabled` property:
-
-```php
-protected bool $dateSelectEnabled = true;
-```
-
-By default, nothing happens on date select. You can either use the `date select context menu feature` (more info below in the `Context Menu` section __[here](#date-select-context-menu)__) or implement your own logic, by overriding the `onDateSelect` method:
-
-```php
-public function onDateSelect(array $info = []): bool
-{
-    // Validate the data
-    // $info contains the calendar data:
-    // $info['start'] - the start date of the range
-    // $info['startStr'] - the start date as an UTC string
-    // $info['end'] - the end date of the range
-    // $info['endStr'] - the end date as an UTC string
-    // $info['allDay'] - whether the date is an all-day slot
-    // $info['view'] - the view object
-    // $info['resource'] - the resource object
-}
-```
-
-### No-events-click calendar
-
-A no-events-click calendar is applicable only on `list` views and is triggered when a user clicks on the `no events` cell. By default, this calendar does nothing and it's up to you to implement the logic.
-
-To listen to no-events-click events, simply override the `noEventsClickEnabled` property:
-
-```php
-protected bool $noEventsClickEnabled = true;
-```
-
-To handle the no-events-click logic, override the `onNoEventsClick` method:
-
-```php
-public function onNoEventsClick(array $info = []): void
-{
-    // do something on click
-    // $info contains the calendar data:
-    // $info['view'] - the view object
-}
-```
-
-## Context menu
-Optionally you can add a context menu to your calendar, which allows you to create events by clicking on a date cell or by selecting a date/time range by dragging.
-
-There are multiple places where you can use context menus at.
-
-<video width="320" height="240" controls>
-  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview.mp4" type="video/mp4">
-</video>
-
-https://github.com/user-attachments/assets/a2641b40-9cbd-4c40-b360-7621caa86c40
-
-<video width="320" height="240" controls>
-  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/context_menu_preview_2.mp4" type="video/mp4">
-</video>
-
-
-https://github.com/user-attachments/assets/4996cc6a-7cee-4c7d-976a-60d3a4368f76
-
-### Date click context menu
-This context menu is triggered when a user clicks on a date cell in the calendar.
-
-To enable the context menu, all you need to do is enable date clicks and implement the `getDateClickContextMenuActions` method:
-
-For example:
-```php
-protected bool $dateClickEnabled = true;
-
-public function getDateClickContextMenuActions(): array
-{
-    return [
-        CreateAction::make('foo')
-            ->model(Foo::class)
-            ->mountUsing(fn ($arguments, $form) => $form->fill([
-                'starts_at' => data_get($arguments, 'dateStr'),
-                'ends_at' => data_get($arguments, 'dateStr'),
-            ])),    
-    ];
-}
-```
-
-The mount using function is used to fill the form with the arguments from the calendar. It contains all information that vkurko/calendar provides in the `select` and `dateClick` events, but most importantly:
-- `startStr` and `endStr` for range selection
-- `dateStr` for date clicks
-
-
-### Date select context menu
-This context menu is triggered when a user selects on a date range in the calendar.
-
-To enable the context menu, all you need to do is enable date selects and implement the `getDateSelectContextMenuActions` method:
-
-For example:
-```php
-protected bool $dateSelectEnabled = true;
-
-public function getDateSelectContextMenuActions(): array
-{
-    return [
-        CreateAction::make('foo')
-            ->model(Foo::class)
-            ->mountUsing(fn ($arguments, $form) => $form->fill([
-                'starts_at' => data_get($arguments, 'startStr'),
-                'ends_at' => data_get($arguments, 'endStr'),
-            ])),
-    ];
-}
-```
-
-### Event click context menu
-This context menu is triggered when a user clicks on an calendar in the calendar.
-
-To enable the context menu, all you need to do is enabled calendar Clicks and implement the `getEventClickContextMenuActions` method:
-
-For example:
-```php
-protected bool $eventClickEnabled = true;
-
-public function getEventClickContextMenuActions(): array
-{
-    return [
-        $this->viewAction(),
-        $this->editAction(),
-        $this->deleteAction(),
-    ];
-}
-```
-
-### No events click context menu
-This context menu is only rendered on `list` views and is triggered when a user clicks on the `no events` cell when there are no events.
-
-To enable the context menu, all you need to do is implement the `getNoEventsClickContextMenuActions` method. Also, make sure that the `noEventsClickEnabled` property is set to `true`.
-
-```php
-public function getNoEventsClickContextMenuActions(): array
-{
-    return [
-        CreateAction::make('foo')
-            ->model(Foo::class)
-    ];
-}
-
-```
-
-<video width="320" height="240" controls>
-  <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/no_events_context_menu.mp4" type="video/mp4">
-</video>
-
-https://github.com/user-attachments/assets/7c2537d5-8acf-459f-a9a8-be02d4018448
-
-## Customization
-### Locale
-By default, the calendar will use the app's locale.
-
-The underlying calendar package doesn't support locales as a combination of language and region/country code, so locales such as `fr_CA` or `en_US` become invalid.
-
-We attempt to resolve this by only using the first language part of the locale. If you still run into any issues with the localization, you can override the calendar's locale manually using the `locale` property:
-
-```php
-protected ?string $locale = 'en';
-```
+Both variants are equal, it's up to your personal preference which one you want to use.
 
 ## Utility Classes
-We provide various helper and utility classes in order to provide you with type hints for various arguments that are being passed from the calendar to your widget.
+We provide various helper and utility classes to provide you with type hints for various arguments that are being passed from the calendar to your widget.
 
 ### CalendarViewType
 This enum contains all available calendar views that you can use in your calendar widget.
@@ -1336,7 +1201,6 @@ Use this to query only models that are visible in the current view.
 |--------|-----------------------------------------------------------------------------------------------------------------|
 | start  | Start date of the range the calendar needs events for. Events before this date are not visible in the calendar. |
 | end    | End date of the range the calendar needs events for. Events after this date are not visible in the calendar.    |
-
 
 ## Troubleshooting
 ### Context menu actions don't work

@@ -2,6 +2,7 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Guava\Calendar\Enums\Context;
 use Guava\Calendar\ValueObjects\DateSelectInfo;
 
 trait HandlesDateSelect
@@ -35,18 +36,15 @@ trait HandlesDateSelect
     /**
      * @internal Do not override, internal purpose only. Use `onDateSelect` instead
      */
-    public function onDateSelectJs(array $info): void
+    public function onDateSelectJs(array $data): void
     {
         // Check if date select is enabled
         if (! $this->isDateSelectEnabled()) {
             return;
         }
 
-        $this->onDateSelect(
-            new DateSelectInfo(
-                $info,
-                $this->shouldUseFilamentTimezone()
-            )
-        );
+        $this->setRawCalendarContextData(Context::DateSelect, $data);
+
+        $this->onDateSelect($this->getCalendarContextInfo());
     }
 }

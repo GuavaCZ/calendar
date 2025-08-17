@@ -9,6 +9,7 @@ use Guava\Calendar\Contracts\ContextualInfo;
 
 trait InteractsWithCalendar
 {
+    use CanRefreshCalendar;
     use CanUseFilamentTimezone;
     use EvaluatesClosures;
     use HandlesDateClick;
@@ -36,22 +37,32 @@ trait InteractsWithCalendar
     use HasMountedActionContextData;
     use HasNotifications;
     use HasOptions;
+    use HasResourceLabelContent;
+    use HasResources;
     use HasSchema;
-    use InteractsWithActions;
+    use HasTheme;
+    use InteractsWithActions {
+        InteractsWithActions::mountAction as baseMountAction;
+    }
     use InteractsWithEventRecord;
     use InteractsWithSchemas;
-    use CanRefreshCalendar;
-    use HasTheme;
-    use HasResources;
 
-    public function mountCalendarAction(string $name, ContextualInfo $info): void
+    public function mountAction(string $name, array $arguments = [], array $context = []): mixed
     {
-        $this->mountAction($name, [
-            'context' => $info->getContext()->value,
-            'data' => $info->getOriginalData(),
-            'useFilamentTimezone' => $this->shouldUseFilamentTimezone(),
-        ]);
+        return $this->baseMountAction($name, [
+            ...$arguments,
+            ...$this->getRawCalendarContextData() ?? [],
+        ], $context);
     }
+
+    //    public function mountCalendarAction(string $name, ContextualInfo $info): void
+    //    {
+    //        $this->mountAction($name, [
+    //            'context' => $info->getContext()->value,
+    //            'data' => $info->getOriginalData(),
+    //            'useFilamentTimezone' => $this->shouldUseFilamentTimezone(),
+    //        ]);
+    //    }
 
     //    public function getDefaultActionSchemaResolver(Action $action): ?Closure
     //    {

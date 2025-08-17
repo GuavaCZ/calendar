@@ -1,45 +1,43 @@
+.ec {
+    --ec-list-day-bg-color: white;
+    --ec-today-bg-color: var(--color-50);
+
+    --ec-event-bg-color: var(--bg);
+    --ec-event-text-color: var(--text);
+    --ec-border-color: var(--gray-200);
+    --ec-button-bg-color: var(--bg);
+    --ec-button-text-color: var(--text);
+    --ec-button-active-bg-color: var(--hover-bg);
+    --ec-button-active-text-color: var(--hover-text);
+}
+.dark .ec {
+    --ec-list-day-bg-color: var(--gray-900);
+    --ec-today-bg-color: color-mix(in oklab, var(--color-500) 20%, transparent);
+
+    --ec-event-bg-color: var(--dark-bg);
+    --ec-event-text-color: var(--dark-text);
+    --ec-border-color: rgba(255, 255, 255, 0.1);
+    --ec-button-bg-color: var(--dark-bg);
+    --ec-button-text-color: var(--dark-text);
+    --ec-button-active-bg-color: var(--dark-hover-bg);
+    --ec-button-active-text-color: var(--dark-hover-text);
+}
+
+
 .ec-button {
-    @apply bg-[var(--bg)] dark:bg-[var(--dark-bg)] text-[var(--text)] dark:text-[var(--dark-text)] rounded-lg border-0 text-sm py-2 px-3 font-medium;
-
-    & .ec-icon {
-        @apply text-[var(--text)] dark:text-[var(--dark-text)];
-    }
-
-    &:not(:disabled) {
-        & {
-            @apply text-[var(--text)];
-        }
-
-        &:hover {
-            & {
-                @apply bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)] text-[var(--text)] dark:text-[var(--dark-text)];
-            }
-            .ec-icon {
-                @apply text-[var(--text)] dark:text-[var(--dark-text)];
-            }
-        }
-    }
+    @apply rounded-lg border-0 text-sm py-2 px-3 font-medium;
 
     &:disabled {
-        @apply opacity-70;
-    }
-
-    &.ec-active {
-        @apply bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)] text-[var(--text)] dark:text-[var(--dark-text)];
+        @apply opacity-70 bg-[var(--ec-button-bg-color)] text-[var(--ec-button-text-color)];
     }
 }
 
+/* This adds the "divider" between buttons in a button group */
 .ec-button-group {
-    grid-auto-flow: column;
-
     & .ec-button {
-
-        &:hover {
-            @apply bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)];
-        }
-
+        @apply me-px;
         &:not(:first-child) {
-            @apply border-s border-s-gray-200 dark:border-s-gray-950;
+            @apply border-s border-s-white dark:border-s-gray-950;
         }
     }
 }
@@ -49,24 +47,58 @@
 }
 
 .ec-header {
-    @apply rounded-ss-lg rounded-se-lg;
     .ec-day {
         @apply font-semibold text-gray-950 dark:text-white;
     }
 }
 
-.ec-body {
-    @apply rounded-es-lg rounded-ee-lg;
+.ec-day-grid,
+.ec-time-grid {
+    & .ec-header {
+        @apply rounded-ss-lg rounded-se-lg;
+    }
+
+    & .ec-body {
+        @apply rounded-es-lg rounded-ee-lg;
+    }
+}
+.ec-timeline {
+    & .ec-sidebar {
+        @apply rounded-ss-lg rounded-es-lg;
+    }
+    & .ec-main .ec-header {
+        @apply rounded-se-lg;
+    }
+
+    & .ec-main .ec-body {
+        @apply rounded-ee-lg;
+    }
+}
+.ec-list {
+    & .ec-body {
+        @apply rounded-lg;
+    }
 }
 
-.ec-day.ec-today {
-    @apply bg-color-50 dark:bg-color-500/20;
-}
+/*.ec-event {*/
+/*    @apply bg-[var(--bg)] dark:bg-[var(--dark-bg)];*/
+/*    & .ec-event-body {*/
+/*        @apply text-[var(--text)] dark:text-[(var(--dark-text))];*/
+/*    }*/
+/*}*/
 
-.ec-event {
-    @apply bg-[var(--bg)] dark:bg-[var(--dark-bg)] text-[var(--text)] dark:text-[(var(--dark-text))] hover:text-[var(--hover-text)] dark:hover:text-[var(--dark-hover-text)] hover:bg-[var(--hover-bg)] dark:hover:bg-[var(--dark-hover-bg)];
+/* Only apply these settings in day and time grid views (not in list views) */
+.ec-day-grid,
+.ec-time-grid {
+    & .ec-event {
+        /* We need to apply hover using our custom class since one event is split into multiple elements if wrapped inside multiple calendar rows */
+        &.gu-hover {
+            /*@apply bg-red-400;*/
+            @apply text-[var(--hover-text)] dark:text-[var(--dark-hover-text)] bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)];
+        }
 
-    &.gu-context-menu-open {
-        @apply text-[var(--hover-text)] dark:text-[var(--dark-hover-text)] bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)];
+        &.gu-context-menu-open {
+            @apply text-[var(--hover-text)] dark:text-[var(--dark-hover-text)] bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)];
+        }
     }
 }

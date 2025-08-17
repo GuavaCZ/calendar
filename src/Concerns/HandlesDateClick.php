@@ -2,6 +2,7 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Guava\Calendar\Enums\Context;
 use Guava\Calendar\ValueObjects\DateClickInfo;
 use phpDocumentor\Reflection\Types\This;
 
@@ -36,18 +37,15 @@ trait HandlesDateClick
     /**
      * @internal Do not override, internal purpose only. Use `onDateClick` instead
      */
-    public function onDateClickJs(array $info): void
+    public function onDateClickJs(array $data): void
     {
         // Check if date click is enabled
         if (! $this->isDateClickEnabled()) {
             return;
         }
 
-        $this->onDateClick(
-            new DateClickInfo(
-                $info,
-                $this->shouldUseFilamentTimezone()
-            )
-        );
+        $this->setRawCalendarContextData(Context::DateClick, $data);
+
+        $this->onDateClick($this->getCalendarContextInfo());
     }
 }

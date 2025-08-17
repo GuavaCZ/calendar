@@ -29,8 +29,8 @@ trait InteractsWithEventRecord
 
     protected function resolveEventRecord(): ?Model
     {
-        $model = $this->getMountedActionContextData('event.extendedProps.model');
-        $key = $this->getMountedActionContextData('event.extendedProps.key');
+        $model = $this->getRawCalendarContextData('event.extendedProps.model');
+        $key = $this->getRawCalendarContextData('event.extendedProps.key');
 
         // Cannot resolve event record
         if (! $model || ! $key) {

@@ -74,7 +74,11 @@ export default function calendarContextMenu({
                 this.open = true;
 
                 if (eventElement) {
-                    eventElement.classList.add('gu-context-menu-open');
+                    const eventId = eventElement.getAttribute('data-event-id')
+
+                    document.querySelectorAll(`.ec-event[data-event-id="${eventId}"]`).forEach(
+                        el => el.classList.add('gu-context-menu-open')
+                    )
                 }
             });
         },
@@ -82,7 +86,7 @@ export default function calendarContextMenu({
         closeMenu: function () {
             this.open = false;
 
-            document.querySelectorAll('.ec-event').forEach(
+            document.querySelectorAll('.ec-event.gu-context-menu-open').forEach(
                 event => event.classList.remove('gu-context-menu-open')
             )
             if (this.onCloseCallback) {

@@ -41,9 +41,4 @@ readonly class EventClickInfo implements ContextualInfo
     {
         return Context::EventClick;
     }
-
-    public function getOriginalData(): array
-    {
-        return $this->originalData;
-    }
 }

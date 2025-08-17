@@ -2,11 +2,14 @@
 
 namespace Guava\Calendar\Filament\Actions;
 
+use Guava\Calendar\Concerns\CalendarAction;
 use Guava\Calendar\Contracts\HasCalendar;
 use Illuminate\Database\Eloquent\Model;
 
 class DeleteAction extends \Filament\Actions\DeleteAction
 {
+    use CalendarAction;
+
     protected function setUp(): void
     {
         parent::setUp();
