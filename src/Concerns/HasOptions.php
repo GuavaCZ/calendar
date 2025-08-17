@@ -14,7 +14,6 @@ trait HasOptions
         return $this->options;
     }
 
-
     public function setOption(string $key, mixed $value): static
     {
         $this->dispatch('calendar--set', key: $key, value: $value);

@@ -2,7 +2,6 @@
 
 namespace Guava\Calendar\Concerns;
 
-
 use Guava\Calendar\ValueObjects\EventAllUpdatedInfo;
 
 trait HandlesEventAllUpdated

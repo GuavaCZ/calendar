@@ -2,12 +2,11 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
 use Illuminate\View\View;
 
 trait HasMoreLinkContent
 {
-    protected null | string $moreLinkContent = null;
+    protected ?string $moreLinkContent = null;
 
     /**
      * vkurko/calendar doesn't support async method calls in moreLinkContent,
