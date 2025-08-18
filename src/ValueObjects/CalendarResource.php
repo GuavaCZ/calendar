@@ -2,9 +2,6 @@
 
 namespace Guava\Calendar\ValueObjects;
 
-
-use Guava\Calendar\Contracts\Resourceable;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 
 class CalendarResource

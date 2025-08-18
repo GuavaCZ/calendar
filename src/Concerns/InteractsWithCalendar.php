@@ -5,7 +5,6 @@ namespace Guava\Calendar\Concerns;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Support\Concerns\EvaluatesClosures;
-use Guava\Calendar\Contracts\ContextualInfo;
 
 trait InteractsWithCalendar
 {
@@ -21,6 +20,7 @@ trait InteractsWithCalendar
     use HandlesEventResize;
     use HandlesNoEventsClick;
     use HandlesViewDidMount;
+    use HasCalendarContextData;
     use HasCalendarView;
     use HasContextMenu;
     use HasDayMaxEvents;
@@ -33,7 +33,6 @@ trait InteractsWithCalendar
     use HasHeading;
     use HasLocale;
     use HasMoreLinkContent;
-    use HasCalendarContextData;
     use HasOptions;
     use HasResourceLabelContent;
     use HasResources;
@@ -52,5 +51,4 @@ trait InteractsWithCalendar
             ...$this->getRawCalendarContextData() ?? [],
         ], $context);
     }
-
 }
