@@ -96,7 +96,7 @@ php artisan make:filament-widget
 
 The widget class should look like this:
 ```php
-use \Guava\Calendar\Widgets\CalendarWidget;
+use \Guava\Calendar\Filament\CalendarWidget;
 
 class MyCalendarWidget extends CalendarWidget
 {
