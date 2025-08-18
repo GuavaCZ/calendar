@@ -63,6 +63,7 @@ export default function calendar({
                 selectable: dateSelectEnabled,
                 eventStartEditable: eventDragEnabled,
                 eventDurationEditable: eventResizeEnabled,
+                dayCellFormat: (date) => date.getDate().toString()
             }
 
             if (eventContent !== null) {
