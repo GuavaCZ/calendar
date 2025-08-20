@@ -20,6 +20,15 @@ It allows you to create a widget with a calendar with support for **multiple** m
 ![Showcase 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_01.png)
 ![Showcase 02](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_02.png)
 
+
+
+https://github.com/user-attachments/assets/fc7828ab-ccd2-4252-942a-9679af1e7687
+
+<video width="320" height="240" controls>
+  <source src="https://github.com/user-attachments/assets/fc7828ab-ccd2-4252-942a-9679af1e7687" type="video/mp4">
+</video>
+
+
 <video width="320" height="240" controls>
   <source src="https://github.com/GuavaCZ/calendar/raw/main/docs/images/demo_preview.mp4" type="video/mp4">
 </video>
