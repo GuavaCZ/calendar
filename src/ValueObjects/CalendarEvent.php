@@ -40,6 +40,8 @@ class CalendarEvent
 
     protected array $classNames = [];
 
+    protected ?string $timezone = null;
+
     private function __construct(?Model $model = null)
     {
         if ($model) {
@@ -299,6 +301,13 @@ class CalendarEvent
         return $this;
     }
 
+    public function timezone(string $timezone): static
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
     public function getExtendedProps(): array
     {
         return $this->extendedProps;
@@ -314,10 +323,10 @@ class CalendarEvent
         $array = [
             'title' => $this->getTitle(),
             'start' => $useFilamentTimezone
-                ? $this->getStart()->setTimezone(FilamentTimezone::get())->toIso8601String()
+                ? $this->getStart()->setTimezone($this->timezone ?? FilamentTimezone::get())->toIso8601String()
                 : $this->getStart()->utcOffset($timezoneOffset)->toIso8601String(),
             'end' => $useFilamentTimezone
-                ? $this->getEnd()->setTimezone(FilamentTimezone::get())->toIso8601String()
+                ? $this->getEnd()->setTimezone($this->timezone ?? FilamentTimezone::get())->toIso8601String()
                 : $this->getEnd()->utcOffset($timezoneOffset)->toIso8601String(),
             'allDay' => $this->getAllDay(),
             'backgroundColor' => $this->getBackgroundColor(),
