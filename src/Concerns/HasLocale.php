@@ -4,18 +4,17 @@ namespace Guava\Calendar\Concerns;
 
 trait HasLocale
 {
+    /**
+     * Defines the locale parameter for the native JavaScript Intl.DateTimeFormat object that EventCalendar uses to format date and time strings in options such as dayHeaderFormat, eventTimeFormat, etc.
+     */
     protected ?string $locale = null;
 
-    public function locale(string $locale): static
-    {
-        $this->locale = $locale;
-
-        return $this;
-    }
-
+    /**
+     * Defines the locale parameter for the native JavaScript Intl.DateTimeFormat object that EventCalendar uses to format date and time strings in options such as dayHeaderFormat, eventTimeFormat, etc.
+     */
     public function getLocale(): string
     {
-        return $this->evaluate($this->locale) ?? $this->getDefaultLocale();
+        return $this->locale ?? $this->getDefaultLocale();
     }
 
     private function getDefaultLocale(): string

@@ -2,34 +2,37 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
 use Guava\Calendar\Contracts\Resourceable;
+use Guava\Calendar\ValueObjects\CalendarResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 trait HasResources
 {
-    protected Collection | array | Closure $resources = [];
-
-    public function resources(Closure | array | Collection $resources): static
+    protected function getResources(): Collection | array | Builder
     {
-        $this->resources = $resources;
-
-        return $this;
-    }
-
-    public function getResources(): Collection | array
-    {
-        return $this->evaluate($this->resources);
+        return [];
     }
 
     public function getResourcesJs(): array
     {
-        return collect($this->getResources())
-            ->map(function (array | Resourceable $resource) {
-                return match (true) {
-                    $resource instanceof Resourceable => $resource->toCalendarResource(),
-                    default => $resource,
-                };
+        $resources = $this->getResources();
+
+        if ($resources instanceof Builder) {
+            $resources = $resources->get();
+        }
+
+        if (is_array($resources)) {
+            $resources = collect($resources);
+        }
+
+        return $resources
+            ->map(static function (Resourceable | CalendarResource $resource): array {
+                if ($resource instanceof Resourceable) {
+                    $resource = $resource->toCalendarResource();
+                }
+
+                return $resource->toCalendarObject();
             })
             ->toArray()
         ;

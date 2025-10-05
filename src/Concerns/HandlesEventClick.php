@@ -2,7 +2,9 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Illuminate\Auth\Access\AuthorizationException;
+use Guava\Calendar\Enums\Context;
+use Guava\Calendar\ValueObjects\EventClickInfo;
+use Illuminate\Database\Eloquent\Model;
 
 trait HandlesEventClick
 {
@@ -10,11 +12,22 @@ trait HandlesEventClick
 
     protected ?string $defaultEventClickAction = 'view';
 
-    public function defaultEventClickAction(string $action): static
+    /**
+     * @throws \Exception
+     */
+    protected function onEventClick(EventClickInfo $info, Model $event, ?string $action = null): void
     {
-        $this->defaultEventClickAction = $action;
+        // No action to trigger
+        if (! $action) {
+            return;
+        }
 
-        return $this;
+        $this->mountAction($action);
+    }
+
+    public function isEventClickEnabled(): bool
+    {
+        return $this->eventClickEnabled;
     }
 
     public function getDefaultEventClickAction(): ?string
@@ -22,42 +35,54 @@ trait HandlesEventClick
         return $this->evaluate($this->defaultEventClickAction);
     }
 
-    public function onEventClick(array $info = [], ?string $action = null): void
+    /**
+     * @internal Do not override, internal purpose only. Use `onEventClick` instead
+     */
+    public function onEventClickJs(array $data = [], ?string $action = null): void
     {
-        try {
-            $model = data_get($info, 'event.extendedProps.model');
-            $key = data_get($info, 'event.extendedProps.key');
-
-            if ($model && $key) {
-                $this->resolveEventRecord($model, $key);
-
-                $action ??= data_get($info, 'event.extendedProps.action', $this->getDefaultEventClickAction());
-
-                if ($action) {
-                    $this->authorize(match ($action) {
-                        'edit' => 'update',
-                        default => $action,
-                    }, [$this->eventRecord]);
-
-                    $this->mountAction($action, [
-                        'event' => data_get($info, 'event', []),
-                    ]);
-                }
-            }
-        } catch (AuthorizationException $e) {
+        // Check if event click is enabled
+        if (! $this->isEventClickEnabled()) {
             return;
         }
+
+        $this->setRawCalendarContextData(Context::EventClick, $data);
+
+        $action ??= $this->getRawCalendarContextData('event.extendedProps.action');
+        $action ??= $this->getDefaultEventClickAction();
+
+        // TODO: Similar to how Schemas work, allow users to define a method for each Event Model Type
+        // TODO: using attributes. such as #[CalendarEventClick(Sprint::class)] above a method
+        // TODO: such as onSprintEventClick would be only called for Sprint.
+        $this->onEventClick($this->getCalendarContextInfo(), $this->getEventRecord(), $action);
     }
 
-    public function eventClickEnabled(bool $enabled = true): static
-    {
-        $this->eventClickEnabled = $enabled;
-
-        return $this;
-    }
-
-    public function isEventClickEnabled(): bool
-    {
-        return $this->eventClickEnabled;
-    }
+    // TODO: Might be worth looking into to automatically choose between view /edit action based on the permissions
+    //
+    //    protected function resolveDefaultEventClickAction() {
+    //        foreach (['view', 'edit'] as $action) {
+    //            $action = $this->getAction($action);
+    //
+    //            if (! $action) {
+    //                continue;
+    //            }
+    //
+    //            $action = clone $action;
+    //
+    //            $action->record($record);
+    //            $action->getGroup()?->record($record);
+    //
+    //            if ($action->isHidden()) {
+    //                continue;
+    //            }
+    //
+    //            $url = $action->getUrl();
+    //
+    //            if (! $url) {
+    //                continue;
+    //            }
+    //
+    //            return $url;
+    //        }
+    //
+    //    }
 }

@@ -2,44 +2,41 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
+use Guava\Calendar\Attributes\CalendarEventContent;
 use Illuminate\Contracts\Support\Htmlable;
+use ReflectionClass;
 
 trait HasEventContent
 {
-    protected null | Closure | string $eventContent = null;
-
-    public function eventContent($eventContent): static
+    public function getEventContentJs(): ?array
     {
-        $this->eventContent = $eventContent;
+        // Try finding a method with a CalendarEventContent attribute
+        $reflectionClass = new ReflectionClass($this);
 
-        return $this;
-    }
+        $views = [];
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC + \ReflectionMethod::IS_PROTECTED) as $method) {
+            $attributes = $method->getAttributes(CalendarEventContent::class);
 
-    /**
-     * vkurko/calendar doesn't support async method calls in eventContent,
-     * that's why we need to pass all views to the client side.
-     *
-     * @return string|array|null null to use default, string to use single view, array to use multiple views depending on the model of the event.
-     */
-    public function getEventContent(): null | string | array
-    {
-        return $this->evaluate($this->eventContent);
-    }
-
-    public function getEventContentJs(): null | string | array
-    {
-        $eventContent = $this->getEventContent();
-
-        if (! is_array($eventContent)) {
-            return $eventContent;
+            foreach ($attributes as $attribute) {
+                $content = $this->{$method->getName()}();
+                $views[$attribute->newInstance()->model] = $content instanceof Htmlable ? $content->toHtml() : $content;
+            }
         }
 
-        $result = [];
-        foreach ($eventContent as $model => $content) {
-            $result[$model] = $content instanceof Htmlable ? $content->toHtml() : $content;
+        // Try finding a "defaultEventContent" or "eventContent" method.
+        if (method_exists($this, 'defaultEventContent')) {
+            $views['_default'] = $this->defaultEventContent();
         }
 
-        return $result;
+        // Try finding a "defaultEventContent" or "eventContent" method.
+        if (method_exists($this, 'eventContent')) {
+            $views['_default'] = $this->eventContent();
+        }
+
+        if (! empty($views)) {
+            return $views;
+        }
+
+        return null;
     }
 }

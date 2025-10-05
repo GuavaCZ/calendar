@@ -2,21 +2,29 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Guava\Calendar\ValueObjects\EventAllUpdatedInfo;
+
 trait HandlesEventAllUpdated
 {
     protected bool $eventAllUpdatedEnabled = false;
 
-    public function onEventAllUpdated(array $info = []): void {}
-
-    public function eventAllUpdated(bool $enabled = true): static
-    {
-        $this->eventAllUpdatedEnabled = $enabled;
-
-        return $this;
-    }
+    protected function onEventAllUpdated(EventAllUpdatedInfo $info): void {}
 
     public function isEventAllUpdatedEnabled(): bool
     {
         return $this->eventAllUpdatedEnabled;
+    }
+
+    /**
+     * @internal Do not override, internal purpose only. Use `onEventAllUpdated()` instead
+     */
+    public function onEventAllUpdatedJs(array $info): void
+    {
+        // Check if dates set is enabled
+        if (! $this->isEventAllUpdatedEnabled()) {
+            return;
+        }
+
+        $this->onEventAllUpdated(new EventAllUpdatedInfo($info, $this->shouldUseFilamentTimezone()));
     }
 }

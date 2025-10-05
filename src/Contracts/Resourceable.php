@@ -6,5 +6,5 @@ use Guava\Calendar\ValueObjects\CalendarResource;
 
 interface Resourceable
 {
-    public function toCalendarResource(): array | CalendarResource;
+    public function toCalendarResource(): CalendarResource;
 }

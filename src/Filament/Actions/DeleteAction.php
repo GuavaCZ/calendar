@@ -1,22 +1,27 @@
 <?php
 
-namespace Guava\Calendar\Actions;
+namespace Guava\Calendar\Filament\Actions;
 
-use Guava\Calendar\Widgets\CalendarWidget;
+use Guava\Calendar\Concerns\CalendarAction;
+use Guava\Calendar\Contracts\HasCalendar;
 use Illuminate\Database\Eloquent\Model;
 
 class DeleteAction extends \Filament\Actions\DeleteAction
 {
+    use CalendarAction;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->model(fn (CalendarWidget $livewire) => $livewire->getEventModel());
-        $this->record(fn (CalendarWidget $livewire) => $livewire->getEventRecord());
-        $this->after(function (CalendarWidget $livewire) {
+        $this->model(fn (HasCalendar $livewire) => $livewire->getEventModel());
+        $this->record(fn (HasCalendar $livewire) => $livewire->getEventRecord());
+
+        $this->after(function (HasCalendar $livewire) {
             $livewire->eventRecord = null;
             $livewire->refreshRecords();
         });
+
         $this->hidden(static function (?Model $record): bool {
             if (! $record) {
                 return false;
@@ -28,6 +33,7 @@ class DeleteAction extends \Filament\Actions\DeleteAction
 
             return $record->trashed();
         });
+
         $this->cancelParentActions();
     }
 }

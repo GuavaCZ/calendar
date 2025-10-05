@@ -2,19 +2,22 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
-
 trait HasOptions
 {
-    protected array | Closure $options = [];
+    protected array $options = [];
 
-    public function options(array | Closure $options): static
-    {
-        $this->options = $options;
-    }
-
+    /**
+     * Allows you to set vkurko/calendar options directly in case a helper method was not provided by the package.
+     */
     public function getOptions(): array
     {
-        return $this->evaluate($this->options);
+        return $this->options;
+    }
+
+    public function setOption(string $key, mixed $value): static
+    {
+        $this->dispatch('calendar--set', key: $key, value: $value);
+
+        return $this;
     }
 }

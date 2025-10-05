@@ -1,6 +1,7 @@
-export default function calendarContextMenu() {
+export default function calendarContextMenu({
+                                                getContextMenuActionsUsing,
+                                            }) {
     return {
-
         open: false,
 
         size: {
@@ -13,6 +14,9 @@ export default function calendarContextMenu() {
         },
         mountData: {},
         context: null,
+        actions: [],
+        isLoading: false,
+        onCloseCallback: null,
 
         menu: {
             ['x-show']() {
@@ -20,36 +24,43 @@ export default function calendarContextMenu() {
             },
             ['x-bind:style']() {
                 return `
-                position: absolute;
-                z-index: 40;
-                top: ${this.position.y}px;
-                left: ${this.position.x}px;
-                `;
+                    position: absolute;
+                    z-index: 40;
+                    top: ${this.position.y}px;
+                    left: ${this.position.x}px;
+                `
             },
             ['x-on:click.away']() {
-                this.closeMenu();
+                this.closeMenu()
             }
         },
 
         init: async function () {
-            const menu = this.$el.querySelector('[x-bind="menu"]');
+            const menu = this.$el.querySelector('[x-bind="menu"]')
             this.size = {
                 width: menu.offsetWidth,
                 height: menu.offsetHeight,
-            };
+            }
 
-            this.$el.addEventListener('calendar--open-menu', (event) => this.openMenu(event));
+            this.$el.addEventListener('calendar--open-menu', (event) => this.openMenu(event))
         },
 
-        openMenu: function (event) {
-            this.context = event.detail.context;
-            this.mountData = event.detail.mountData;
+        loadActions: async function (context, data = {}) {
+            this.isLoading = true
+            this.actions = []
+            getContextMenuActionsUsing(context, data)
+                .then((actions) => {
+                    this.actions = actions
+                })
+                .finally(() => this.isLoading = false)
+        },
 
+        openMenu: async function (event, eventElement = null) {
             this.$nextTick(() => {
-                const clientX = event.detail.jsEvent.clientX;
-                const clientY = event.detail.jsEvent.clientY;
-                const pageX = event.detail.jsEvent.pageX;
-                const pageY = event.detail.jsEvent.pageY;
+                const clientX = event.clientX;
+                const clientY = event.clientY;
+                const pageX = event.pageX;
+                const pageY = event.pageY;
 
                 const offsetX = clientX + this.size.width > window.innerWidth
                     ? clientX + this.size.width - window.innerWidth
@@ -61,11 +72,26 @@ export default function calendarContextMenu() {
                 this.position.x = pageX - offsetX;
                 this.position.y = pageY - offsetY;
                 this.open = true;
+
+                if (eventElement) {
+                    const eventId = eventElement.getAttribute('data-event-id')
+
+                    document.querySelectorAll(`.ec-event[data-event-id="${eventId}"]`).forEach(
+                        el => el.classList.add('gu-context-menu-open')
+                    )
+                }
             });
         },
 
         closeMenu: function () {
             this.open = false;
+
+            document.querySelectorAll('.ec-event.gu-context-menu-open').forEach(
+                event => event.classList.remove('gu-context-menu-open')
+            )
+            if (this.onCloseCallback) {
+                this.onCloseCallback();
+            }
         }
     }
 }

@@ -2,19 +2,14 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Guava\Calendar\Enums\CalendarViewType;
+
 trait HasCalendarView
 {
-    protected string $calendarView = 'dayGridMonth';
+    protected CalendarViewType $calendarView = CalendarViewType::DayGridMonth;
 
-    public function calendarView(string $calendarView): static
+    public function getCalendarView(): CalendarViewType
     {
-        $this->calendarView = $calendarView;
-
-        return $this;
-    }
-
-    public function getCalendarView(): string
-    {
-        return $this->evaluate($this->calendarView);
+        return $this->calendarView;
     }
 }

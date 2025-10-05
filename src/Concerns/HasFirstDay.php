@@ -2,19 +2,20 @@
 
 namespace Guava\Calendar\Concerns;
 
+use Carbon\WeekDay;
+
 trait HasFirstDay
 {
-    protected int $firstDay = 1;
+    /**
+     * The day that each week begins at, where Sunday is 0, Monday is 1, etc. Saturday is 6.
+     */
+    protected WeekDay $firstDay = WeekDay::Monday;
 
-    public function firstDay(int $firstDay): static
+    /**
+     * The day that each week begins at, where Sunday is 0, Monday is 1, etc. Saturday is 6.
+     */
+    public function getFirstDay(): WeekDay
     {
-        $this->firstDay = $firstDay;
-
-        return $this;
-    }
-
-    public function getFirstDay(): int
-    {
-        return $this->evaluate($this->firstDay);
+        return $this->firstDay;
     }
 }

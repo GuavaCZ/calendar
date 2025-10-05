@@ -2,22 +2,22 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
 use Illuminate\Support\HtmlString;
 
 trait HasHeading
 {
-    protected string | Closure | HtmlString | null $heading = null;
+    protected string | HtmlString | null | bool $heading = true;
 
-    public function heading(string | Closure | HtmlString $heading): static
+    public function getHeading(): null | string | HtmlString
     {
-        $this->heading = $heading;
+        if ($this->heading === false || is_null($this->heading)) {
+            return null;
+        }
 
-        return $this;
-    }
+        if ($this->heading === true) {
+            return __('guava-calendar::translations.heading');
+        }
 
-    public function getHeading(): string | HtmlString
-    {
-        return $this->evaluate($this->heading) ?? __('guava-calendar::translations.heading');
+        return $this->heading;
     }
 }

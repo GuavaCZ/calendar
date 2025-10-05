@@ -2,44 +2,41 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
+use Guava\Calendar\Attributes\CalendarResourceLabelContent;
 use Illuminate\Contracts\Support\Htmlable;
+use ReflectionClass;
 
 trait HasResourceLabelContent
 {
-    protected null | Closure | string $resourceLabelContent = null;
-
-    public function resourceLabelContent($resourceLabelContent): static
+    public function getResourceLabelContentJs(): ?array
     {
-        $this->resourceLabelContent = $resourceLabelContent;
+        // Try finding a method with a CalendarEventContent attribute
+        $reflectionClass = new ReflectionClass($this);
 
-        return $this;
-    }
+        $views = [];
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC + \ReflectionMethod::IS_PROTECTED) as $method) {
+            $attributes = $method->getAttributes(CalendarResourceLabelContent::class);
 
-    /**
-     * vkurko/calendar doesn't support async method calls in eventContent,
-     * that's why we need to pass all views to the client side.
-     *
-     * @return string|array|null null to use default, string to use single view, array to use multiple views depending on the model of the event.
-     */
-    public function getResourceLabelContent(): null | string | array
-    {
-        return $this->evaluate($this->resourceLabelContent);
-    }
-
-    public function getResourceLabelContentJs(): null | string | array
-    {
-        $resourceLabelContent = $this->getResourceLabelContent();
-
-        if (! is_array($resourceLabelContent)) {
-            return $resourceLabelContent;
+            foreach ($attributes as $attribute) {
+                $content = $this->{$method->getName()}();
+                $views[$attribute->newInstance()->model] = $content instanceof Htmlable ? $content->toHtml() : $content;
+            }
         }
 
-        $result = [];
-        foreach ($resourceLabelContent as $model => $content) {
-            $result[$model] = $content instanceof Htmlable ? $content->toHtml() : $content;
+        // Try finding a "defaultResourceLabelContent" or "resourceLabelContent" method.
+        if (method_exists($this, 'defaultResourceLabelContent')) {
+            $views['_default'] = $this->defaultResourceLabelContent();
         }
 
-        return $result;
+        // Try finding a "defaultResourceLabelContent" or "resourceLabelContent" method.
+        if (method_exists($this, 'resourceLabelContent')) {
+            $views['_default'] = $this->resourceLabelContent();
+        }
+
+        if (! empty($views)) {
+            return $views;
+        }
+
+        return null;
     }
 }

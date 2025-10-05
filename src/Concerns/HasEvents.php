@@ -2,38 +2,40 @@
 
 namespace Guava\Calendar\Concerns;
 
-use Closure;
 use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\CalendarEvent;
+use Guava\Calendar\ValueObjects\FetchInfo;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 trait HasEvents
 {
-    protected Collection | array | Closure $events = [];
+    abstract protected function getEvents(FetchInfo $info): Collection | array | Builder;
 
-    public function events(Closure | array | Collection $events): static
+    public function getEventsJs(array $info): array
     {
-        $this->events = $events;
+        $events = $this->getEvents(new FetchInfo($info));
 
-        return $this;
-    }
+        if ($events instanceof Builder) {
+            $events = $events->get();
+        }
 
-    public function getEvents(array $fetchInfo = []): Collection | array
-    {
-        return $this->evaluate($this->events, [
-            'fetchInfo' => $fetchInfo,
-        ]);
-    }
+        if (is_array($events)) {
+            $events = collect($events);
+        }
 
-    public function getEventsJs(array $fetchInfo = []): array
-    {
-        return collect($this->getEvents($fetchInfo))
-            ->map(function (array | Eventable $event) {
-                return match (true) {
-                    $event instanceof Eventable => $event->toCalendarEvent(),
-                    default => $event,
-                };
+        return $events
+            ->map(function (Builder | Collection | Eventable | CalendarEvent $event) use ($info): array {
+                if ($event instanceof Eventable) {
+                    $event = $event->toCalendarEvent();
+                }
+
+                return $event->toCalendarObject(
+                    data_get($info, 'tzOffset'),
+                    $this->shouldUseFilamentTimezone()
+                );
             })
-            ->toArray()
+            ->all()
         ;
     }
 }

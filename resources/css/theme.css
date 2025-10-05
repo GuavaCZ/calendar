@@ -1,0 +1,113 @@
+.ec {
+    --ec-list-day-bg-color: white;
+    --ec-today-bg-color: var(--color-50);
+
+    /*--ec-text-color: var(--gray-500);*/
+
+    --ec-event-bg-color: var(--bg);
+    --ec-event-text-color: var(--text);
+    --ec-bg-event-color: var(--color-50);
+    --ec-border-color: var(--gray-200);
+    --ec-button-bg-color: var(--bg);
+    --ec-button-text-color: var(--text);
+    --ec-button-active-bg-color: var(--hover-bg);
+    --ec-button-active-text-color: var(--hover-text);
+}
+.dark .ec {
+    --ec-list-day-bg-color: var(--gray-900);
+    --ec-today-bg-color: color-mix(in oklab, var(--color-500) 20%, transparent);
+
+    /*--ec-text-color: var(--gray-200);*/
+
+    --ec-event-bg-color: var(--dark-bg);
+    --ec-event-text-color: var(--dark-text);
+    --ec-border-color: rgba(255, 255, 255, 0.1);
+    --ec-button-bg-color: var(--dark-bg);
+    --ec-button-text-color: var(--dark-text);
+    --ec-button-active-bg-color: var(--dark-hover-bg);
+    --ec-button-active-text-color: var(--dark-hover-text);
+}
+
+
+.ec-button {
+    @apply rounded-lg border-0 text-sm py-2 px-3 font-medium;
+
+    &:disabled {
+        @apply opacity-70 bg-[var(--ec-button-bg-color)] text-[var(--ec-button-text-color)];
+    }
+}
+
+/* This adds the "divider" between buttons in a button group */
+.ec-button-group {
+    & .ec-button {
+        @apply me-px;
+        &:not(:first-child) {
+            @apply border-s border-s-white dark:border-s-gray-950;
+        }
+    }
+}
+
+.ec-title {
+    @apply text-base font-semibold text-gray-950 dark:text-white;
+}
+
+.ec-header {
+    .ec-day {
+        @apply font-semibold text-gray-950 dark:text-white;
+    }
+}
+
+.ec-day-grid,
+.ec-time-grid {
+    & .ec-header {
+        @apply rounded-ss-lg rounded-se-lg;
+    }
+
+    & .ec-body {
+        @apply rounded-es-lg rounded-ee-lg;
+    }
+}
+.ec-timeline {
+    & .ec-sidebar {
+        @apply rounded-ss-lg rounded-es-lg;
+    }
+    & .ec-main .ec-header {
+        @apply rounded-se-lg;
+    }
+
+    & .ec-main .ec-body {
+        @apply rounded-ee-lg;
+    }
+}
+.ec-list {
+    & .ec-body {
+        @apply rounded-lg;
+    }
+}
+
+/*.ec-event {*/
+/*    @apply bg-[var(--bg)] dark:bg-[var(--dark-bg)];*/
+/*    & .ec-event-body {*/
+/*        @apply text-[var(--text)] dark:text-[(var(--dark-text))];*/
+/*    }*/
+/*}*/
+
+/* Only apply these settings in day and time grid views (not in list views) */
+.ec-day-grid,
+.ec-time-grid {
+
+    & .ec-time {
+        @apply text-gray-400 dark:text-gray-400;
+    }
+    & .ec-event {
+        /* We need to apply hover using our custom class since one event is split into multiple elements if wrapped inside multiple calendar rows */
+        &.gu-hover {
+            /*@apply bg-red-400;*/
+            @apply text-[var(--hover-text)] dark:text-[var(--dark-hover-text)] bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)];
+        }
+
+        &.gu-context-menu-open {
+            @apply text-[var(--hover-text)] dark:text-[var(--dark-hover-text)] bg-[var(--hover-bg)] dark:bg-[var(--dark-hover-bg)];
+        }
+    }
+}

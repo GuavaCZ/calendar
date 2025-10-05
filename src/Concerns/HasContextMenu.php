@@ -4,20 +4,48 @@ namespace Guava\Calendar\Concerns;
 
 use Filament\Actions\Action;
 use Guava\Calendar\Enums\Context;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
-trait HasContextMenuActions
+trait HasContextMenu
 {
     protected array $cachedContextMenuActions = [];
 
-    public function bootedHasContextMenuActions(): void
+    public function bootedHasContextMenu(): void
     {
         $this->cacheContextMenuActions();
     }
 
-    public function hasContextMenu(): bool
+    public function getContextMenuActionsUsing(Context $context, array $data = []): Collection
     {
-        return ! empty($this->getCachedContextMenuActions());
+        $this->setRawCalendarContextData($context, $data);
+
+        $actions = match ($context) {
+            Context::EventClick => $this->getCachedEventClickContextMenuActions(),
+            Context::DateClick => $this->getCachedDateClickContextMenuActions(),
+            Context::DateSelect => $this->getCachedDateSelectContextMenuActions(),
+            Context::NoEventsClick => $this->getCachedNoEventsClickContextMenuActions()
+        };
+
+        return collect($actions)
+            ->filter(fn (Action $action) => $action->isVisible())
+            ->map(
+                fn (Action $action) => $action
+                    ->arguments($this->getRawCalendarContextData())
+                    ->toHtml()
+            )
+        ;
+    }
+
+    public function hasContextMenu(?Context $context = null): bool
+    {
+        return match ($context) {
+            Context::DateClick => ! empty($this->getCachedDateClickContextMenuActions()),
+            Context::DateSelect => ! empty($this->getCachedDateSelectContextMenuActions()),
+            Context::EventClick => ! empty($this->getCachedEventClickContextMenuActions()),
+            Context::NoEventsClick => ! empty($this->getCachedNoEventsClickContextMenuActions()),
+            default => ! empty($this->getCachedContextMenuActions()),
+        };
     }
 
     protected function cacheContextMenuActions(): void
@@ -36,47 +64,47 @@ trait HasContextMenuActions
         }
     }
 
-    public function getCachedContextMenuActions(): array
+    protected function getCachedContextMenuActions(): array
     {
         return $this->cachedContextMenuActions;
     }
 
-    public function getDateClickContextMenuActions(): array
+    protected function getDateClickContextMenuActions(): array
     {
         return [];
     }
 
-    public function getDateSelectContextMenuActions(): array
+    protected function getDateSelectContextMenuActions(): array
     {
         return [];
     }
 
-    public function getEventClickContextMenuActions(): array
+    protected function getEventClickContextMenuActions(): array
     {
         return [];
     }
 
-    public function getNoEventsClickContextMenuActions(): array
+    protected function getNoEventsClickContextMenuActions(): array
     {
         return [];
     }
 
-    public function getCachedDateClickContextMenuActions(): array
+    protected function getCachedDateClickContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::DateClick->value, []);
     }
 
-    public function getCachedDateSelectContextMenuActions(): array
+    protected function getCachedDateSelectContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::DateSelect->value, []);
     }
 
-    public function getCachedEventClickContextMenuActions(): array
+    protected function getCachedEventClickContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::EventClick->value, []);
     }
 
-    public function getCachedNoEventsClickContextMenuActions(): array
+    protected function getCachedNoEventsClickContextMenuActions(): array
     {
         return data_get($this->getCachedContextMenuActions(), Context::NoEventsClick->value, []);
     }
@@ -85,11 +113,6 @@ trait HasContextMenuActions
     {
         $action = $action
             ->grouped()
-            ->when(
-                $context === Context::EventClick,
-                fn ($action) => $action->alpineClickHandler(fn ($action) => "\$wire.onEventClick(mountData, '{$action->getName()}')"),
-                fn ($action) => $action->alpineClickHandler(fn ($action) => "\$wire.mountAction('{$action->getName()}', mountData)")
-            )
         ;
 
         if (! $action instanceof Action) {
