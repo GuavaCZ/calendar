@@ -27,12 +27,16 @@ trait HasResources
         }
 
         return $resources
-            ->map(static function (Resourceable | CalendarResource $resource): array {
+            ->map(static function (Resourceable | CalendarResource | array $resource): array {
                 if ($resource instanceof Resourceable) {
                     $resource = $resource->toCalendarResource();
                 }
 
-                return $resource->toCalendarObject();
+                if ($resource instanceof CalendarResource) {
+                    return $resource->toCalendarObject();
+                }
+
+                return $resource;
             })
             ->toArray()
         ;
