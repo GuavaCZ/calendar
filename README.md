@@ -1036,10 +1036,19 @@ To handle the callback, override the `onEventDrop` method and implement your own
 use Illuminate\Database\Eloquent\Model;
 use Guava\Calendar\ValueObjects\EventDropInfo;
 
-protected function onEventDrop(EventDropInfo $info, Model $event): void
+protected function onEventDrop(EventDropInfo $info, Model $event): bool
 {
-    // Validate the data and handle the event
-    // Most likely you will want to update the event with the new start /end dates to persist the drag & drop in the database
+     // Access the updated dates using getter methods
+    $newStart = $info->event->getStart();
+    $newEnd = $info->event->getEnd();
+      // Update the event with the new start/end dates to persist the drag & drop
+    $event->update([
+        'start_time' => $newStart,
+        'end_time' => $newEnd,
+    ]);
+     // Return true to accept the drop and keep the event in the new position
+    return true;
+    
 }
 ```
 
