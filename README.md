@@ -900,7 +900,7 @@ If you want to take full control over what happens when an event is clicked, ove
 use Illuminate\Database\Eloquent\Model;
 use Guava\Calendar\ValueObjects\EventClickInfo;
 
-protected function onEventClick(EventClickInfo $info, Model $event, ?string $action = null): void
+public function onEventClick(EventClickInfo $info, Model $event, ?string $action = null): void
 {
     // Validate the data and handle the event click
     // $event contains the clicked event record
@@ -1004,10 +1004,18 @@ To handle the callback, override the `onEventResize` method and implement your o
 use Illuminate\Database\Eloquent\Model;
 use Guava\Calendar\ValueObjects\EventResizeInfo;
 
-protected function onEventResize(EventResizeInfo $info, Model $event): void
+public function onEventResize(EventResizeInfo $info, Model $event): bool
 {
-    // Validate the data and handle the event
-    // Most likely you will want to update the event with the new start /end dates to persist the resize in the database
+    // Access the updated dates using getter methods
+    $newStart = $info->event->getStart();
+    $newEnd = $info->event->getEnd();
+    // Update the event with the new start/end dates to persist the drag & drop
+    $event->update([
+            'start_time' => $newStart,
+            'end_time' => $newEnd
+    ]);
+
+    return true;
 }
 ```
 
@@ -1036,7 +1044,7 @@ To handle the callback, override the `onEventDrop` method and implement your own
 use Illuminate\Database\Eloquent\Model;
 use Guava\Calendar\ValueObjects\EventDropInfo;
 
-protected function onEventDrop(EventDropInfo $info, Model $event): bool
+public function onEventDrop(EventDropInfo $info, Model $event): bool
 {
      // Access the updated dates using getter methods
     $newStart = $info->event->getStart();
