@@ -31,6 +31,13 @@ it('should set the title', function () {
     expect($this->event->getTitle())->toBe($title);
 });
 
+it('should set the html title', function () {
+    $title = new Illuminate\Support\HtmlString('<strong>Test Event</strong>');
+    $this->event->title($title);
+
+    expect($this->event->getTitle())->toBe($title);
+});
+
 it('should set the background color', function () {
     $color = '#ff0000';
     $this->event->backgroundColor($color);
@@ -126,4 +133,30 @@ it('should return props to array', function () {
         'resourceIds' => $resourceIds,
         'extendedProps' => $extendedProps,
     ]);
+});
+
+
+
+it('should return title with string', function () {
+    $title = 'Test Event';
+
+    $this->event->title($title)->start(Carbon::now())->end(Carbon::now()->addHour());
+
+    expect($this->event->toCalendarObject(0, false))
+        ->toMatchArray([
+            'title' => 'Test Event',
+        ]);
+});
+
+it('should return html props with htmlable', function () {
+    $title = new Illuminate\Support\HtmlString('<strong>Test Event</strong>');
+
+    $this->event->title($title)->start(Carbon::now())->end(Carbon::now()->addHour());
+
+    expect($this->event->toCalendarObject(0, false))
+        ->toMatchArray([
+            'title' => [
+                'html' => '<strong>Test Event</strong>',
+            ]
+        ]);
 });
