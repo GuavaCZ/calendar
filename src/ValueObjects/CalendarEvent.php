@@ -4,15 +4,17 @@ namespace Guava\Calendar\ValueObjects;
 
 use Carbon\Carbon;
 use Filament\Support\Facades\FilamentTimezone;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 use function Guava\Calendar\utc_to_user_local_time;
+use function Pest\Laravel\instance;
 
 class CalendarEvent
 {
-    protected string $title;
+    protected string|Htmlable $title;
 
     protected Carbon $start;
 
@@ -94,14 +96,14 @@ class CalendarEvent
         return $this->allDay;
     }
 
-    public function title(string $title): static
+    public function title(string|Htmlable $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function getTitle(): string
+    public function getTitle(): string|Htmlable
     {
         return $this->title;
     }
@@ -312,7 +314,7 @@ class CalendarEvent
     public function toCalendarObject(int $timezoneOffset, bool $useFilamentTimezone): array
     {
         $array = [
-            'title' => $this->getTitle(),
+            'title' => $this->getTitle() instanceof Htmlable ? ['html' => $this->getTitle()->toHtml()] : $this->getTitle(),
             'start' => $useFilamentTimezone
                 ? $this->getStart()->setTimezone(FilamentTimezone::get())->toIso8601String()
                 : $this->getStart()->utcOffset($timezoneOffset)->toIso8601String(),

@@ -244,6 +244,14 @@ Sets the title of the event that is rendered in the calendar.
 CalendarEvent::make()->title('My event');
 ```
 
+To output Html in the title pass in a `HtmlString` or other class that implements `Htmlable` :
+
+```php
+CalendarEvent::make()
+->title(new HtmlString('<b>My Event</b>'));
+```
+
+
 #### Customizing the start/end date
 Sets the start or end date (and time) of the calendar in the calendar.
 ```php
