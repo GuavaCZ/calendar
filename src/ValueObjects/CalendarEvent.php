@@ -10,11 +10,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 use function Guava\Calendar\utc_to_user_local_time;
-use function Pest\Laravel\instance;
 
 class CalendarEvent
 {
-    protected string|Htmlable $title;
+    protected string | Htmlable $title;
 
     protected Carbon $start;
 
@@ -98,14 +97,14 @@ class CalendarEvent
         return $this->allDay;
     }
 
-    public function title(string|Htmlable $title): static
+    public function title(string | Htmlable $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function getTitle(): string|Htmlable
+    public function getTitle(): string | Htmlable
     {
         return $this->title;
     }

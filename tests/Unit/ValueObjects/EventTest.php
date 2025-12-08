@@ -135,8 +135,6 @@ it('should return props to array', function () {
     ]);
 });
 
-
-
 it('should return title with string', function () {
     $title = 'Test Event';
 
@@ -145,7 +143,8 @@ it('should return title with string', function () {
     expect($this->event->toCalendarObject(0, false))
         ->toMatchArray([
             'title' => 'Test Event',
-        ]);
+        ])
+    ;
 });
 
 it('should return html props with htmlable', function () {
@@ -157,6 +156,7 @@ it('should return html props with htmlable', function () {
         ->toMatchArray([
             'title' => [
                 'html' => '<strong>Test Event</strong>',
-            ]
-        ]);
+            ],
+        ])
+    ;
 });
