@@ -5,6 +5,7 @@ namespace Guava\Calendar\Enums;
 enum CalendarViewType: string
 {
     case DayGridMonth = 'dayGridMonth';
+    case DayGridWeek = 'dayGridWeek';
     case ListDay = 'listDay';
     case ListWeek = 'listWeek';
     case ListMonth = 'listMonth';

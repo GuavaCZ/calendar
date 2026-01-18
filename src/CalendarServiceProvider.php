@@ -41,8 +41,8 @@ class CalendarServiceProvider extends PackageServiceProvider
                     'calendar-event',
                     __DIR__ . '/../dist/js/calendar-event.js',
                 ),
-                Css::make('calendar-styles', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@4.5.0/dist/event-calendar.min.css'),
-                Js::make('calendar-script', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@4.5.0/dist/event-calendar.min.js'),
+                Css::make('calendar-styles', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.3/dist/event-calendar.min.css'),
+                Js::make('calendar-script', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.3/dist/event-calendar.min.js'),
             ],
             package: 'guava/calendar'
         );
