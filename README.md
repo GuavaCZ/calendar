@@ -16,6 +16,13 @@ This package adds support for [vkurko/calendar](https://github.com/vkurko/calend
 
 It allows you to create a widget with a calendar with support for **multiple** models and even resources you can group your events into. For example, you could have lessons (events) that are held in different rooms (resources).
 
+## Version compatibility
+| Filament version | Plugin version |
+| ---------------- |:--------------:| 
+| 3.x              | 1.x            |
+| 4.x              | 2.x            |
+| 5.x              | 3.x            |
+
 ## Showcase
 ![Showcase 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_01.png)
 ![Showcase 02](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_02.png)
