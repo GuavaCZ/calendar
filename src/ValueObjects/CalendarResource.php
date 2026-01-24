@@ -124,7 +124,9 @@ class CalendarResource
             'title' => $this->getTitle(),
             'eventBackgroundColor' => $this->getEventBackgroundColor(),
             'eventTextColor' => $this->getEventTextColor(),
-            'children' => collect($this->getChildren())->toArray(),
+            'children' => collect($this->getChildren())
+                ->map(fn (CalendarResource $child) => $child->toCalendarObject())
+                ->toArray(),
             'extendedProps' => $this->getExtendedProps(),
         ];
     }
