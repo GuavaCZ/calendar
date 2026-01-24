@@ -7,6 +7,7 @@ use Filament\Support\Facades\FilamentTimezone;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 use function Guava\Calendar\utc_to_user_local_time;
@@ -359,8 +360,12 @@ class CalendarEvent
 
     public function fromCalendarObject(array $data, int $timezoneOffset, bool $useFilamentTimezone): static
     {
+        $title = $data['title'];
+        if (is_array($data['title']) && array_key_exists('html', $data['title'])) {
+            $title = new HtmlString($data['title']['html']);
+        }
         $this
-            ->title($data['title'])
+            ->title($title)
             ->start(utc_to_user_local_time($data['start'], $timezoneOffset, $useFilamentTimezone))
             ->end(utc_to_user_local_time($data['end'], $timezoneOffset, $useFilamentTimezone))
             ->allDay($data['allDay'])
