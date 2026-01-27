@@ -664,7 +664,7 @@ Both variants are equal, and it's just up to your personal preference which one 
 whenever you want to mount an action programmatically within a calendar context, such as in the `onDateClick` method (more on this later), you can use the `mountAction` method. 
 
 ```php
-public function onDateClick(DateClickInfo $info) {
+protected function onDateClick(DateClickInfo $info): void {
     $this->mountAction('createFoo');
 }
 ```
@@ -1015,10 +1015,12 @@ To handle the callback, override the `onEventResize` method and implement your o
 use Illuminate\Database\Eloquent\Model;
 use Guava\Calendar\ValueObjects\EventResizeInfo;
 
-protected function onEventResize(EventResizeInfo $info, Model $event): void
+public function onEventResize(EventResizeInfo $info, Model $event): bool
 {
     // Validate the data and handle the event
     // Most likely you will want to update the event with the new start /end dates to persist the resize in the database
+
+    return true;
 }
 ```
 
