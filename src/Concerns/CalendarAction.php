@@ -33,6 +33,7 @@ trait CalendarAction
 
         if ($expectedContext !== false) {
             $contextInfo = $livewire->getCalendarContextInfo();
+
             return ($expectedContext === null || $contextInfo->getContext() === $expectedContext)
                 ? [$contextInfo]
                 : [null];
