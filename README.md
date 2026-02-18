@@ -8,13 +8,16 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/guava/calendar/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/GuavaCZ/calendar/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/guava/calendar.svg?style=flat-square)](https://packagist.org/packages/guava/calendar)
 
-> [!NOTE]  
-> You are viewing the documentation for guava/calendar v2, which supports only filament v4.
-> For filament v3, please check guava/calendar v1 here.
-
 This package adds support for [vkurko/calendar](https://github.com/vkurko/calendar) (free, open-source alternative to FullCalendar) to your FilamentPHP panels.
 
 It allows you to create a widget with a calendar with support for **multiple** models and even resources you can group your events into. For example, you could have lessons (events) that are held in different rooms (resources).
+
+## Version compatibility
+| Filament version | Plugin version |
+| ---------------- |:--------------:| 
+| 3.x              | 1.x            |
+| 4.x              | 2.x            |
+| 5.x              | 3.x            |
 
 ## Showcase
 ![Showcase 01](https://github.com/GuavaCZ/calendar/raw/main/docs/images/showcase_01.png)
