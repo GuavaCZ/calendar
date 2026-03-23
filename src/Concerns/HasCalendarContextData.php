@@ -13,7 +13,7 @@ use Guava\Calendar\ValueObjects\NoEventsClickInfo;
 
 trait HasCalendarContextData
 {
-    protected ?array $rawCalendarContextData = null;
+    public ?array $rawCalendarContextData = null;
 
     protected function setRawCalendarContextData(Context $context, array $data): void
     {
