@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Guava\Calendar\ValueObjects\CalendarEvent;
+use Illuminate\Support\HtmlString;
 
 beforeEach(function () {
     $this->event = CalendarEvent::make();
@@ -32,7 +33,7 @@ it('should set the title', function () {
 });
 
 it('should set the html title', function () {
-    $title = new Illuminate\Support\HtmlString('<strong>Test Event</strong>');
+    $title = new HtmlString('<strong>Test Event</strong>');
     $this->event->title($title);
 
     expect($this->event->getTitle())->toBe($title);
@@ -148,7 +149,7 @@ it('should return title with string', function () {
 });
 
 it('should return html props with htmlable', function () {
-    $title = new Illuminate\Support\HtmlString('<strong>Test Event</strong>');
+    $title = new HtmlString('<strong>Test Event</strong>');
 
     $this->event->title($title)->start(Carbon::now())->end(Carbon::now()->addHour());
 
