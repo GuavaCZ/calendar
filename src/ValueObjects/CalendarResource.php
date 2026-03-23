@@ -2,13 +2,14 @@
 
 namespace Guava\Calendar\ValueObjects;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 
 class CalendarResource
 {
     protected int | string $id;
 
-    protected string $title;
+    protected string | Htmlable $title;
 
     protected ?string $eventBackgroundColor = null;
 
@@ -32,7 +33,7 @@ class CalendarResource
         return $this->id;
     }
 
-    public function title(string $title): static
+    public function title(string | Htmlable $title): static
     {
         $this->title = $title;
 
@@ -121,7 +122,7 @@ class CalendarResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->getTitle(),
+            'title' => $this->getTitle() instanceof Htmlable ? ['html' => $this->getTitle()->toHtml()] : $this->getTitle(),
             'eventBackgroundColor' => $this->getEventBackgroundColor(),
             'eventTextColor' => $this->getEventTextColor(),
             'children' => collect($this->getChildren())->toArray(),
