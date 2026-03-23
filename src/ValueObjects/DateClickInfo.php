@@ -16,6 +16,8 @@ readonly class DateClickInfo implements ContextualInfo
 
     public CalendarView $view;
 
+    public ?CalendarResource $resource;
+
     protected array $originalData;
 
     public function __construct(array $data, bool $useFilamentTimezone)
@@ -35,6 +37,12 @@ readonly class DateClickInfo implements ContextualInfo
             data_get($data, 'tzOffset'),
             $useFilamentTimezone
         );
+
+        if ($resource = data_get($data, 'resource')) {
+            $this->resource = CalendarResource::fromCalendarObject($resource);
+        } else {
+            $this->resource = null;
+        }
     }
 
     public function getContext(): Context
