@@ -1015,7 +1015,7 @@ To handle the callback, override the `onEventResize` method and implement your o
 use Illuminate\Database\Eloquent\Model;
 use Guava\Calendar\ValueObjects\EventResizeInfo;
 
-public function onEventResize(EventResizeInfo $info, Model $event): bool
+protected function onEventResize(EventResizeInfo $info, Model $event): bool
 {
     // Validate the data and handle the event
     // Most likely you will want to update the event with the new start /end dates to persist the resize in the database
