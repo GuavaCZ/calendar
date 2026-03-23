@@ -129,4 +129,25 @@ class CalendarResource
             'extendedProps' => $this->getExtendedProps(),
         ];
     }
+
+    public static function fromCalendarObject(array $data): CalendarResource
+    {
+        $resource = CalendarResource::make(data_get($data, 'id'));
+
+        $resource->title(data_get($data, 'title'));
+
+        if ($eventBackgroundColor = data_get($data, 'eventBackgroundColor')) {
+            $resource->eventBackgroundColor($eventBackgroundColor);
+        }
+
+        if ($eventTextColor = data_get($data, 'eventTextColor')) {
+            $resource->eventTextColor($eventTextColor);
+        }
+
+        if ($extendedProps = data_get($data, 'extendedProps')) {
+            $resource->extendedProps($extendedProps);
+        }
+
+        return $resource;
+    }
 }
