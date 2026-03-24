@@ -8,7 +8,7 @@
 <x-filament-widgets::widget>
     <x-filament::section
         :after-header="$this->getCachedHeaderActionsComponent()"
-        :footer="$this->getCachedFooterActionsComponent()"
+        :footer="$this->showFooter ? $this->getCachedFooterActionsComponent() : null"
     >
 
         <style>
