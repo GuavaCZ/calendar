@@ -366,8 +366,8 @@ class CalendarEvent
         }
         $this
             ->title($title)
-            ->start(utc_to_user_local_time($data['start'], $timezoneOffset, $useFilamentTimezone))
-            ->end(utc_to_user_local_time($data['end'], $timezoneOffset, $useFilamentTimezone))
+            ->start(Carbon::instance(utc_to_user_local_time($data['start'], $timezoneOffset, $useFilamentTimezone)))
+            ->end(Carbon::instance(utc_to_user_local_time($data['end'], $timezoneOffset, $useFilamentTimezone)))
             ->allDay($data['allDay'])
             ->styles($data['styles'])
             ->classNames($data['classNames'])
