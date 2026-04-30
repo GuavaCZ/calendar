@@ -34,27 +34,5 @@
             {{--                        {{ $action }}--}}
             {{--                    @endforeach--}}
         </x-filament::dropdown.list>
-        <div>
-            {{--                <x-filament::dropdown.list x-show="context == '{{Context::DateClick}}'">--}}
-            {{--                    @foreach ($dateClickContextMenuActions as $action)--}}
-            {{--                        {{ $action }}--}}
-            {{--                    @endforeach--}}
-            {{--                </x-filament::dropdown.list>--}}
-            {{--                <x-filament::dropdown.list x-show="context == '{{Context::DateSelect}}'">--}}
-            {{--                    @foreach ($dateSelectContextMenuActions as $action)--}}
-            {{--                        {{ $action }}--}}
-            {{--                    @endforeach--}}
-            {{--                </x-filament::dropdown.list>--}}
-            {{--            <x-filament::dropdown.list>--}}
-            {{--                @foreach ($eventClickContextMenuActions as $action)--}}
-            {{--                    {{ $action }}--}}
-            {{--                @endforeach--}}
-            {{--            </x-filament::dropdown.list>--}}
-            {{--                <x-filament::dropdown.list x-show="context == '{{Context::NoEventsClick}}'">--}}
-            {{--                    @foreach ($noEventsClickContextMenuActions as $action)--}}
-            {{--                        {{ $action }}--}}
-            {{--                    @endforeach--}}
-            {{--                </x-filament::dropdown.list>--}}
-        </div>
     </div>
 </div>
