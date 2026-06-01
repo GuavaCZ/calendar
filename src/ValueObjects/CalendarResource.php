@@ -40,7 +40,7 @@ class CalendarResource
         return $this;
     }
 
-    public function getTitle(): string
+    public function getTitle(): string | Htmlable
     {
         return $this->title;
     }
