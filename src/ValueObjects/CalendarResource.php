@@ -4,6 +4,7 @@ namespace Guava\Calendar\ValueObjects;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 
 class CalendarResource
 {
