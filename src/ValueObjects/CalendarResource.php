@@ -134,7 +134,9 @@ class CalendarResource
     {
         $resource = CalendarResource::make(data_get($data, 'id'));
 
-        $resource->title(data_get($data, 'title'));
+        $resource->title(
+            data_get($data, 'title.html') ? new HtmlString(data_get($data, 'title.html')) : data_get($data, 'title')
+        );
 
         if ($eventBackgroundColor = data_get($data, 'eventBackgroundColor')) {
             $resource->eventBackgroundColor($eventBackgroundColor);
