@@ -16,7 +16,7 @@ trait HandlesEventResize
     // TODO: -> getEndAttribute()
     // TODO: where the user needs to define which attributes is the start/end date
     // TODO: Then we can handle the update outselves by default
-    public function onEventResize(EventResizeInfo $info, Model $event): bool
+    protected function onEventResize(EventResizeInfo $info, Model $event): bool
     {
         return true;
     }
