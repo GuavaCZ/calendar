@@ -25,6 +25,11 @@
         @endif
 
         <div
+            x-data="{ ecDark: document.documentElement.classList.contains('dark') }"
+            x-init="new MutationObserver(() => ecDark = document.documentElement.classList.contains('dark')).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })"
+            x-bind:class="{ 'ec-dark': ecDark }"
+        >
+        <div
             wire:ignore
             x-load
             x-load-src="{{ FilamentAsset::getAlpineComponentSrc('calendar', 'guava/calendar') }}"
@@ -59,6 +64,7 @@
             @if($this->hasContextMenu())
                 <x-guava-calendar::context-menu/>
             @endif
+        </div>
         </div>
     </x-filament::section>
         <x-filament-actions::modals/>
