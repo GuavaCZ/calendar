@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Guava\Calendar\ValueObjects\CalendarEvent;
 use Illuminate\Support\HtmlString;
 
@@ -106,9 +107,9 @@ it('should set some extended props', function () {
     expect($this->event->getExtendedProps())->toBe($props);
 });
 
-it('should return props to array', function () {
-    $start = Carbon::now();
-    $end = Carbon::now()->addHour();
+it('should serialize to a calendar object', function () {
+    $start = Carbon::parse('2026-07-01 10:00:00', 'UTC');
+    $end = Carbon::parse('2026-07-01 11:00:00', 'UTC');
     $title = 'Test Event';
     $backgroundColor = '#ff0000';
     $textColor = '#00ff00';
@@ -121,12 +122,12 @@ it('should return props to array', function () {
         ->textColor($textColor)->styles($styles)->classNames($classNames)->resourceIds($resourceIds)->extendedProps($extendedProps)
     ;
 
-    $array = $this->event->toArray();
+    $array = $this->event->toCalendarObject(0, false);
 
     expect($array)->toMatchArray([
         'title' => $title,
-        'start' => $start,
-        'end' => $end,
+        'start' => $start->copy()->utcOffset(0)->toIso8601String(),
+        'end' => $end->copy()->utcOffset(0)->toIso8601String(),
         'backgroundColor' => $backgroundColor,
         'textColor' => $textColor,
         'styles' => 'color: red; font-size: 12px; border-color: red;',
@@ -134,6 +135,29 @@ it('should return props to array', function () {
         'resourceIds' => $resourceIds,
         'extendedProps' => $extendedProps,
     ]);
+});
+
+it('does not mutate the stored start/end when serializing', function () {
+    $start = Carbon::parse('2026-07-01 10:00:00', 'UTC');
+    $end = Carbon::parse('2026-07-01 11:00:00', 'UTC');
+
+    $this->event->title('x')->start($start)->end($end);
+    $this->event->toCalendarObject(120, false);
+
+    expect($this->event->getStart()->toIso8601String())->toBe($start->toIso8601String())
+        ->and($this->event->getEnd()->toIso8601String())->toBe($end->toIso8601String())
+    ;
+});
+
+it('preserves the timezone of an immutable date passed to start/end', function () {
+    // A CarbonImmutable must not be coerced to a timezone-less string by the string|Carbon union.
+    $start = CarbonImmutable::parse('2026-07-01 08:00:00', 'America/New_York');
+
+    $this->event->start($start)->end($start->addHour());
+
+    expect($this->event->getStart()->toIso8601String())->toBe('2026-07-01T08:00:00-04:00')
+        ->and($this->event->getStart())->toBeInstanceOf(Carbon::class)
+    ;
 });
 
 it('should return title with string', function () {

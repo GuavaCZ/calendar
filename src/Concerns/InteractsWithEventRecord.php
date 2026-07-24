@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Attributes\Locked;
 
+use function Guava\Calendar\calendar_event_signature;
+
 trait InteractsWithEventRecord
 {
     #[Locked]
@@ -35,6 +37,18 @@ trait InteractsWithEventRecord
         // Cannot resolve event record
         if (! $model || ! $key) {
             throw new Exception('Could not resolve event record. A [model] or [key] property set in the [extendedProps] of the mounted event was missing.');
+        }
+
+        // The model, key and action round-trip through the browser and can be tampered with, so we
+        // must never blindly hand them to app()/query() or mountAction(). Verify the HMAC signature
+        // that toCalendarObject() attached: it proves the triple was emitted by the server (i.e. is
+        // one of the events this calendar actually rendered) rather than forged by the client.
+        $action = $this->getRawCalendarContextData('event.extendedProps.action');
+        $signature = $this->getRawCalendarContextData('event.extendedProps.signature');
+
+        if (! is_string($model) || ! is_string($key) || ! is_string($signature)
+            || ! hash_equals(calendar_event_signature($model, $key, is_scalar($action) ? (string) $action : ''), $signature)) {
+            throw new Exception('Could not resolve event record. The event signature is missing or invalid, which means the [model], [key] or [action] in the [extendedProps] was tampered with.');
         }
 
         if ($record = $this->resolveEventRecordRouteBinding($model, $key)) {

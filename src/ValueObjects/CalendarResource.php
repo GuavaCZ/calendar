@@ -4,6 +4,7 @@ namespace Guava\Calendar\ValueObjects;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 
 class CalendarResource
 {
@@ -40,7 +41,7 @@ class CalendarResource
         return $this;
     }
 
-    public function getTitle(): string
+    public function getTitle(): string | Htmlable
     {
         return $this->title;
     }
@@ -134,7 +135,11 @@ class CalendarResource
     {
         $resource = CalendarResource::make(data_get($data, 'id'));
 
-        $resource->title(data_get($data, 'title'));
+        $title = data_get($data, 'title');
+        if (is_array($title) && array_key_exists('html', $title)) {
+            $title = new HtmlString($title['html']);
+        }
+        $resource->title($title);
 
         if ($eventBackgroundColor = data_get($data, 'eventBackgroundColor')) {
             $resource->eventBackgroundColor($eventBackgroundColor);

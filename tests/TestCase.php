@@ -2,9 +2,10 @@
 
 namespace Guava\Calendar\Tests;
 
-use Guava\Calendar\CalendarServiceProvider;
+use Filament\Support\SupportServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use PHPUnit\Framework\TestCase as BaseTestCase;
+use Livewire\LivewireServiceProvider;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -19,18 +20,19 @@ abstract class TestCase extends BaseTestCase
 
     protected function getPackageProviders($app)
     {
+        // Filament's support layer wires into Livewire during boot, so Livewire must be
+        // registered first. This is enough to exercise the value objects and the
+        // FilamentTimezone facade without booting a full panel.
         return [
-            CalendarServiceProvider::class,
+            LivewireServiceProvider::class,
+            SupportServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'testing');
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_calendar_table.php.stub';
-        $migration->up();
-        */
+        config()->set('app.timezone', 'UTC');
+        config()->set('app.key', 'base64:'.base64_encode('guava-calendar-testing-key-32byte'));
     }
 }
