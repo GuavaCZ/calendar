@@ -93,6 +93,27 @@ it('should set the editable features', function () {
     expect($this->event->getDurationEditable())->toBeTrue();
 });
 
+it('only serializes restricting editable flags so the global flag stays authoritative', function () {
+    $base = fn () => CalendarEvent::make()->title('x')->start(Carbon::now())->end(Carbon::now()->addHour());
+
+    // A per-event "true" is dropped — it must not enable an interaction the global flag disabled.
+    expect($base()->startEditable(true)->durationEditable(true)->editable(true)->toCalendarObject(0, false))
+        ->not->toHaveKey('startEditable')
+        ->not->toHaveKey('durationEditable')
+    ;
+
+    // A per-event "false" (a lock) is forwarded so EventCalendar disables that specific event.
+    expect($base()->startEditable(false)->toCalendarObject(0, false))
+        ->toMatchArray(['startEditable' => false])
+        ->not->toHaveKey('durationEditable')
+    ;
+
+    // editable(false) locks both axes.
+    expect($base()->editable(false)->toCalendarObject(0, false))
+        ->toMatchArray(['startEditable' => false, 'durationEditable' => false])
+    ;
+});
+
 it('should set resource ids', function () {
     $resourceIds = [1, 2, 3];
     $this->event->resourceIds($resourceIds);

@@ -157,51 +157,49 @@ export default function calendar({
             }
 
             settings.eventResize = async (info) => {
-                const durationEditable = info.event.durationEditable
-                let enabled = eventResizeEnabled
-
-                if (durationEditable !== undefined) {
-                    enabled = durationEditable
+                // The global flag is authoritative. EventCalendar's global eventDurationEditable (and
+                // the per-event durationEditable:false we emit for locked events) already decides
+                // whether this fires, so a per-event value can only restrict, never enable.
+                if (! eventResizeEnabled) {
+                    info.revert()
+                    return
                 }
 
-                if (enabled) {
-                    await this.$wire.onEventResizeJs({
-                        event: info.event,
-                        oldEvent: info.oldEvent,
-                        endDelta: info.endDelta,
-                        view: info.view,
-                        tzOffset: -new Date().getTimezoneOffset()
-                    }).then((result) => {
-                        if (result === false) {
-                            info.revert()
-                        }
-                    })
-                }
+                await this.$wire.onEventResizeJs({
+                    event: info.event,
+                    oldEvent: info.oldEvent,
+                    endDelta: info.endDelta,
+                    view: info.view,
+                    tzOffset: -new Date().getTimezoneOffset()
+                }).then((result) => {
+                    if (result === false) {
+                        info.revert()
+                    }
+                })
             };
 
             settings.eventDrop = async (info) => {
-                const startEditable = info.event.startEditable
-                let enabled = eventDragEnabled
-
-                if (startEditable !== undefined) {
-                    enabled = startEditable
+                // The global flag is authoritative. EventCalendar's global eventStartEditable (and the
+                // per-event startEditable:false we emit for locked events) already decides whether this
+                // fires, so a per-event value can only restrict, never enable.
+                if (! eventDragEnabled) {
+                    info.revert()
+                    return
                 }
 
-                if (enabled) {
-                    await this.$wire.onEventDropJs({
-                        event: info.event,
-                        oldEvent: info.oldEvent,
-                        oldResource: info.oldResource,
-                        newResource: info.newResource,
-                        delta: info.delta,
-                        view: info.view,
-                        tzOffset: -new Date().getTimezoneOffset()
-                    }).then((result) => {
-                        if (result === false) {
-                            info.revert()
-                        }
-                    })
-                }
+                await this.$wire.onEventDropJs({
+                    event: info.event,
+                    oldEvent: info.oldEvent,
+                    oldResource: info.oldResource,
+                    newResource: info.newResource,
+                    delta: info.delta,
+                    view: info.view,
+                    tzOffset: -new Date().getTimezoneOffset()
+                }).then((result) => {
+                    if (result === false) {
+                        info.revert()
+                    }
+                })
             }
 
             settings.eventDidMount = (info) => {

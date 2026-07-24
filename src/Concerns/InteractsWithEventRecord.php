@@ -45,10 +45,12 @@ trait InteractsWithEventRecord
         // one of the events this calendar actually rendered) rather than forged by the client.
         $action = $this->getRawCalendarContextData('event.extendedProps.action');
         $signature = $this->getRawCalendarContextData('event.extendedProps.signature');
+        $dragLocked = (bool) $this->getRawCalendarContextData('event.extendedProps.dragLocked');
+        $resizeLocked = (bool) $this->getRawCalendarContextData('event.extendedProps.resizeLocked');
 
         if (! is_string($model) || ! is_string($key) || ! is_string($signature)
-            || ! hash_equals(calendar_event_signature($model, $key, is_scalar($action) ? (string) $action : ''), $signature)) {
-            throw new Exception('Could not resolve event record. The event signature is missing or invalid, which means the [model], [key] or [action] in the [extendedProps] was tampered with.');
+            || ! hash_equals(calendar_event_signature($model, $key, is_scalar($action) ? (string) $action : '', $dragLocked, $resizeLocked), $signature)) {
+            throw new Exception('Could not resolve event record. The event signature is missing or invalid, which means the [model], [key], [action] or editable state in the [extendedProps] was tampered with.');
         }
 
         if ($record = $this->resolveEventRecordRouteBinding($model, $key)) {

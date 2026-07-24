@@ -328,16 +328,27 @@ class CalendarEvent
             $extendedProps['timezone'] = $this->timezone;
         }
 
-        // Sign the model/key/action triple so tampering with them on the client is detected when
-        // the event is sent back (see InteractsWithEventRecord::resolveEventRecord()).
+        // The global drag/resize flags are authoritative: a per-event value can only *restrict*
+        // (lock) an event, never enable one the widget disabled globally. Distil the developer's
+        // editable settings into two "locked" booleans and sign them together with model/key/action
+        // so the server can enforce a per-event lock even against a tampered client, and so a client
+        // cannot strip a lock or forge model/key/action (see InteractsWithEventRecord).
+        $editable = $this->getEditable();
+        $dragLocked = $this->getStartEditable() === false || ($this->getStartEditable() === null && $editable === false);
+        $resizeLocked = $this->getDurationEditable() === false || ($this->getDurationEditable() === null && $editable === false);
+
         $model = $extendedProps['model'] ?? null;
         $key = $extendedProps['key'] ?? null;
         if ($model !== null && $key !== null) {
             $action = $extendedProps['action'] ?? '';
+            $extendedProps['dragLocked'] = $dragLocked;
+            $extendedProps['resizeLocked'] = $resizeLocked;
             $extendedProps['signature'] = calendar_event_signature(
                 $model,
                 $key,
                 is_scalar($action) ? (string) $action : '',
+                $dragLocked,
+                $resizeLocked,
             );
         }
 
@@ -358,16 +369,16 @@ class CalendarEvent
             'extendedProps' => $extendedProps,
         ];
 
-        if (($editable = $this->getEditable()) !== null) {
-            $array['editable'] = $editable;
+        // Only forward the restricting (locked) state to EventCalendar. We never send a per-event
+        // "true", so EventCalendar's global eventStartEditable/eventDurationEditable governs whether
+        // an event can be dragged/resized at all — keeping the global flag authoritative and avoiding
+        // the "draggable in the UI, then reverted by the server" flicker.
+        if ($dragLocked) {
+            $array['startEditable'] = false;
         }
 
-        if (($startEditable = $this->getStartEditable()) !== null) {
-            $array['startEditable'] = $startEditable;
-        }
-
-        if (($durationEditable = $this->getDurationEditable()) !== null) {
-            $array['durationEditable'] = $durationEditable;
+        if ($resizeLocked) {
+            $array['durationEditable'] = false;
         }
 
         if (($display = $this->getDisplay()) !== null) {

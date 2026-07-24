@@ -9,15 +9,17 @@ use Filament\Support\Facades\FilamentTimezone;
 
 if (! function_exists('Guava\Calendar\calendar_event_signature')) {
     /**
-     * Sign the identifying triple of a model-backed event (model class, key and action) so the
-     * server can detect tampering when the browser sends it back. The values round-trip through
-     * the client in [extendedProps] and would otherwise let a crafted request resolve arbitrary
-     * records or trigger arbitrary actions. Truncated to 128 bits, which is ample: forging a
-     * 128-bit HMAC is infeasible, and it keeps the per-event payload small.
+     * Sign the identifying data of a model-backed event so the server can detect tampering when the
+     * browser sends it back. The model class, key and action decide which record is resolved and
+     * which action is mounted; the drag/resize "locked" flags decide whether a per-event lock is
+     * enforced. All of it round-trips through the client in [extendedProps] and would otherwise let
+     * a crafted request resolve arbitrary records, trigger arbitrary actions, or strip a lock.
+     * Truncated to 128 bits, which is ample: forging a 128-bit HMAC is infeasible, and it keeps the
+     * per-event payload small.
      */
-    function calendar_event_signature(string $model, int | string $key, string $action = ''): string
+    function calendar_event_signature(string $model, int | string $key, string $action = '', bool $dragLocked = false, bool $resizeLocked = false): string
     {
-        $payload = implode('|', [$model, $key, $action]);
+        $payload = implode('|', [$model, $key, $action, $dragLocked ? '1' : '0', $resizeLocked ? '1' : '0']);
 
         return substr(hash_hmac('sha256', $payload, (string) config('app.key')), 0, 32);
     }

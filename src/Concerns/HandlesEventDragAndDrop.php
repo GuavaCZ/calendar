@@ -31,12 +31,19 @@ trait HandlesEventDragAndDrop
      */
     public function onEventDropJs(array $data): bool
     {
-        // Check if event drag and drop is enabled
+        // The global flag is authoritative: if dragging is disabled, nothing is draggable.
         if (! $this->isEventDragEnabled()) {
             return false;
         }
 
+        // Resolving the record also verifies the event signature, which covers the drag-lock flag.
         $this->setRawCalendarContextData(Context::EventDragAndDrop, $data);
+
+        // The lock flag is now trusted (part of the verified signature), so a client cannot strip a
+        // per-event lock to move an event the developer pinned in place.
+        if ((bool) $this->getRawCalendarContextData('event.extendedProps.dragLocked')) {
+            return false;
+        }
 
         return $this->onEventDrop($this->getCalendarContextInfo(), $this->getEventRecord());
     }
