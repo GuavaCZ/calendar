@@ -29,6 +29,8 @@ export default function calendar({
         init: function () {
             const ec = this.mountCalendar()
 
+            this.syncDarkMode()
+
             window.addEventListener('calendar--refresh', () => {
                 ec.refetchEvents()
             })
@@ -36,6 +38,23 @@ export default function calendar({
             this.$wire.on('calendar--set', (data) => {
                 ec.setOption(data.key, data.value)
             })
+        },
+
+        // Toggle event-calendar's `ec-dark` class in sync with Filament's dark mode.
+        // Since v5, vkurko/calendar only applies its dark palette when this class is
+        // present, so we mirror the `.dark` class Filament sets on <html> and keep it
+        // in sync when the user switches theme at runtime.
+        syncDarkMode: function () {
+            const root = document.documentElement
+
+            const apply = () => this.$el.classList.toggle('ec-dark', root.classList.contains('dark'))
+
+            apply()
+
+            const observer = new MutationObserver(apply)
+            observer.observe(root, { attributes: true, attributeFilter: ['class'] })
+
+            this.$el.addEventListener('alpine:destroy', () => observer.disconnect())
         },
 
         mountCalendar: function () {
