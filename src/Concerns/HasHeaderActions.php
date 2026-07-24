@@ -19,7 +19,6 @@ trait HasHeaderActions
 
     protected function cacheHeaderActions(): void
     {
-        /** @var Action $action */
         foreach ($this->getHeaderActions() as $action) {
             if ($action instanceof ActionGroup) {
                 $action->livewire($this);

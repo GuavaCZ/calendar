@@ -15,6 +15,9 @@ use function Guava\Calendar\calendar_event_signature;
 use function Guava\Calendar\to_carbon;
 use function Guava\Calendar\utc_to_user_local_time;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class CalendarEvent
 {
     protected string | Htmlable $title;
@@ -47,7 +50,7 @@ class CalendarEvent
 
     protected ?string $timezone = null;
 
-    private function __construct(?Model $model = null)
+    protected function __construct(?Model $model = null)
     {
         if ($model) {
             $this->key($model->getKey());

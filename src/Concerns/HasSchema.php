@@ -62,8 +62,10 @@ trait HasSchema
             return $this->getSchemaForModel($schema, $model);
         } catch (SchemaNotFoundException $e) {
             // Try to find form schema in resource
-            /** @var resource $resource */
-            if ($resource = Filament::getModelResource($model)) {
+            /** @var class-string<\Filament\Resources\Resource>|null $resource */
+            $resource = $model ? Filament::getModelResource($model) : null;
+
+            if ($resource) {
                 return $resource::form($schema);
             }
 
@@ -80,8 +82,10 @@ trait HasSchema
             return $this->getSchemaForModel($schema, $model);
         } catch (SchemaNotFoundException $e) {
             // Try to find infolist schema in resource
-            /** @var resource $resource */
-            if ($resource = Filament::getModelResource($model)) {
+            /** @var class-string<\Filament\Resources\Resource>|null $resource */
+            $resource = $model ? Filament::getModelResource($model) : null;
+
+            if ($resource) {
                 return $resource::infolist($schema);
             }
 

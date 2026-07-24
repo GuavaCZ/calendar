@@ -75,5 +75,6 @@ it('round-trips an event carrying an explicit per-event timezone', function () {
     // Without carrying the timezone, the inbound path would shift by Europe/Prague and land on the
     // wrong instant (06:00 UTC instead of 12:00 UTC).
     expect($result->getStart()->utc()->toIso8601String())->toBe($start->utc()->toIso8601String())
-        ->and($result->getTimezone())->toBe('America/New_York');
+        ->and($result->getTimezone())->toBe('America/New_York')
+    ;
 });

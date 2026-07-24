@@ -65,6 +65,7 @@ trait HasCalendarContextData
             Context::NoEventsClick => new NoEventsClickInfo($data, $useFilamentTimezone),
             Context::EventResize => new EventResizeInfo($data, $this->getEventRecord(), $useFilamentTimezone),
             Context::EventDragAndDrop => new EventDropInfo($data, $this->getEventRecord(), $useFilamentTimezone),
+            default => null,
         };
     }
 }

@@ -20,6 +20,13 @@ trait InteractsWithEventRecord
         return $this->eventRecord;
     }
 
+    public function setEventRecord(?Model $record): static
+    {
+        $this->eventRecord = $record;
+
+        return $this;
+    }
+
     public function getEventModel(): ?string
     {
         if ($record = $this->getEventRecord()) {

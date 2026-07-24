@@ -14,7 +14,6 @@ trait CalendarAction
 {
     protected function resolveDefaultClosureDependencyForEvaluationByType(string $parameterType): array
     {
-        /** @var InteractsWithCalendar $livewire */
         $livewire = $this->getLivewire();
 
         // Action is used outside the calendar
@@ -34,7 +33,7 @@ trait CalendarAction
         if ($expectedContext !== false) {
             $contextInfo = $livewire->getCalendarContextInfo();
 
-            return ($expectedContext === null || $contextInfo->getContext() === $expectedContext)
+            return ($expectedContext === null || $contextInfo?->getContext() === $expectedContext)
                 ? [$contextInfo]
                 : [null];
         }

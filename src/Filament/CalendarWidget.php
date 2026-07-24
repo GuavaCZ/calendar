@@ -12,6 +12,7 @@ abstract class CalendarWidget extends Widget implements HasActions, HasCalendar,
 {
     use InteractsWithCalendar;
 
+    /** @var view-string */
     protected string $view = 'guava-calendar::widgets.calendar-widget';
 
     protected int | string | array $columnSpan = 'full';

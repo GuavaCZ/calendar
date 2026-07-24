@@ -13,8 +13,6 @@ readonly class CalendarView
 
     public string $title;
 
-    public CalendarView $view;
-
     public CarbonImmutable $currentStart;
 
     public CarbonImmutable $currentEnd;

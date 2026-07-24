@@ -131,5 +131,6 @@ it('reverts a resize for a locked event even with a valid signature', function (
     $widget = makeGatedWidget(dragEnabled: false, resizeEnabled: true);
 
     expect($widget->onEventResizeJs(gatedEventData(resizeLocked: true)))->toBeFalse()
-        ->and($widget->resizeHandled)->toBeFalse();
+        ->and($widget->resizeHandled)->toBeFalse()
+    ;
 });

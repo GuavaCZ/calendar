@@ -1,6 +1,5 @@
 includes:
     - phpstan-baseline.neon
-    - ./vendor/nunomaduro/larastan/extension.neon
 
 parameters:
     level: 4
@@ -11,5 +10,17 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
-    checkMissingIterableValueType: false
 
+    ignoreErrors:
+        # The widget's view lives under the 'guava-calendar' namespace, which is only registered at
+        # runtime by CalendarServiceProvider, so larastan cannot resolve it to a view-string here.
+        -
+            identifier: property.defaultValue
+            path: src/Filament/CalendarWidget.php
+        # Both traits are part of the public Concerns namespace for users to opt into; nothing in
+        # the package itself uses them, so PHPStan sees them as unused.
+        -
+            identifier: trait.unused
+            paths:
+                - src/Concerns/HasAuthorization.php
+                - src/Concerns/HasNotifications.php

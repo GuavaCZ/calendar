@@ -6,6 +6,9 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class CalendarResource
 {
     protected int | string $id;
@@ -20,7 +23,7 @@ class CalendarResource
 
     protected array $extendedProps = [];
 
-    private function __construct(Model | int | string $id)
+    protected function __construct(Model | int | string $id)
     {
         if ($id instanceof Model) {
             $this->id = $id->getKey();

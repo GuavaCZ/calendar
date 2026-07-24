@@ -19,7 +19,6 @@ trait HasFooterActions
 
     protected function cacheFooterActions(): void
     {
-        /** @var Action $action */
         foreach ($this->getFooterActions() as $action) {
 
             if ($action instanceof ActionGroup) {

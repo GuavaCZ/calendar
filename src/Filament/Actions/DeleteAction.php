@@ -18,7 +18,7 @@ class DeleteAction extends \Filament\Actions\DeleteAction
         $this->record(fn (HasCalendar $livewire) => $livewire->getEventRecord());
 
         $this->after(function (HasCalendar $livewire) {
-            $livewire->eventRecord = null;
+            $livewire->setEventRecord(null);
             $livewire->refreshRecords();
         });
 
