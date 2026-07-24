@@ -5,6 +5,8 @@ composer.lock
 coverage
 phpunit.xml
 phpstan.neon
-testbench.yaml
 vendor
 node_modules
+
+# Note: testbench.yaml is deliberately NOT ignored — it defines the panel the workbench
+# boots. The sqlite database it generates lives under vendor/, already ignored above.
