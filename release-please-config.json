@@ -1,0 +1,20 @@
+{
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+    "include-v-in-tag": false,
+    "packages": {
+        ".": {
+            "release-type": "php",
+            "changelog-path": "CHANGELOG.md",
+            "changelog-sections": [
+                { "type": "feat", "section": "Features" },
+                { "type": "fix", "section": "Bug Fixes" },
+                { "type": "perf", "section": "Performance" },
+                { "type": "refactor", "section": "Refactor" },
+                { "type": "docs", "section": "Documentation" },
+                { "type": "style", "section": "Style" },
+                { "type": "test", "section": "Tests" },
+                { "type": "chore", "section": "Chore" }
+            ]
+        }
+    }
+}
