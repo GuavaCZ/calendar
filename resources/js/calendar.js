@@ -1,3 +1,19 @@
+import {
+    createCalendar,
+    destroyCalendar,
+    DayGrid,
+    Interaction,
+    List,
+    ResourceTimeGrid,
+    ResourceTimeline,
+    TimeGrid,
+} from '@event-calendar/core'
+
+// Every view in Guava\Calendar\Enums\CalendarViewType is covered, plus Interaction, which is what
+// makes dateClick/select/drag/resize fire at all. Users can also pass arbitrary views through
+// `options`, so the full set is registered rather than only the ones a given widget declares.
+const plugins = [DayGrid, Interaction, List, ResourceTimeGrid, ResourceTimeline, TimeGrid]
+
 export default function calendar({
                                      view = 'dayGridMonth',
                                      locale = 'en',
@@ -17,7 +33,9 @@ export default function calendar({
                                      hasDateSelectContextMenu = null,
                                      hasEventClickContextMenu = null,
                                      hasNoEventsClickContextMenu = null,
-                                     resources = null,
+                                     // The library treats a non-array `resources` as a remote source
+                                     // and dereferences it, so this must never default to null.
+                                     resources = [],
                                      resourceLabelContent = null,
                                      theme = null,
                                      options = {},
@@ -58,10 +76,15 @@ export default function calendar({
         },
 
         mountCalendar: function () {
-            return EventCalendar.create(
+            const ec = createCalendar(
                 this.$el.querySelector('[data-calendar]'),
+                plugins,
                 this.getSettings(),
             )
+
+            this.$el.addEventListener('alpine:destroy', () => destroyCalendar(ec))
+
+            return ec
         },
 
         getSettings: function () {
@@ -222,7 +245,10 @@ export default function calendar({
             }
 
             settings.eventDidMount = (info) => {
-                info.el.setAttribute('x-load')
+                // `setAttribute` requires a value; passing only the name throws a TypeError and
+                // would abort before x-load-src/x-data are applied, leaving the event without its
+                // Alpine component. Blade writes the bare `x-load` attribute, i.e. an empty value.
+                info.el.setAttribute('x-load', '')
                 info.el.setAttribute('x-load-src', eventAssetUrl)
                 info.el.setAttribute('x-data', `calendarEvent({
                     event: ${JSON.stringify(info.event)},

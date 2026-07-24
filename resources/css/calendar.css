@@ -1,0 +1,6 @@
+/*
+ * Build input for `dist/css/calendar.css`, registered as the `calendar-styles` Filament asset.
+ * Consumers never import this file directly — for theme variables and Tailwind overrides they
+ * import `resources/css/theme.css` into their own Filament theme instead.
+ */
+@import '@event-calendar/core/index.css';

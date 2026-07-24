@@ -20,6 +20,11 @@ const defaultOptions = {
     bundle: true,
     mainFields: ['module', 'main'],
     platform: 'neutral',
+    // `platform: 'neutral'` applies no export conditions of its own, so packages that branch on
+    // `browser` vs `default` fall through to their server build. @event-calendar/core imports
+    // `svelte`, whose exports map resolves to the SSR entry without this — and that entry's
+    // `mount()` throws `lifecycle_function_unavailable` at runtime, with no build-time error.
+    conditions: ['browser'],
     sourcemap: isDev ? 'inline' : false,
     sourcesContent: isDev,
     treeShaking: true,
@@ -59,6 +64,19 @@ compile({
     ...defaultOptions,
     entryPoints: ['./resources/js/calendar-event.js'],
     outfile: './dist/js/calendar-event.js',
+})
+
+// The library's own stylesheet, vendored out of node_modules so it can be served from the
+// package instead of a CDN. This is not the user-facing `resources/css/theme.css`, which
+// stays a Tailwind source file that consumers import into their own Filament theme.
+compile({
+    define: defaultOptions.define,
+    plugins: defaultOptions.plugins,
+    bundle: true,
+    minify: !isDev,
+    sourcemap: isDev ? 'inline' : false,
+    entryPoints: ['./resources/css/calendar.css'],
+    outfile: './dist/css/calendar.css',
 })
 
 // compile({

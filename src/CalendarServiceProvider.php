@@ -4,7 +4,6 @@ namespace Guava\Calendar;
 
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -41,8 +40,9 @@ class CalendarServiceProvider extends PackageServiceProvider
                     'calendar-event',
                     __DIR__ . '/../dist/js/calendar-event.js',
                 ),
-                Css::make('calendar-styles', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@5.5.1/dist/event-calendar.min.css'),
-                Js::make('calendar-script', 'https://cdn.jsdelivr.net/npm/@event-calendar/build@5.5.1/dist/event-calendar.min.js'),
+                // The library itself is bundled into the `calendar` Alpine component, so only its
+                // stylesheet needs registering here.
+                Css::make('calendar-styles', __DIR__ . '/../dist/css/calendar.css'),
             ],
             package: 'guava/calendar'
         );
