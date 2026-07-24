@@ -11,9 +11,14 @@ parameters:
     checkOctaneCompatibility: true
     checkModelProperties: true
 
+    # Whether larastan can resolve the widget's namespaced view depends on how far the testbench
+    # app boots, which varies with the installed Laravel/testbench versions. Both outcomes are fine,
+    # so the ignore below must not be an error when the view does resolve.
+    reportUnmatchedIgnoredErrors: false
+
     ignoreErrors:
-        # The widget's view lives under the 'guava-calendar' namespace, which is only registered at
-        # runtime by CalendarServiceProvider, so larastan cannot resolve it to a view-string here.
+        # The widget's view lives under the 'guava-calendar' namespace, registered at runtime by
+        # CalendarServiceProvider, so larastan cannot always resolve it to a view-string here.
         -
             identifier: property.defaultValue
             path: src/Filament/CalendarWidget.php
