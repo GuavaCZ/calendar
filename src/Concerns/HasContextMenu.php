@@ -30,8 +30,9 @@ trait HasContextMenu
         return collect($actions)
             ->filter(fn (Action $action) => $action->isVisible())
             ->map(
-                fn (Action $action) => $action
-                    ->arguments($this->getRawCalendarContextData())
+                // Invoked, not ->arguments(): the rendered mountAction() handler comes from
+                // getInvokedArguments(), which only __invoke() sets.
+                fn (Action $action) => ($action)($this->getRawCalendarContextData() ?? [])
                     ->toHtml()
             )
         ;
