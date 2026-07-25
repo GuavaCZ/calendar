@@ -76,17 +76,22 @@ export default function calendarContextMenu({
                 if (eventElement) {
                     const eventId = eventElement.getAttribute('data-event-id')
 
-                    document.querySelectorAll(`.ec-event[data-event-id="${eventId}"]`).forEach(
+                    this.widget().querySelectorAll(`.ec-event[data-event-id="${eventId}"]`).forEach(
                         el => el.classList.add('gu-context-menu-open')
                     )
                 }
             });
         },
 
+        // Scope highlighting to this menu's own calendar, not the whole page.
+        widget: function () {
+            return this.$el.closest('[data-calendar-widget]') ?? document
+        },
+
         closeMenu: function () {
             this.open = false;
 
-            document.querySelectorAll('.ec-event.gu-context-menu-open').forEach(
+            this.widget().querySelectorAll('.ec-event.gu-context-menu-open').forEach(
                 event => event.classList.remove('gu-context-menu-open')
             )
             if (this.onCloseCallback) {

@@ -319,7 +319,8 @@ export default function calendar({
         },
 
         openContextMenu: function (jsEvent, data, context) {
-            const element = document.querySelector('[calendar-context-menu]')
+            // Scope the lookup to this calendar, not the whole page.
+            const element = this.$el.querySelector('[calendar-context-menu]')
             const contextMenu = Alpine.$data(element)
             contextMenu.loadActions(context, data)
             contextMenu.openMenu(jsEvent)

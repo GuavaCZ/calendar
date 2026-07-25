@@ -26,6 +26,7 @@
 
         <div
             wire:ignore
+            data-calendar-widget
             x-load
             x-load-src="{{ FilamentAsset::getAlpineComponentSrc('calendar', 'guava/calendar') }}"
             x-data="calendar({
