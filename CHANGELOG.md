@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.2.2](https://github.com/GuavaCZ/calendar/compare/3.2.1...3.2.2) (2026-07-25)
+
+
+### Bug Fixes
+
+* add missing calendar view types to the enum ([5597195](https://github.com/GuavaCZ/calendar/commit/559719563d38525bf6b89757770f6b28b62f32ec))
+* destroy the calendar so SPA navigation does not duplicate it ([036a441](https://github.com/GuavaCZ/calendar/commit/036a4411633eab115c01259d8651537c934afebb))
+* only open the context menu once its actions are known ([ed7d6b3](https://github.com/GuavaCZ/calendar/commit/ed7d6b3114ae5e6ef2a9a715964276f653ebfc2a))
+* pass context menu data to mounted actions ([9120df2](https://github.com/GuavaCZ/calendar/commit/9120df2b2cc79c968322541e498bd5c4327aba94))
+* scope context menu lookups to the owning calendar widget ([937afa9](https://github.com/GuavaCZ/calendar/commit/937afa9c2dfc576ecd0275b824c5de624e5d469a))
+
+
+### Chore
+
+* bundle @event-calendar/core from npm instead of loading it from a CDN ([2c94d4a](https://github.com/GuavaCZ/calendar/commit/2c94d4a0cfe162fabc1758ddcfd12d305cb77d0d))
+* **workbench:** add a real Filament panel for manual testing ([c15e578](https://github.com/GuavaCZ/calendar/commit/c15e57898ba8a89dccf98f5f9fb5e2fad2174682))
+
 ## [3.2.1](https://github.com/GuavaCZ/calendar/compare/3.2.0...3.2.1) (2026-07-24)
 
 
