@@ -40,19 +40,33 @@ export default function calendar({
                                  }
 ) {
     return {
+        calendar: null,
+        darkModeObserver: null,
+        refreshListener: null,
 
         init: function () {
-            const ec = this.mountCalendar()
+            const ec = this.calendar = this.mountCalendar()
 
             this.syncDarkMode()
 
-            window.addEventListener('calendar--refresh', () => {
-                ec.refetchEvents()
-            })
+            this.refreshListener = () => ec.refetchEvents()
+            window.addEventListener('calendar--refresh', this.refreshListener)
 
             this.$wire.on('calendar--set', (data) => {
                 ec.setOption(data.key, data.value)
             })
+        },
+
+        // Alpine calls this when the component goes away. Without it the calendar and its
+        // listeners outlive the page under wire:navigate.
+        destroy: function () {
+            window.removeEventListener('calendar--refresh', this.refreshListener)
+            this.darkModeObserver?.disconnect()
+
+            if (this.calendar) {
+                destroyCalendar(this.calendar)
+                this.calendar = null
+            }
         },
 
         // Since v5 the calendar only uses its dark palette when it has `ec-dark`, so mirror the
@@ -64,22 +78,19 @@ export default function calendar({
 
             apply()
 
-            const observer = new MutationObserver(apply)
-            observer.observe(root, { attributes: true, attributeFilter: ['class'] })
-
-            this.$el.addEventListener('alpine:destroy', () => observer.disconnect())
+            this.darkModeObserver = new MutationObserver(apply)
+            this.darkModeObserver.observe(root, { attributes: true, attributeFilter: ['class'] })
         },
 
         mountCalendar: function () {
-            const ec = createCalendar(
-                this.$el.querySelector('[data-calendar]'),
-                plugins,
-                this.getSettings(),
-            )
+            const container = this.$el.querySelector('[data-calendar]')
 
-            this.$el.addEventListener('alpine:destroy', () => destroyCalendar(ec))
+            // wire:navigate restores the cached page with the previous calendar still rendered
+            // inside, and wire:ignore keeps Livewire from clearing it, so drop it ourselves
+            // rather than mounting a second calendar alongside it.
+            container.replaceChildren()
 
-            return ec
+            return createCalendar(container, plugins, this.getSettings())
         },
 
         getSettings: function () {
