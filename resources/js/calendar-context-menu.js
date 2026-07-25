@@ -18,9 +18,19 @@ export default function calendarContextMenu({
         isLoading: false,
         onCloseCallback: null,
 
+        // Identifies the newest request so a slow response from a previous click can be discarded.
+        requestId: 0,
+        loadingTimer: null,
+
+        // How long a request may run before the click gets a visible loading hint. Below this the
+        // response usually arrives first, so nothing is shown and there is nothing to take back.
+        loadingDelay: 150,
+
         menu: {
             ['x-show']() {
-                return this.open
+                // Callers only open the menu once actions are known, so an empty panel cannot
+                // reach the screen.
+                return this.open && this.actions.length > 0
             },
             ['x-bind:style']() {
                 return `
@@ -45,14 +55,49 @@ export default function calendarContextMenu({
             this.$el.addEventListener('calendar--open-menu', (event) => this.openMenu(event))
         },
 
-        loadActions: async function (context, data = {}) {
+        // Returns the actions so the caller can skip opening an empty menu.
+        loadActions: async function (context, data = {}, eventElement = null) {
+            const requestId = ++this.requestId
+
+            // Drop any hint left over from a click we are no longer opening.
+            this.hideLoading()
+
             this.isLoading = true
             this.actions = []
-            getContextMenuActionsUsing(context, data)
-                .then((actions) => {
-                    this.actions = actions
-                })
-                .finally(() => this.isLoading = false)
+            this.loadingTimer = setTimeout(() => this.showLoading(eventElement), this.loadingDelay)
+
+            try {
+                const actions = await getContextMenuActionsUsing(context, data)
+
+                // A newer click has already taken over; this response is stale.
+                if (requestId !== this.requestId) {
+                    return []
+                }
+
+                this.actions = actions
+
+                return actions
+            } finally {
+                if (requestId === this.requestId) {
+                    this.isLoading = false
+                    this.hideLoading()
+                }
+            }
+        },
+
+        showLoading: function (eventElement) {
+            this.widget().classList?.add('gu-loading')
+            eventElement?.classList.add('gu-context-menu-loading')
+        },
+
+        hideLoading: function () {
+            clearTimeout(this.loadingTimer)
+            this.widget().classList?.remove('gu-loading')
+
+            // Clear every event, not just the last one: a superseded click can leave its own behind.
+            this.widget().querySelectorAll('.ec-event.gu-context-menu-loading').forEach(
+                el => el.classList.remove('gu-context-menu-loading')
+            )
         },
 
         openMenu: async function (event, eventElement = null) {

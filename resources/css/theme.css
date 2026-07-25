@@ -111,3 +111,13 @@
         }
     }
 }
+
+/* Applied only after the delay in calendar-context-menu.js, so a quick click never flickers.
+   Outside the grid-only block above so list and timeline views get them too. */
+.ec-event.gu-context-menu-loading {
+    @apply animate-pulse;
+}
+
+[data-calendar-widget].gu-loading {
+    @apply cursor-progress;
+}

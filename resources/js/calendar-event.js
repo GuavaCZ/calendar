@@ -41,7 +41,7 @@ export default function calendarEvent({
          * Called when an event is clicked, if event clicking is enabled in the calendar.
          * @param info
          */
-        onClick: function (info) {
+        onClick: async function (info) {
             if (info.event.extendedProps.url) {
                 window.open(
                     this.event.extendedProps.url,
@@ -57,11 +57,19 @@ export default function calendarEvent({
             }
 
             if (hasContextMenu) {
-                this.contextMenu.loadActions('eventClick', data)
-                this.contextMenu.openMenu(
-                    info.jsEvent,
-                    this.$el
-                )
+                const position = {
+                    clientX: info.jsEvent.clientX,
+                    clientY: info.jsEvent.clientY,
+                    pageX: info.jsEvent.pageX,
+                    pageY: info.jsEvent.pageY,
+                }
+
+                const actions = await this.contextMenu.loadActions('eventClick', data, this.$el)
+
+                if (actions.length) {
+                    this.contextMenu.openMenu(position, this.$el)
+                }
+
                 return
             }
 

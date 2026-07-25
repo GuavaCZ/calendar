@@ -9,9 +9,6 @@ import {
     TimeGrid,
 } from '@event-calendar/core'
 
-// Every view in Guava\Calendar\Enums\CalendarViewType is covered, plus Interaction, which is what
-// makes dateClick/select/drag/resize fire at all. Users can also pass arbitrary views through
-// `options`, so the full set is registered rather than only the ones a given widget declares.
 const plugins = [DayGrid, Interaction, List, ResourceTimeGrid, ResourceTimeline, TimeGrid]
 
 export default function calendar({
@@ -58,10 +55,8 @@ export default function calendar({
             })
         },
 
-        // Toggle event-calendar's `ec-dark` class in sync with Filament's dark mode.
-        // Since v5, vkurko/calendar only applies its dark palette when this class is
-        // present, so we mirror the `.dark` class Filament sets on <html> and keep it
-        // in sync when the user switches theme at runtime.
+        // Since v5 the calendar only uses its dark palette when it has `ec-dark`, so mirror the
+        // `.dark` class Filament puts on <html>.
         syncDarkMode: function () {
             const root = document.documentElement
 
@@ -318,12 +313,23 @@ export default function calendar({
             return container.outerHTML
         },
 
-        openContextMenu: function (jsEvent, data, context) {
+        openContextMenu: async function (jsEvent, data, context) {
             // Scope the lookup to this calendar, not the whole page.
             const element = this.$el.querySelector('[calendar-context-menu]')
             const contextMenu = Alpine.$data(element)
-            contextMenu.loadActions(context, data)
-            contextMenu.openMenu(jsEvent)
+
+            const position = {
+                clientX: jsEvent.clientX,
+                clientY: jsEvent.clientY,
+                pageX: jsEvent.pageX,
+                pageY: jsEvent.pageY,
+            }
+
+            const actions = await contextMenu.loadActions(context, data)
+
+            if (actions.length) {
+                contextMenu.openMenu(position)
+            }
         }
     }
 }
