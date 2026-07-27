@@ -12,10 +12,10 @@
                 { "type": "fix", "section": "Bug Fixes" },
                 { "type": "perf", "section": "Performance" },
                 { "type": "refactor", "section": "Refactor" },
-                { "type": "docs", "section": "Documentation" },
                 { "type": "style", "section": "Style" },
-                { "type": "test", "section": "Tests" },
-                { "type": "chore", "section": "Chore" }
+                { "type": "docs", "section": "Documentation", "hidden": true },
+                { "type": "test", "section": "Tests", "hidden": true },
+                { "type": "chore", "section": "Chore", "hidden": true }
             ]
         }
     }
