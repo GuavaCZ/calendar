@@ -17,15 +17,15 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.head_ref }}
 
       - name: Fix PHP code style issues
-        uses: aglipanci/laravel-pint-action@2.5
+        uses: aglipanci/laravel-pint-action@22dd72142d98a0dc7cfc31692514ea4c87eb4f13 # 2.5
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
           commit_message: 'style: fix code styling'
 
@@ -35,9 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Check PHP code style
-        uses: aglipanci/laravel-pint-action@2.5
+        uses: aglipanci/laravel-pint-action@22dd72142d98a0dc7cfc31692514ea4c87eb4f13 # 2.5
         with:
           testMode: true
