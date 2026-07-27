@@ -1,4 +1,4 @@
-![calendar Banner](https://github.com/GuavaCZ/calendar/raw/main/docs/images/banner.jpg)
+![calendar Banner](https://github.com/GuavaCZ/calendar/raw/main/.github/banner.png)
 
 
 # Adds support for vkurko/calendar to Filament PHP.
