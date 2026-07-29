@@ -13,7 +13,7 @@ It allows you to create a widget with a calendar with support for **multiple** m
 
 ## Documentation
 
-The full documentation is available at [guava.cz](https://guava.cz/developers/packages/calendar).
+The full documentation is available at [guava.cz](https://guava.cz/developers/packages/calendar?ref=github&utm_campaign=calendar).
 
 ## Version compatibility
 | Filament version | Plugin version | Min. PHP version |
@@ -125,7 +125,7 @@ class MyCalendarWidget extends CalendarWidget
 
 Add the widget to any Filament page you like, such as your `Dashboard`, and you're done!
 
-For everything else, including multiple models, resources, interactivity (drag & drop, resize, context menus), custom event/resource content, actions and authorization, see the full documentation at [guava.cz](https://guava.cz/developers/packages/calendar).
+For everything else, including multiple models, resources, interactivity (drag & drop, resize, context menus), custom event/resource content, actions and authorization, see the full documentation at [guava.cz](https://guava.cz/developers/packages/calendar?ref=github&utm_campaign=calendar).
 
 ## Testing
 
