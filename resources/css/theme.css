@@ -14,6 +14,16 @@
     --ec-button-active-text-color: var(--hover-text);
 }
 .dark .ec {
+    color-scheme: dark;
+    --ec-color-400: oklch(43.9% 0 0);
+    --ec-color-300: oklch(37.1% 0 0);
+    --ec-color-200: oklch(26.9% 0 0);
+    --ec-color-100: oklch(20.5% 0 0);
+    --ec-color-50: oklch(14.5% 0 0);
+    --ec-bg-color: var(--gray-900);
+    --ec-highlight-color: oklch(30.2% 0.056 229.695);
+    --ec-bg-event-opacity: 0.5;
+
     --ec-list-day-bg-color: var(--gray-900);
     --ec-today-bg-color: color-mix(in oklab, var(--color-500) 20%, transparent);
 
