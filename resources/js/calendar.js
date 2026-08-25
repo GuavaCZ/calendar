@@ -44,6 +44,10 @@ export default function calendar({
         darkModeObserver: null,
         refreshListener: null,
 
+        // Delegated hover handler closures for teardown in destroy().
+        _onHoverIn: null,
+        _onHoverOut: null,
+
         init: function () {
             const ec = this.calendar = this.mountCalendar()
 
@@ -55,11 +59,51 @@ export default function calendar({
             this.$wire.on('calendar--set', (data) => {
                 ec.setOption(data.key, data.value)
             })
+
+            this.bindDelegatedHover()
+        },
+
+        // One pair of listeners on the container instead of a pair on every
+        // single event — avoids 400+ listeners and the per-event
+        // querySelectorAll inside each mouseenter/mouseleave callback.
+        bindDelegatedHover: function () {
+            const container = this.$el.querySelector('[data-calendar]')
+
+            this._onHoverIn = (e) => {
+                const eventEl = e.target.closest('.ec-event')
+                if (!eventEl) return
+                const id = eventEl.dataset.eventId
+                if (!id) return
+                container.querySelectorAll(`.ec-event[data-event-id="${CSS.escape(id)}"]`)
+                    .forEach(el => el.classList.add('gu-hover'))
+            }
+
+            this._onHoverOut = (e) => {
+                const eventEl = e.target.closest('.ec-event')
+                if (!eventEl) return
+                const id = eventEl.dataset.eventId
+                if (!id) return
+                container.querySelectorAll(`.ec-event[data-event-id="${CSS.escape(id)}"]`)
+                    .forEach(el => el.classList.remove('gu-hover'))
+            }
+
+            container.addEventListener('mouseover', this._onHoverIn)
+            container.addEventListener('mouseout', this._onHoverOut)
+        },
+
+        unbindDelegatedHover: function () {
+            const container = this.$el?.querySelector('[data-calendar]')
+            if (!container || !this._onHoverIn) return
+            container.removeEventListener('mouseover', this._onHoverIn)
+            container.removeEventListener('mouseout', this._onHoverOut)
+            this._onHoverIn = null
+            this._onHoverOut = null
         },
 
         // Alpine calls this when the component goes away. Without it the calendar and its
         // listeners outlive the page under wire:navigate.
         destroy: function () {
+            this.unbindDelegatedHover()
             window.removeEventListener('calendar--refresh', this.refreshListener)
             this.darkModeObserver?.disconnect()
 

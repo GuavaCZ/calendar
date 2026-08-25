@@ -18,18 +18,6 @@ export default function calendarEvent({
                 this.initializeContextMenu()
             }
             this.$el.setAttribute('data-event-id', event.id)
-
-            const segments = () => this.widget.querySelectorAll(
-                `.ec-event[data-event-id="${event.id}"]`
-            )
-
-            this.$el.addEventListener('mouseenter', () => {
-                segments().forEach(el => el.classList.add('gu-hover'))
-            })
-
-            this.$el.addEventListener('mouseleave', () => {
-                segments().forEach(el => el.classList.remove('gu-hover'))
-            })
         },
 
         initializeContextMenu: function () {

@@ -77,6 +77,9 @@
         }
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "3.2.x-dev"
+        },
         "laravel": {
             "providers": [
                 "Guava\\Calendar\\CalendarServiceProvider"
