@@ -1,3 +1,12 @@
+/**
+ * The offset the browser was at on a given date, in minutes east of UTC.
+ *
+ * Not today's offset: a date in the browser's other daylight saving phase sits
+ * at a different offset from the one now in force, and the server rebuilds the
+ * wall time from whatever this sends.
+ */
+const tzOffsetAt = (date) => -new Date(date ?? Date.now()).getTimezoneOffset()
+
 export default function calendarEvent({
                                           event,
                                           timeText,
@@ -53,7 +62,7 @@ export default function calendarEvent({
             const data = {
                 event: info.event,
                 view: info.view,
-                tzOffset: -new Date().getTimezoneOffset()
+                tzOffset: tzOffsetAt(info.event?.start)
             }
 
             if (hasContextMenu) {

@@ -11,6 +11,15 @@ import {
 
 const plugins = [DayGrid, Interaction, List, ResourceTimeGrid, ResourceTimeline, TimeGrid]
 
+/**
+ * The offset the browser was at on a given date, in minutes east of UTC.
+ *
+ * Not today's offset: a date in the browser's other daylight saving phase sits
+ * at a different offset from the one now in force, and the server rebuilds the
+ * wall time from whatever this sends.
+ */
+const tzOffsetAt = (date) => -new Date(date ?? Date.now()).getTimezoneOffset()
+
 export default function calendar({
                                      view = 'dayGridMonth',
                                      locale = 'en',
@@ -103,7 +112,7 @@ export default function calendar({
                     {
                         events: (fetchInfo) => this.$wire.getEventsJs({
                             ...fetchInfo,
-                            tzOffset: -new Date().getTimezoneOffset(),
+                            tzOffset: tzOffsetAt(fetchInfo.start),
                         })
                     }
                 ],
@@ -152,7 +161,7 @@ export default function calendar({
                         allDay: info.allDay,
                         view: info.view,
                         resource: info.resource,
-                        tzOffset: -new Date().getTimezoneOffset()
+                        tzOffset: tzOffsetAt(info.date)
                     }
 
                     if (hasDateClickContextMenu) {
@@ -173,7 +182,7 @@ export default function calendar({
                         allDay: info.allDay,
                         view: info.view,
                         resource: info.resource,
-                        tzOffset: -new Date().getTimezoneOffset()
+                        tzOffset: tzOffsetAt(info.start)
                     }
 
                     if (hasDateSelectContextMenu) {
@@ -192,7 +201,7 @@ export default function calendar({
                         end: info.end,
                         endStr: info.endStr,
                         view: info.view,
-                        tzOffset: -new Date().getTimezoneOffset()
+                        tzOffset: tzOffsetAt(info.start)
                     })
                 }
             }
@@ -218,7 +227,7 @@ export default function calendar({
                     oldEvent: info.oldEvent,
                     endDelta: info.endDelta,
                     view: info.view,
-                    tzOffset: -new Date().getTimezoneOffset()
+                    tzOffset: tzOffsetAt(info.event?.start)
                 }).then((result) => {
                     if (result === false) {
                         info.revert()
@@ -242,7 +251,7 @@ export default function calendar({
                     newResource: info.newResource,
                     delta: info.delta,
                     view: info.view,
-                    tzOffset: -new Date().getTimezoneOffset()
+                    tzOffset: tzOffsetAt(info.event?.start)
                 }).then((result) => {
                     if (result === false) {
                         info.revert()
@@ -268,7 +277,7 @@ export default function calendar({
                 settings.noEventsClick = (info) => {
                     const data = {
                         view: info.view,
-                        tzOffset: -new Date().getTimezoneOffset()
+                        tzOffset: tzOffsetAt(info.view?.currentStart)
                     }
 
                     if (hasNoEventsClickContextMenu) {
@@ -283,7 +292,7 @@ export default function calendar({
                 settings.viewDidMount = (info) => {
                     this.$wire.onViewDidMountJs({
                         view: info.view,
-                        tzOffset: -new Date().getTimezoneOffset()
+                        tzOffset: tzOffsetAt(info.view?.currentStart)
                     })
                 }
             }
@@ -292,7 +301,7 @@ export default function calendar({
                 settings.eventAllUpdated = (info) => {
                     this.$wire.onEventAllUpdatedJs({
                         view: info.view,
-                        tzOffset: -new Date().getTimezoneOffset()
+                        tzOffset: tzOffsetAt(info.view?.currentStart)
                     })
                 }
             }
