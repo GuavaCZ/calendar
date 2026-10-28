@@ -35,6 +35,9 @@ trait HasContextMenu
                 fn (Action $action) => ($action)($this->getRawCalendarContextData() ?? [])
                     ->toHtml()
             )
+            // Re-index after filtering: with gaps in the keys Livewire serializes the menu as a
+            // JSON object, and the frontend only opens it for an array.
+            ->values()
         ;
     }
 

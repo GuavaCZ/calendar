@@ -93,6 +93,23 @@ it('does not mutate the cached action while rendering the menu', function () {
     ;
 });
 
+it('keeps the rendered actions a list when a hidden action is not the last one', function () {
+    $host = makeContextMenuHost([
+        Action::make('first'),
+        Action::make('hidden')->hidden(),
+        Action::make('third'),
+    ]);
+
+    $actions = $host->getContextMenuActionsUsing(Context::DateClick, dateClickPayload());
+
+    // Regression cover for #167: filtering out the hidden action left the keys at [0, 2], so
+    // Livewire sent the menu as a JSON object and `actions.length` in calendarEvent.onClick()
+    // was undefined, which kept the menu from ever opening.
+    expect($actions->all())->toBeList()->toHaveCount(2)
+        ->and($actions->toJson())->toStartWith('[')
+    ;
+});
+
 it('rebuilds the contextual info from the mounted action arguments', function () {
     // What happens on the *mount* request: the raw context data is gone (it is a protected
     // property, so Livewire never persisted it) and the info has to come back from the
